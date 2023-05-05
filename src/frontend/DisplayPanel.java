@@ -1,3 +1,4 @@
+package frontend;
 
 
 import javax.swing.*;
@@ -11,6 +12,6 @@ public class DisplayPanel extends JPanel {
         add(display);
         setBackground(background);
         display.setBackground(background);
-        display.setText("Bitch");
+        display.setText("Text");
     }
 }
