@@ -2,5 +2,5 @@
 /bin/
 /.vscode/
 /.idea/
-/.DS_STORE/
-/cse-110-project-team-6.iml/
+.DS_STORE
+cse-110-project-team-6.iml
