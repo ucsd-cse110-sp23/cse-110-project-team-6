@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class QuestionTests {
     
     /*
-     * Tests that a Question object holds the question it is intended to hold
+     * Tests that a Question object holds the question it is intended to hold.
      */
     @Test
     public void testQuestion () {
