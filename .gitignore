@@ -1,4 +1,2 @@
-/out/
-/bin/
-/.vscode/
-/.idea/
+bin/
+*.class

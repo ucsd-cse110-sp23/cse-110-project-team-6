@@ -1,4 +1,4 @@
-name: Java CI
+name: SayIt Continuous Integration
 
 on: [push]
 
@@ -19,22 +19,21 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
+      
+      - name: Compile Java Classes
+        run: javac -cp .:lib/*:src src/**/*.java -d bin
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
+      - name: Compile Unit Tests
+        run: javac -cp .:lib/*:bin tests/**/*.java -d bin
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      # build everything (includes running unit tests)
-      - name: Execute Gradle build
-        run: ./gradlew build
+      - name: Run Unit Tests
+        run: java -jar lib/junit-platform-console-standalone-1.9.3.jar -cp bin --scan-class-path
 
       # report the results
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: success() || failure() # always run even if the previous step fails
         with:
-          report_paths: '**/build/test-results/test/TEST-*.xml'
+          report_paths: '**/junit-reports/TEST-*.xml'
           detailed_summary: true # display detailed summary of the report
           include_passed: true # include passed tests in the results table
