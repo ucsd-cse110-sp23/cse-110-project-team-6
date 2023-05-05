@@ -1,4 +1,5 @@
-import frontend.questionButton;
+import frontend.*;
+import backend.*;
 
 import javax.swing.*;
 import java.awt.*;
