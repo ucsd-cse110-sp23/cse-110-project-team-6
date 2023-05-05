@@ -8,6 +8,11 @@ import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 
 public class MockTargetDataLine implements TargetDataLine{
+    private AudioFormat format;
+
+    MockTargetDataLine() {
+        this.format = new AudioFormat(44100, 16, 1, true, true);
+    }
 
     @Override
     public void drain() {
@@ -41,7 +46,7 @@ public class MockTargetDataLine implements TargetDataLine{
 
     @Override
     public AudioFormat getFormat() {
-        return null;
+        return format;
     }
 
     @Override
