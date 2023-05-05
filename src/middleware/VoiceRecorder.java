@@ -4,31 +4,44 @@ import java.io.*;
 import javax.sound.sampled.*; // For sound recording and playback
 
 public class VoiceRecorder {
-    
-    private AudioFormat format;
+
+    float sampleRate = 44100; // CD-quality audio
+    int sampleSizeInBits = 16; // higher-fidelity audio
+    int channels = 1; // Mono audio channel recording (less data to process)
+
+    // Signed audio enables wider dynamic range of audio signal
+    boolean signed = true;
+    boolean bigEndian = true; // most common format for audio
+
+    private AudioFormat format = 
+        new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
+
     private TargetDataLine line;
 
     /**
-     * Getter method which returns the audio format of the recording
-     * @return AudioFormat of the recording
+     * Default constructor which initializes the audio format and obtains the system microphone
      */
-    private AudioFormat getAudioFormat() {
-        // Samples of audio per second
-        float sampleRate = 44100; // CD-quality audio
-        
-        // Bits within each sample which are digitally encoded
-        int sampleSizeInBits = 16; // higher-fidelity audio
+    public VoiceRecorder() {
+        // Specifies the type of audio line to obtain
+        DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
 
-        // Number of audio channels in the recording
-        int channels = 1; // Mono audio channel recording (less data to process)
+        // Obtains an audio line which can utilize system microphone to record audio
+        try { this.line = (TargetDataLine) AudioSystem.getLine(info); } 
+        catch (LineUnavailableException e) { e.printStackTrace(); }
+    }
 
-        // Signed audio enables wider dynamic range of audio signal
-        boolean signed = true;
+    /** 
+     * Overloaded constructor which allows for a mock TargetDataLine to be passed in
+     */
+    public VoiceRecorder(TargetDataLine line) {
+        this.line = new MockTargetDataLine();
+    }
 
-        // Big endian is the most common format for audio data
-        boolean bigEndian = true; // Big endian
-
-        return new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
+    /**
+     * Getter method which returns the audio format of the recording
+     */
+    public AudioFormat getAudioFormat() {
+        return format;
     }
 
     /**
@@ -42,15 +55,6 @@ public class VoiceRecorder {
                 @Override
                 public void run() {
                     try {
-                        // Get the audio format
-                        format = getAudioFormat();
-
-                        // Specifies the type of audio line to obtain
-                        DataLine.Info  info = new DataLine.Info(TargetDataLine.class, format);
-
-                        // Obtains an audio line which can utilize system microphone to record audio
-                        line = (TargetDataLine) AudioSystem.getLine(info);
-
                         // Open the TargetDataLine for recording
                         line.open(format);
 
@@ -78,5 +82,16 @@ public class VoiceRecorder {
     public void stopRecording() {
         line.stop();
         line.close();
+    }
+
+    public static void main(String[] args) {
+        VoiceRecorder vr = new VoiceRecorder();
+        vr.startRecording();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        vr.stopRecording();
     }
 }
