@@ -21,7 +21,7 @@ class AppFrame extends JFrame {
 
         //Implement OpenSans ttf file to panel font
         File fontFile = new File("fonts/OpenSans-Regular.ttf");
-        Font font = null;
+        Font font;
         try {
             font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
         } catch (FontFormatException | IOException e) {
@@ -43,6 +43,7 @@ class AppFrame extends JFrame {
             historyPanel.addHistoryButton(h);
         }
         revalidate();
+        this.add(new questionButton(), BorderLayout.SOUTH);
 
     }
 }
@@ -50,6 +51,5 @@ class AppFrame extends JFrame {
 public class App {
     public static void main(String[] args) {
         new AppFrame();
-        new questionButton();
     }
 }
