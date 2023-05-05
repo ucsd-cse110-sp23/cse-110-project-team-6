@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -14,11 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.*;
-
-import frontend.*;;
-=======
-import frontend.questionButton;
->>>>>>> 4a52de6f0c5fa2dfebdb08b06d644bab50369e92
+import frontend.*;
 
 import javax.swing.*;
 import java.awt.*;
