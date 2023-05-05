@@ -1,2 +1,6 @@
-bin/
-*.class
+/out/
+/bin/
+/.vscode/
+/.idea/
+.DS_STORE
+cse-110-project-team-6.iml
