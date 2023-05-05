@@ -4,3 +4,12 @@
 /.idea/
 .DS_STORE
 cse-110-project-team-6.iml
+*.class
+bin/App.class
+bin/backend/Answer.class
+bin/backend/AnswerTests.class
+bin/backend/Question.class
+bin/backend/QuestionTests.class
+bin/frontend/questionButton.class
+bin/middleware/voiceRecorderTests.class
+src/frontend/questionButton.java

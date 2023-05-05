@@ -28,12 +28,3 @@ jobs:
 
       - name: Run Unit Tests
         run: java -jar lib/junit-platform-console-standalone-1.9.3.jar -cp bin --scan-class-path
-
-      # report the results
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v3
-        if: success() || failure() # always run even if the previous step fails
-        with:
-          report_paths: '**/junit-reports/TEST-*.xml'
-          detailed_summary: true # display detailed summary of the report
-          include_passed: true # include passed tests in the results table
