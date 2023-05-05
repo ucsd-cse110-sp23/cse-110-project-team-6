@@ -7,8 +7,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-
-import middleware.sayit.components.VoiceRecorder;
+import middleware.VoiceRecorder;
 
 public class questionButton extends JButton {
     private Boolean isRecording; 

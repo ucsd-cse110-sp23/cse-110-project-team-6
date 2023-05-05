@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.*;
 
-import frontend.questionButton;
+import frontend.*;;
 
 
 public class App {
