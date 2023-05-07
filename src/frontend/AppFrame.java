@@ -3,45 +3,45 @@ package frontend;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 
 public class AppFrame extends JFrame {
+
+    private final String historyFontFilePath = "fonts/OpenSans-Regular.ttf";
+    private final String imageIconFilePath = "src/icon.png";
+
+    private final String appFrameTitle = "SayIt Assistant";
+    private final int appFrameWidth = 1280;
+    private final int appFrameHeight = 720;
+
+    private final float fontSize = 16f;
+
     public AppFrame() {
-        setTitle("SayIt Assistant");
-        setSize(1280, 720);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-        HistoryPanel historyPanel = new HistoryPanel();
-        add(historyPanel.getScrollPane(), BorderLayout.WEST);
+
+        // sets the font, overall display panel, and the history sidepanel
+        MyFont myFont = new MyFont (new File(historyFontFilePath), fontSize);
         DisplayPanel displayPanel = new DisplayPanel();
-        add(displayPanel, BorderLayout.CENTER);
-        setIconImage(new ImageIcon("src/icon.png").getImage());
-        setVisible(true);
-
-        //Implement OpenSans ttf file to panel font
-        File fontFile = new File("fonts/OpenSans-Regular.ttf");
-        Font font = null;
-        try {
-            font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
-        } catch (FontFormatException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        HistoryPanel historyPanel = new HistoryPanel(myFont);
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        ge.registerFont(font);
-        Font myfont = font.deriveFont(16f);
+        
+        // sets the graphics environment's font
+        ge.registerFont(myFont.getFont());
 
-        for (int i = 0; i < 1000; i++) {
-            HistoryButton h = new HistoryButton(i, "History Button " + i);
-            h.setFont(myfont);
-            h.addActionListener(e -> {
-                displayPanel.display.setText("This is history for question number " + h.id);
-                displayPanel.display.setFont(myfont);
-                displayPanel.display.setForeground(new Color(255, 255, 255));
+        // populates the history panel with the history
+        historyPanel.populateHistoryPanel(displayPanel);
 
-            });
-            historyPanel.addHistoryButton(h);
-        }
-        revalidate();
+        // sets the information for the appframe
+        this.setTitle(appFrameTitle);
+        this.setSize(appFrameWidth, appFrameHeight);
+        this.setLayout(new BorderLayout());
+        this.setIconImage(new ImageIcon(imageIconFilePath).getImage());
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
+        
+        // adds the history panel and display panel to the appframe
+        this.add(historyPanel.getScrollPane(), BorderLayout.WEST);
+        this.add(displayPanel, BorderLayout.CENTER);     
+
+        this.revalidate();
 
     }
 }
