@@ -28,7 +28,7 @@ public class AppFrame extends JFrame {
 
         // populates the history panel with the history
         historyPanel.populateHistoryPanel(displayPanel);
-
+        
         // sets the information for the appframe
         this.setTitle(appFrameTitle);
         this.setSize(appFrameWidth, appFrameHeight);
@@ -39,9 +39,9 @@ public class AppFrame extends JFrame {
         
         // adds the history panel and display panel to the appframe
         this.add(historyPanel.getScrollPane(), BorderLayout.WEST);
-        this.add(displayPanel, BorderLayout.CENTER);     
+        this.add(displayPanel, BorderLayout.CENTER);   
 
-        this.revalidate();
+        revalidate();
 
         //TODO: add mouse listener for new Question
     }
