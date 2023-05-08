@@ -27,4 +27,4 @@ jobs:
         run: javac -cp .:lib/*:bin:src tests/**/*.java -d bin
 
       - name: Run Unit Tests
-        run: java -jar lib/junit-platform-console-standalone-1.9.3.jar -cp bin --scan-class-path
+        run: java -jar lib/junit-platform-console-standalone-1.9.3.jar -cp lib/json-20230227.jar:bin --scan-class-path

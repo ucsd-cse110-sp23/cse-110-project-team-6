@@ -6,7 +6,7 @@ import java.io.File;
 
 public class AppFrame extends JFrame {
 
-    private final String historyFontFilePath = "fonts/OpenSans-Regular.ttf";
+    private final String historyFontFilePath = "../fonts/OpenSans-Regular.ttf";
     private final String imageIconFilePath = "src/icon.png";
 
     private final String appFrameTitle = "SayIt Assistant";
