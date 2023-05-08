@@ -14,7 +14,7 @@ import backend.Question;
 public class ChatGPTRequest implements IAPIRequest {
 
     private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
-    private static final String API_KEY = "";
+    private static final String API_KEY = "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";
     private static final String MODEL = "text-davinci-003";
     private static final int    MAX_TOKENS = 100;
     private static final double TEMPERATURE = 1.0; // Percentage of randomness in response

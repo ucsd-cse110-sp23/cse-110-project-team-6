@@ -1,12 +1,10 @@
 package frontend;
 
+import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 
-import backend.History;
-import backend.Question;
-import backend.Answer;
-import middleware.MockAPIRequest;
-import middleware.SayItAssistant;
+import backend.*;
+import middleware.*;
 
 import java.util.*;
 import java.awt.*;
@@ -14,12 +12,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 
+import javax.sound.sampled.TargetDataLine;
+
 public class NewQuestionPanel extends AppPanels {
 
     JTextArea display = new JTextArea();
     JButton recordButton;
-    MockAPIRequest chatGPT = new MockAPIRequest(new Question("This is the prompt"));
-    MockAPIRequest whisper = new MockAPIRequest(new File("test.wav"));
+    TargetDataLine targetDataLine;
+    VoiceRecorder recorder = new VoiceRecorder(targetDataLine);
 
     public NewQuestionPanel(MyFont myFont) {
         this.setLayout(new GridLayout(0,1));
@@ -62,21 +62,30 @@ public class NewQuestionPanel extends AppPanels {
         // Create the record button
         recordButton = new JButton("Record");
         recordButton.addMouseListener(new MouseAdapter() {
-            SayItAssistant assistant = new SayItAssistant(chatGPT, whisper);
+
             @Override
             public void mousePressed(MouseEvent e) {
-                assistant.startRecording();
-                String[] response = assistant.respond();
-                display.answer.setText("Hi budd");
-                display.question.setText("Good bud");
-                newQuestionButton.setEnabled(true);
-                history.getHistoryGrabber().addQuestionAndAnswer(new Question(response[0]), new Answer(response[1]));
-                history.revalidateHistory(display);
+                recorder.startRecording();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                assistant.stopRecording();
+                recorder.stopRecording();
+
+                IAPIRequest whisper      = new WhisperRequest(new File("prompt.wav"));
+                IAPIRequest test         = new MockAPIRequest(new File("prompt.wav"));
+                SayItAssistant assistant = new SayItAssistant(whisper);
+
+                String[] response = assistant.respond();
+
+                display.answer.setText(response[1]);
+                display.question.setText(response[0]);
+
+                history.getHistoryGrabber().addQuestionAndAnswer
+                    (new Question(response[0]), new Answer(response[1]));
+                
+                    history.revalidateHistory(display);
+
                 removeRecordButton();
                 newQuestionButton.setEnabled(true);
             }

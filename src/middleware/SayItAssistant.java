@@ -14,33 +14,49 @@ import backend.*;
  */
 public class SayItAssistant implements IAssistant{
     
-    private static final File AUDIO_FILE  = new File("src/middleware/prompt.wav");
+    private static final File AUDIO_FILE  = new File("prompt.wav");
+    private static final String HISTORY_FILE = "src/backend/history.json";
     private HistoryGrabber historyGrabber; 
     private IAPIRequest chatRequest;
     private IAPIRequest whisperRequest;
     private Question question;
     private Answer answer;
-    private String response;
-    private TargetDataLine targetDataLine;
-    private VoiceRecorder recorder = new VoiceRecorder(targetDataLine);
 
     /**
      * Constructor for SayItAssistant class
      * 
+     * @require VoiceRecorder recorded AudioFile beforehand
      * @param historyGrabber HistoryGrabber object which contains the history of
      *                       questions and answers
      */
-    public SayItAssistant(IAPIRequest chatRequest, IAPIRequest whisperRequest) {
-        this.chatRequest = chatRequest;
+    public SayItAssistant(IAPIRequest whisperRequest) {
         this.whisperRequest = whisperRequest;
     }
 
-    public void startRecording() {
-        recorder.startRecording();
+    /**
+     * Gets the prompt from the API request class
+     * @return
+     */
+    private Question getPrompt() {
+        whisperRequest = (whisperRequest instanceof MockAPIRequest) ? 
+            new MockAPIRequest(AUDIO_FILE) : new WhisperRequest(AUDIO_FILE);
+        question = new Question(whisperRequest.callAPI());
+        return question;
     }
 
-    public void stopRecording() {
-        recorder.stopRecording();
+    /**
+     * Gets the response from the API request class
+     * @param question
+     * @return
+     */
+    private String getResponse(Question question) {
+
+        // Checks if we are utilizing a MockAPIRequest or a ChatGPTRequest based on whisperRequest
+        chatRequest = (whisperRequest instanceof MockAPIRequest) ? 
+            new MockAPIRequest(question) : new ChatGPTRequest(question);
+        
+        String response = chatRequest.callAPI();
+        return response;
     }
 
     /**
@@ -53,28 +69,14 @@ public class SayItAssistant implements IAssistant{
      */
     @Override
     public String[] respond() {
-        historyGrabber = new HistoryGrabber("src/backend/history.txt");
-        if (whisperRequest instanceof MockAPIRequest)
-            whisperRequest = new MockAPIRequest(AUDIO_FILE);
-        else if (whisperRequest instanceof WhisperRequest)
-            whisperRequest = new WhisperRequest(AUDIO_FILE);
-        response = whisperRequest.callAPI();
-        question = new Question(response);
-        answer = historyGrabber.getAnswer(question);
+        historyGrabber = new HistoryGrabber(HISTORY_FILE);
+        question = getPrompt();
+        answer   = new Answer(getResponse(question));
 
-        if (answer == null) {
-            if (chatRequest instanceof MockAPIRequest)
-                chatRequest = new MockAPIRequest(question);
-            else if (chatRequest instanceof ChatGPTRequest)
-                chatRequest = new ChatGPTRequest(question);
-            response = chatRequest.callAPI();
-            answer = new Answer(response);
-            historyGrabber.addQuestionAndAnswer(question, answer);
-        } else {
-            response = answer.getAnswer();
-        }
+        // Save the question and answer to the history
+        historyGrabber.addQuestionAndAnswer(question, answer);
 
-        String[] responseArray = {question.getQuestion(), response};
+        String[] responseArray = {question.getQuestion(), answer.getAnswer()};
 
         return responseArray;
     }

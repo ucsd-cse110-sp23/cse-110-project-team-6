@@ -11,15 +11,13 @@ import backend.*;
 public class HistoryGrabber {
 
     private History myHistory;
-    private String historyFilePath;
-    private HistoryTextIO historyTextIO;
+    private JSON_IO historyJsonIO;
     private ArrayList<Question> questions;
     private ArrayList<Answer> answers;
    
     public HistoryGrabber(String historyFilePath) {
         myHistory = new History();
-        this.historyFilePath = historyFilePath;
-        this.historyTextIO = new HistoryTextIO("src/backend/history.txt");
+        this.historyJsonIO = new JSON_IO(historyFilePath);
         this.populateHistory();
     }
 
@@ -36,9 +34,13 @@ public class HistoryGrabber {
     }
 
     public void populateHistory() {
+        /* 
         this.questions = historyTextIO.getQuestions();
         this.answers = historyTextIO.getAnswers();
+        */
 
+        this.questions = historyJsonIO.getQuestions();
+        this.answers   = historyJsonIO.getAnswers(); 
         myHistory.setHistory(questions, answers);
     }
 
@@ -50,7 +52,8 @@ public class HistoryGrabber {
             myHistory.addQuestionAndAnswer(question, answer);
         }
         answers.add(answer);
-        historyTextIO.write(questions, answers, "src/backend/history.txt");
+        //historyTextIO.write(questions, answers, "src/backend/history.txt");
+        historyJsonIO.write(questions, answers);
     }
 
     public void deleteQuestionAndAnswer(Question question) {

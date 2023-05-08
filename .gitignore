@@ -14,3 +14,6 @@ bin/frontend/questionButton.class
 bin/middleware/voiceRecorderTests.class
 src/frontend/questionButton.java
 prompt.wav
+*.txt
+*.json
+src/backend/history.txt
