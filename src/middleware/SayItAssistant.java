@@ -22,6 +22,7 @@ public class SayItAssistant implements IAssistant{
     private Answer answer;
     private String response;
     private TargetDataLine targetDataLine;
+    private VoiceRecorder recorder = new VoiceRecorder(targetDataLine);
 
     /**
      * Constructor for SayItAssistant class
@@ -34,9 +35,11 @@ public class SayItAssistant implements IAssistant{
         this.whisperRequest = whisperRequest;
     }
 
-    public void recordFile() {
-        VoiceRecorder recorder = new VoiceRecorder(targetDataLine);
+    public void startRecording() {
         recorder.startRecording();
+    }
+
+    public void stopRecording() {
         recorder.stopRecording();
     }
 
@@ -74,5 +77,4 @@ public class SayItAssistant implements IAssistant{
 
         return responseArray;
     }
-
 }

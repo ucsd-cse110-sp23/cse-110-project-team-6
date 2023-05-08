@@ -64,7 +64,7 @@ public class VoiceRecorder {
                         AudioInputStream ais = new AudioInputStream(line);
 
                         // Write the audio data to the file
-                        File audioFile = new File("src/middleware/prompt.wav");
+                        File audioFile = new File("prompt.wav");
                         AudioSystem.write(ais, AudioFileFormat.Type.WAVE, audioFile);
                     } catch (Exception e) {
                         e.printStackTrace();

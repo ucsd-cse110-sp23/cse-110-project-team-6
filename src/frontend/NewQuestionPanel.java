@@ -12,13 +12,14 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 public class NewQuestionPanel extends AppPanels {
 
     JTextArea display = new JTextArea();
     JButton recordButton;
     MockAPIRequest chatGPT = new MockAPIRequest(new Question("This is the prompt"));
-    MockAPIRequest whisper;
+    MockAPIRequest whisper = new MockAPIRequest(new File("test.wav"));
 
     public NewQuestionPanel(MyFont myFont) {
         this.setLayout(new GridLayout(0,1));
@@ -62,10 +63,10 @@ public class NewQuestionPanel extends AppPanels {
         // Create the record button
         recordButton = new JButton("Record");
         recordButton.addMouseListener(new MouseAdapter() {
+            SayItAssistant assistant = new SayItAssistant(chatGPT, whisper);
             @Override
             public void mousePressed(MouseEvent e) {
-                SayItAssistant assistant = new SayItAssistant(chatGPT, whisper);
-                assistant.recordFile();
+                assistant.startRecording();
                 String[] response = assistant.respond();
                 display.answer.setText("Hi budd");
                 display.question.setText("Good bud");
@@ -74,6 +75,7 @@ public class NewQuestionPanel extends AppPanels {
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                assistant.stopRecording();
                 removeRecordButton();
                 newQuestionButton.setEnabled(true);
             }
