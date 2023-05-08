@@ -37,19 +37,18 @@ public class NewQuestionPanel extends AppPanels {
         newQuestionButton.setFont(this.myFont.getFont());
         newQuestionButton.addActionListener(
             e -> {
-                    addRecordButton(newQuestionButton, display);
+                    addRecordButton(newQuestionButton, display, history);
                     recordButton.setFont(myFont.getFont());
-                    revalidate();
+                   
                     repaint();
                     newQuestionButton.setEnabled(false);
-                
+                    revalidate();
 /*
     ***NOTES***: save new question and answer from the API to a new Question and Answser.  Then:
     Replace the new Question() below with the new question asked.  
     Replace the new Answer() with the new answer.
 
-                    history.getHistoryGrabber().addQuestionAndAnswer(new Question("why is this the way it is"), new Answer("who knows"));
-                    history.revalidateHistory(display);
+                    
                     revalidate();
 
 */
@@ -59,7 +58,7 @@ public class NewQuestionPanel extends AppPanels {
         this.add(newQuestionButton);
     }
 
-    private void addRecordButton(NewQuestionButton newQuestionButton, DisplayPanel display) {
+    private void addRecordButton(NewQuestionButton newQuestionButton, DisplayPanel display, HistoryPanel history) {
         // Create the record button
         recordButton = new JButton("Record");
         recordButton.addMouseListener(new MouseAdapter() {
@@ -71,6 +70,8 @@ public class NewQuestionPanel extends AppPanels {
                 display.answer.setText("Hi budd");
                 display.question.setText("Good bud");
                 newQuestionButton.setEnabled(true);
+                history.getHistoryGrabber().addQuestionAndAnswer(new Question(response[0]), new Answer(response[1]));
+                history.revalidateHistory(display);
             }
 
             @Override
@@ -90,7 +91,7 @@ public class NewQuestionPanel extends AppPanels {
         int buttonY = answerBounds.y + (answerBounds.height - buttonHeight) / 2;
         recordButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
 
-        // Add the record button the the display panel
+       // Add the record button the the display panel
         this.add(recordButton);
         this.setComponentZOrder(recordButton, 0);
         this.setComponentZOrder(newQuestionButton, 1);

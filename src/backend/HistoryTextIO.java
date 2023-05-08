@@ -48,7 +48,6 @@ public class HistoryTextIO {
             int tick = 0;
 
             while ((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
                 if ((tick++) % 2 == 0)
                     questions.add(new Question(line));
                 else

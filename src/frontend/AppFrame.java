@@ -29,10 +29,9 @@ public class AppFrame extends JFrame {
 
         displayPanel.addNewQuestionPanel(newQuestionPanel);
 
+        // populates the history panel with the history
         historyPanel.revalidateHistory(displayPanel);
 
-        // populates the history panel with the history
-        historyPanel.populateHistoryPanel(displayPanel);
         newQuestionPanel.populateNewQuestionPanel(displayPanel, historyPanel);
 
         // sets the information for the appframe

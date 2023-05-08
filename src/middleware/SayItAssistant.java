@@ -15,7 +15,7 @@ import backend.*;
 public class SayItAssistant implements IAssistant{
     
     private static final File AUDIO_FILE  = new File("src/middleware/prompt.wav");
-    private HistoryGrabber historyGrabber = new HistoryGrabber("src/backend/history.txt");
+    private HistoryGrabber historyGrabber; 
     private IAPIRequest chatRequest;
     private IAPIRequest whisperRequest;
     private Question question;
@@ -53,6 +53,7 @@ public class SayItAssistant implements IAssistant{
      */
     @Override
     public String[] respond() {
+        historyGrabber = new HistoryGrabber("src/backend/history.txt");
         if (whisperRequest instanceof MockAPIRequest)
             whisperRequest = new MockAPIRequest(AUDIO_FILE);
         else if (whisperRequest instanceof WhisperRequest)

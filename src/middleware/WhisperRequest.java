@@ -202,7 +202,7 @@ public class WhisperRequest implements IAPIRequest {
                 return handleErrorResponse(connection);
             }
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
         }
         return null;
     }
