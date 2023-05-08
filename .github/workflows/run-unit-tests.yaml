@@ -24,7 +24,7 @@ jobs:
         run: javac -cp .:lib/*:src src/**/*.java -d bin
 
       - name: Compile Unit Tests
-        run: javac -cp .:lib/*:bin tests/**/*.java -d bin
+        run: javac -cp .:lib/*:bin:src tests/**/*.java -d bin
 
       - name: Run Unit Tests
         run: java -jar lib/junit-platform-console-standalone-1.9.3.jar -cp bin --scan-class-path
