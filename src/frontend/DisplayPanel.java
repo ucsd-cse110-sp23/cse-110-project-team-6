@@ -25,7 +25,9 @@ public class DisplayPanel extends AppPanels {
         answer.setBackground(LIGHT_GREY);
         answer.setForeground(WHITE);
 
-        NewQuestionPanel newQuestionPanel = new NewQuestionPanel(this.myFont);
+    }
+
+    public void addNewQuestionPanel(NewQuestionPanel newQuestionPanel) {
         add(newQuestionPanel, BorderLayout.SOUTH);
     }
     
