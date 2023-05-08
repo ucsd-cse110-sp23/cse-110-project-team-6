@@ -66,7 +66,6 @@ public class NewQuestionPanel extends AppPanels {
             @Override
             public void mousePressed(MouseEvent e) {
                 recorder.startRecording();
-                history.revalidateHistory(display);
             }
 
             @Override
@@ -75,15 +74,17 @@ public class NewQuestionPanel extends AppPanels {
 
                 IAPIRequest whisper      = new WhisperRequest(new File("prompt.wav"));
                 IAPIRequest test         = new MockAPIRequest(new File("prompt.wav"));
-                SayItAssistant assistant = new SayItAssistant(whisper);
+                SayItAssistant assistant = new SayItAssistant(test);
 
                 String[] response = assistant.respond();
 
                 display.answer.setText(response[1]);
                 display.question.setText(response[0]);
 
-                history.getHistoryGrabber().addQuestionAndAnswer(new Question(response[0]), new Answer(response[1]));
-                history.revalidateHistory(display);
+                history.getHistoryGrabber().addQuestionAndAnswer
+                    (new Question(response[0]), new Answer(response[1]));
+                
+                    history.revalidateHistory(display);
 
                 removeRecordButton();
                 newQuestionButton.setEnabled(true);

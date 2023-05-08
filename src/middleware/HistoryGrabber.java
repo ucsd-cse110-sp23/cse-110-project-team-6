@@ -44,7 +44,7 @@ public class HistoryGrabber {
         */
 
         this.questions = historyJsonIO.getQuestions();
-        this.answers = historyJsonIO.getAnswers(); 
+        this.answers   = historyJsonIO.getAnswers(); 
         myHistory.setHistory(questions, answers);
     }
 

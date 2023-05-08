@@ -5,6 +5,8 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import org.json.JSONArray;
 //import org.json.simple.*;
@@ -64,7 +66,7 @@ public class JSON_IOTests {
 
     @Test
     public void testCreateJSONIO() {
-        JSON_IO json_io = new JSON_IO("history.json");
+        JSON_IO json_io = new JSON_IO("testHistory.json");
 
         for (int i = 0; i < expectedQuestionsList.size(); i++) {
             System.out.println(expectedQuestionsList.get(i).getQuestion());
@@ -77,27 +79,25 @@ public class JSON_IOTests {
             assertEquals(expectedQuestionsList.get(i).getQuestion(), actualQuestionsList.get(i).getQuestion());
             assertEquals(expectedAnswersList.get(i).getAnswer(), actualAnswersList.get(i).getAnswer());
         }
+
+        Path path = Path.of("testHistory.json");
+        assertTrue(Files.exists(path));
     }
 
     @Test
-    public void testWriteFile () {
-        //History history = new History();
-        JSON_IO json_io = new JSON_IO("history.json");
-        ArrayList<Question> expectedQuestionsList = new ArrayList<>(Arrays.asList(
-            new Question("Who am I?"), new Question("What is 9 + 10?"),
-            new Question("What is the meaning of life?"), new Question("Where am I?"),
-            new Question("What is my favorite color?")));
-        ArrayList<Answer> expectedAnswersList = new ArrayList<>(Arrays.asList(
-            new Answer("I am SayIt."), new Answer("That would be 21."),
-            new Answer("42"), new Answer("I am in the Matrix"),
-            new Answer("Yellow.  No, Red.")));
-        //history.setHistory(expectedQuestionsList, expectedAnswersList);
-        System.out.println("Sdif");
-        json_io.write(expectedQuestionsList, expectedAnswersList);
-    }
+    public void textWriteTextIO() {
+        JSON_IO json_io = new JSON_IO("testHistory.json");
+        json_io.write(newQList, newAList);
+        ArrayList<Question> actualQuestionsList = json_io.getQuestions();
+        ArrayList<Answer>   actualAnswersList = json_io.getAnswers();
 
-    @Test
-    public void testReadFile() {
+        for (int i = 0; i < actualAnswersList.size(); i++) {
+            assertEquals(expectedAnswersList.get(i).getAnswer(), actualAnswersList.get(i).getAnswer());
+            assertEquals(expectedQuestionsList.get(i).getQuestion(), actualQuestionsList.get(i).getQuestion());
+        }
         
+        Path path = Path.of("testHistory.json");
+        assertTrue(Files.exists(path));
     }
+
 }

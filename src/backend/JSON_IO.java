@@ -32,13 +32,12 @@ public class JSON_IO {
 
         try {
             File historyFile = new File(filePath);
-            if (historyFile.createNewFile()) {
+            if (historyFile.createNewFile() || historyFile.length() == 0) {
                 this.JSON_IO = new JSONObject();
             } else {
                 String jsonStr = new String(Files.readAllBytes(Paths.get(filePath)));
                 this.JSON_IO = new JSONObject(jsonStr);
-                this.splitToAnswerArray();
-                this.splitToQuestionArray();
+                this.splitToQuestionAnswerArray();
             }
             
         } catch (IOException e) {
@@ -47,28 +46,22 @@ public class JSON_IO {
     }
 
 
-    private ArrayList<Question> splitToQuestionArray() {
-        JSONArray questionKeys = JSON_IO.names();
+    private void splitToQuestionAnswerArray() {
+        JSONArray questionIdx = JSON_IO.names();
 
-        for (int i = 0; i < questionKeys.length(); i++) {
-            String question = questionKeys.getString(i);
+        for (int i = 0; i < questionIdx.length(); i++) {
+            String idx = questionIdx.getString(i);
+            JSONObject questionAnswer = JSON_IO.getJSONObject(idx);
+
+            String question = questionAnswer.getString("Question");
+            String answer = questionAnswer.getString("Answer");
+
             Question questionObj = new Question(question);
-            this.questions.add(questionObj);
-        }
-        
-        return this.questions;
-    }
-
-    private ArrayList<Answer> splitToAnswerArray() {
-        JSONArray answerValues = JSON_IO.toJSONArray(JSON_IO.names());
-
-        for (int i = 0; i < answerValues.length(); i++) {
-            String answer = answerValues.getString(i);
             Answer answerObj = new Answer(answer);
+            this.questions.add(questionObj);
             this.answers.add(answerObj);
         }
-
-        return this.answers;
+        
     }
 
     public ArrayList<Question> getQuestions() {
@@ -90,7 +83,13 @@ public class JSON_IO {
         else {
 
             for (; id < insertQuestion.size(); id++) {
-                JSON_IO.put(insertQuestion.get(id).getQuestion(), answers.get(id).getAnswer());
+                JSONObject questionAnswer = new JSONObject();
+                questionAnswer.put("Question", insertQuestion.get(id).getQuestion());
+                questionAnswer.put("Answer", answers.get(id).getAnswer());
+
+                JSON_IO.put(Integer.toString(id), questionAnswer);
+
+                //JSON_IO.put(insertQuestion.get(id).getQuestion(), answers.get(id).getAnswer());
             }
 
             try {
