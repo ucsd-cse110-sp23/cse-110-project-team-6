@@ -1,8 +1,8 @@
 package middleware;
 
 import javax.sound.sampled.*; // For sound recording and playback
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -10,13 +10,13 @@ public class voiceRecorderTests {
     private VoiceRecorder vr;
 
     // Sets up the audio format and mock TargetDataLine
-    @Before
+    @BeforeEach
     public void setUp() {
         TargetDataLine line = new MockTargetDataLine();
         vr = new VoiceRecorder(line);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         vr = null;
     }
@@ -42,6 +42,7 @@ public class voiceRecorderTests {
         vr.stopRecording();
 
         Path path = Path.of("prompt.wav");
-        assertTrue("Autio file was not created", Files.exists(path));
+        assertTrue(Files.exists(path));
     }
+
 }

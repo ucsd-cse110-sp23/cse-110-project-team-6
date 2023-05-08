@@ -5,12 +5,12 @@ import javax.sound.sampled.*; // For sound recording and playback
 
 public class VoiceRecorder {
 
-    float sampleRate = 44100; // CD-quality audio
+    float sampleRate     = 44100; // CD-quality audio
     int sampleSizeInBits = 16; // higher-fidelity audio
-    int channels = 1; // Mono audio channel recording (less data to process)
+    int channels         = 1; // Mono audio channel recording (less data to process)
 
     // Signed audio enables wider dynamic range of audio signal
-    boolean signed = true;
+    boolean signed    = true;
     boolean bigEndian = true; // most common format for audio
 
     private AudioFormat format = 
@@ -84,14 +84,4 @@ public class VoiceRecorder {
         line.close();
     }
 
-    public static void main(String[] args) {
-        VoiceRecorder vr = new VoiceRecorder();
-        vr.startRecording();
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        vr.stopRecording();
-    }
 }
