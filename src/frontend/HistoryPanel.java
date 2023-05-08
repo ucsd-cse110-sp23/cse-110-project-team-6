@@ -2,6 +2,9 @@ package frontend;
 
 
 import javax.swing.*;
+
+import backend.Question;
+
 import java.awt.*;
 
 import middleware.HistoryGrabber;
@@ -11,11 +14,19 @@ import java.util.ArrayList;
 public class HistoryPanel extends AppPanels {
     
     private JScrollPane scrollPane = new JScrollPane(this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    private HistoryGrabber historyGrabber;
 
     public HistoryPanel(MyFont myFont) {
         this.setLayout(new GridLayout(0, 1));
         this.setBackground(BLACK);
         this.myFont = myFont;
+    }
+
+
+    public void revalidateHistory(DisplayPanel display) {
+        this.removeAll();
+        historyGrabber = new HistoryGrabber(historyFilePath);
+        this.populateHistoryPanel(display);
     }
 
     public JScrollPane getScrollPane() {
@@ -27,20 +38,22 @@ public class HistoryPanel extends AppPanels {
 
     }
 
+    public HistoryGrabber getHistoryGrabber() {
+        return historyGrabber;
+    }
+
     public void populateHistoryPanel(DisplayPanel display) {
-
-        // TODO: Change this for loop to use HistoryGrabber
-        //HistoryGrabber historyGrabber = new HistoryGrabber();
-
-        for (int i = 0; i < 20; i++) {
-            HistoryButton historyButton = new HistoryButton(i, "History Button " + i);
+        ArrayList<Question> questions = historyGrabber.getQuestions();
+        
+        for (int i = 0; i < questions.size(); i++) {
+            HistoryButton historyButton = new HistoryButton(i, questions.get(i).getQuestion());
+            Question question = questions.get(i);
             historyButton.setFont(this.myFont.getFont());
             historyButton.addActionListener(e -> {
-                display.question.setText("This is question " + historyButton.id);
-                display.answer.setText("This is answer " + historyButton.id);
+                display.question.setText(question.getQuestion());
+                display.answer.setText(historyGrabber.getAnswer(question).getAnswer());
                 display.setFont(this.myFont.getFont());
                 display.setForeground(WHITE);
-
             });
             this.addHistoryButton(historyButton);
         }

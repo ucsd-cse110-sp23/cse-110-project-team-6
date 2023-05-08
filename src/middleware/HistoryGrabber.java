@@ -1,24 +1,23 @@
 package middleware;
 
+import java.lang.reflect.MalformedParametersException;
 import java.util.ArrayList;
 
 import backend.*;
- /*
-     * TODO: implement.
-     * 
-     * This will function as a way for HistoryPanel.java in frontend to grab the history
-     * from History in backend
-     */
+
 public class HistoryGrabber {
 
     private History myHistory;
+    private String historyFilePath;
+    private HistoryTextIO historyTextIO;
+    private ArrayList<Question> questions;
+    private ArrayList<Answer> answers;
    
-    public HistoryGrabber() {
-        //myHistory = new History();
-
-        // TODO: get the question / answer arraylists from the JSON file
-        //this.populateHistory();
-
+    public HistoryGrabber(String historyFilePath) {
+        myHistory = new History();
+        this.historyFilePath = historyFilePath;
+        this.historyTextIO = new HistoryTextIO("src/backend/history.txt");
+        this.populateHistory();
     }
 
     public Answer getAnswer (Question question) {
@@ -34,12 +33,21 @@ public class HistoryGrabber {
     }
 
     public void populateHistory() {
-        // TODO: Get the question / answer arraylists from JSON file
-        // this.setHistory (question arraylist, answer arraylist);
+        this.questions = historyTextIO.getQuestions();
+        this.answers = historyTextIO.getAnswers();
+
+        myHistory.setHistory(questions, answers);
     }
 
     public void addQuestionAndAnswer(Question question, Answer answer) {
-        myHistory.addQuestionAndAnswer(question, answer);
+        if (question == null || answer == null) {
+            throw new MalformedParametersException("Attempted use of null ArrayList.");
+        }
+        else {
+            myHistory.addQuestionAndAnswer(question, answer);
+        }
+        answers.add(answer);
+        historyTextIO.write(questions, answers, "src/backend/history.txt");
     }
 
     public void deleteQuestionAndAnswer(Question question) {

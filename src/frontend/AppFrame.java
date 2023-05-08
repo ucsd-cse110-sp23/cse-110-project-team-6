@@ -21,14 +21,20 @@ public class AppFrame extends JFrame {
         MyFont myFont = new MyFont (new File(historyFontFilePath), fontSize);
         DisplayPanel displayPanel = new DisplayPanel();
         HistoryPanel historyPanel = new HistoryPanel(myFont);
+        NewQuestionPanel newQuestionPanel = new NewQuestionPanel(myFont);
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         
         // sets the graphics environment's font
         ge.registerFont(myFont.getFont());
 
+        displayPanel.addNewQuestionPanel(newQuestionPanel);
+
+        historyPanel.revalidateHistory(displayPanel);
+
         // populates the history panel with the history
         historyPanel.populateHistoryPanel(displayPanel);
-        
+        newQuestionPanel.populateNewQuestionPanel(displayPanel, historyPanel);
+
         // sets the information for the appframe
         this.setTitle(appFrameTitle);
         this.setSize(appFrameWidth, appFrameHeight);
