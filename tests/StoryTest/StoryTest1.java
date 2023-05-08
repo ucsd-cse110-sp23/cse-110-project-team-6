@@ -1,4 +1,4 @@
-package middleware;
+package StoryTest;
 
 import javax.sound.sampled.*; // For sound recording and playback
 import org.junit.jupiter.api.*;
@@ -6,6 +6,9 @@ import org.junit.jupiter.api.*;
 import backend.Answer;
 import backend.History;
 import backend.Question;
+import middleware.IAPIRequest;
+import middleware.MockTargetDataLine;
+import middleware.VoiceRecorder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,60 +17,62 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 
-class MockWhisperAPIQ1 implements IAPIRequest{
-    File file; 
 
-    MockWhisperAPIQ1(File filePath){
-        this.file = filePath;
-    }
-
-    @Override
-    public String callAPI() {
-        return "Who is Louis Braille?";
-    }
-    
-}
-
-class MockChatGPTAPIQ1 implements IAPIRequest{
-    String prompt; 
-
-    MockChatGPTAPIQ1(String prompt){
-        this.prompt = prompt; 
-    }
-    @Override
-    public String callAPI() {
-        return "He was a french educator";
-    }
-    
-}
-
-class MockWhisperAPIQ2 implements IAPIRequest{
-    File file; 
-
-    MockWhisperAPIQ2(File filePath){
-        this.file = filePath;
-    }
-
-    @Override
-    public String callAPI() {
-        return "How did Louis Braille come up with the braille system?";
-    }
-    
-}
-
-class MockChatGPTAPIQ2 implements IAPIRequest{
-    String prompt; 
-
-    MockChatGPTAPIQ2(String prompt){
-        this.prompt = prompt; 
-    }
-    @Override
-    public String callAPI() {
-        return "He just did";
-    }
-    
-}
 public class StoryTest1 {
+    class MockWhisperAPIQ1 implements IAPIRequest{
+        File file; 
+    
+        MockWhisperAPIQ1(File filePath){
+            this.file = filePath;
+        }
+    
+        @Override
+        public String callAPI() {
+            return "Who is Louis Braille?";
+        }
+        
+    }
+    
+    class MockChatGPTAPIQ1 implements IAPIRequest{
+        String prompt; 
+    
+        MockChatGPTAPIQ1(String prompt){
+            this.prompt = prompt; 
+        }
+        @Override
+        public String callAPI() {
+            return "He was a french educator";
+        }
+        
+    }
+    
+    class MockWhisperAPIQ2 implements IAPIRequest{
+        File file; 
+    
+        MockWhisperAPIQ2(File filePath){
+            this.file = filePath;
+        }
+    
+        @Override
+        public String callAPI() {
+            return "How did Louis Braille come up with the braille system?";
+        }
+        
+    }
+    
+    class MockChatGPTAPIQ2 implements IAPIRequest{
+        String prompt; 
+    
+        MockChatGPTAPIQ2(String prompt){
+            this.prompt = prompt; 
+        }
+        @Override
+        public String callAPI() {
+            return "He just did";
+        }
+        
+    }
+    
 
     MockTargetDataLine mockMic;
     VoiceRecorder newAudio; 
