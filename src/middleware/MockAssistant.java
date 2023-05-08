@@ -13,8 +13,8 @@ public class MockAssistant extends SayItAssistant {
      * @param historyGrabber HistoryGrabber object which contains the history of
      *                       questions and answers
      */
-    public MockAssistant(IAPIRequest chatRequest, IAPIRequest whisperRequest) {
-        super(chatRequest, whisperRequest);
+    public MockAssistant(IAPIRequest whisperRequest) {
+        super(whisperRequest);
     }
 
     @Override

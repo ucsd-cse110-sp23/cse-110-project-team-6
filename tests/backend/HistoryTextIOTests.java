@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.*;
 
 public class HistoryTextIOTests {
+    
     private ArrayList<Question> expectedQuestionsList = new ArrayList<>(Arrays.asList(
             new Question("Question 1"), new Question("Question 2"),
             new Question("Question 3"), new Question("Question 4"),
