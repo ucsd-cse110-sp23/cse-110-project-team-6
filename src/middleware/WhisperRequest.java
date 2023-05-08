@@ -32,8 +32,8 @@ public class WhisperRequest implements IAPIRequest {
      * @require filePath == ".mp3" || ".wav" || ".flac" || other form of audio file
      * @param filePath Path to audio file to be converted to multipart form data
      */
-    WhisperRequest(String filePath) {
-        file = new File(filePath);
+    WhisperRequest(File filePath) {
+        this.file = filePath;
     }
 
     /**
@@ -202,7 +202,7 @@ public class WhisperRequest implements IAPIRequest {
                 return handleErrorResponse(connection);
             }
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
         }
         return null;
     }

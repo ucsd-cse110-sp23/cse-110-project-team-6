@@ -1,13 +1,12 @@
 package frontend;
 
-
 import javax.print.attribute.standard.JobHoldUntil;
 import javax.swing.*;
 import java.awt.*;
 
 public class DisplayPanel extends AppPanels {
     JTextPane question = new JTextPane();
-    JTextArea answer = new JTextArea();
+    JTextArea answer   = new JTextArea();
 
     JButton newQuestionButton;
 
@@ -24,7 +23,6 @@ public class DisplayPanel extends AppPanels {
 
         answer.setBackground(LIGHT_GREY);
         answer.setForeground(WHITE);
-
     }
 
     public void addNewQuestionPanel(NewQuestionPanel newQuestionPanel) {

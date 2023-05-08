@@ -6,7 +6,7 @@ import java.io.File;
 
 public class AppFrame extends JFrame {
 
-    private final String historyFontFilePath = "../fonts/OpenSans-Regular.ttf";
+    private final String historyFontFilePath = "src/fonts/OpenSans-Regular.ttf";
     private final String imageIconFilePath = "src/icon.png";
 
     private final String appFrameTitle = "SayIt Assistant";
@@ -29,10 +29,9 @@ public class AppFrame extends JFrame {
 
         displayPanel.addNewQuestionPanel(newQuestionPanel);
 
+        // populates the history panel with the history
         historyPanel.revalidateHistory(displayPanel);
 
-        // populates the history panel with the history
-        historyPanel.populateHistoryPanel(displayPanel);
         newQuestionPanel.populateNewQuestionPanel(displayPanel, historyPanel);
 
         // sets the information for the appframe
@@ -45,10 +44,14 @@ public class AppFrame extends JFrame {
         
         // adds the history panel and display panel to the appframe
         this.add(historyPanel.getScrollPane(), BorderLayout.WEST);
-        this.add(displayPanel, BorderLayout.CENTER);   
+        this.add(displayPanel, BorderLayout.CENTER);
 
         revalidate();
 
         //TODO: add mouse listener for new Question
+        // Add mouse listener for new question button
+        // newQuestionButton.addMouseListener(
+        //     new MouseAdapter() {
+        
     }
 }

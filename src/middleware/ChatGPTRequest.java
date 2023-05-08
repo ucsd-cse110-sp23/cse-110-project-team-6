@@ -58,11 +58,11 @@ public class ChatGPTRequest implements IAPIRequest {
         try {
             response = client.send(this.request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
-            System.out.println("Error sending request to server");
+            System.err.println("Error sending request to server");
             if (e instanceof IOException)
-                System.out.println("IOException: " + e.getMessage());
+                System.err.println("IOException: " + e.getMessage());
             else if (e instanceof InterruptedException)
-                System.out.println("InterruptedException: " + e.getMessage());
+                System.err.println("InterruptedException: " + e.getMessage());
             e.printStackTrace();
         }
 

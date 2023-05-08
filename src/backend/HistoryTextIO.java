@@ -5,6 +5,15 @@ import java.lang.reflect.Array;
 import java.lang.reflect.MalformedParametersException;
 import java.util.*;
 
+/**
+ * This class is responsible for reading and writing the history of questions and answers
+ * 
+ * @field historyFilePath String containing the path to the history file
+ * @field reader FileReader object which reads the history file
+ * @field writer FileWriter object which writes to the history file
+ * @field questions ArrayList containing the questions in the history
+ * @field answers ArrayList containing the answers in the history
+ */
 public class HistoryTextIO {
     private String historyFilePath;
     FileReader reader;
@@ -12,6 +21,10 @@ public class HistoryTextIO {
     ArrayList<Question> questions;
     ArrayList<Answer> answers;
 
+    /**
+     * Constructor for HistoryTextIO class
+     * @param filePath
+     */
     public HistoryTextIO(String filePath) {
 
         this.historyFilePath = filePath;
@@ -19,11 +32,9 @@ public class HistoryTextIO {
         answers = new ArrayList<Answer>();
 
         try {
-            
             File historyFile = new File(filePath);
-            if (!historyFile.isFile()) {
+            if (!historyFile.isFile())
                 historyFile.createNewFile();
-            }
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -37,14 +48,10 @@ public class HistoryTextIO {
             int tick = 0;
 
             while ((line = bufferedReader.readLine()) != null) {
-                System.out.println(line);
-                if ((tick++) % 2 == 0) {
+                if ((tick++) % 2 == 0)
                     questions.add(new Question(line));
-                }
-                else {
+                else
                     answers.add(new Answer(line));
-                }
-
             }
             
             reader.close();
