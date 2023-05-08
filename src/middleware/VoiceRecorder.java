@@ -18,23 +18,22 @@ public class VoiceRecorder {
 
     private TargetDataLine line;
 
-    /**
-     * Default constructor which initializes the audio format and obtains the system microphone
-     */
-    public VoiceRecorder() {
-        // Specifies the type of audio line to obtain
-        DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
-
-        // Obtains an audio line which can utilize system microphone to record audio
-        try { this.line = (TargetDataLine) AudioSystem.getLine(info); } 
-        catch (LineUnavailableException e) { e.printStackTrace(); }
-    }
-
     /** 
      * Overloaded constructor which allows for a mock TargetDataLine to be passed in
      */
     public VoiceRecorder(TargetDataLine line) {
-        this.line = new MockTargetDataLine();
+        
+        if (line instanceof MockTargetDataLine)
+            this.line = line;
+        
+        else {
+            // Specifies the type of audio line to obtain
+            DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+
+            // Obtains an audio line which can utilize system microphone to record audio
+            try { this.line = (TargetDataLine) AudioSystem.getLine(info); } 
+            catch (LineUnavailableException e) { e.printStackTrace(); }
+        }
     }
 
     /**
@@ -65,7 +64,7 @@ public class VoiceRecorder {
                         AudioInputStream ais = new AudioInputStream(line);
 
                         // Write the audio data to the file
-                        File audioFile = new File("prompt.wav");
+                        File audioFile = new File("src/middleware/prompt.wav");
                         AudioSystem.write(ais, AudioFileFormat.Type.WAVE, audioFile);
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 import backend.*;
 
+/**
+ * This class is responsible for grabbing the history of questions and answers
+ */
 public class HistoryGrabber {
 
     private History myHistory;

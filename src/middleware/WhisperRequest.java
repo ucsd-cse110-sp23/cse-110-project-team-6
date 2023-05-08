@@ -32,8 +32,8 @@ public class WhisperRequest implements IAPIRequest {
      * @require filePath == ".mp3" || ".wav" || ".flac" || other form of audio file
      * @param filePath Path to audio file to be converted to multipart form data
      */
-    WhisperRequest(String filePath) {
-        file = new File(filePath);
+    WhisperRequest(File filePath) {
+        this.file = filePath;
     }
 
     /**
