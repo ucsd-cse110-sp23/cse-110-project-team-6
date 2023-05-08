@@ -57,8 +57,8 @@ public class HistoryTextIOTests {
         ArrayList<Answer> actualAnswersList = htIO.getAnswers();
 
         for (int i = 0; i < actualAnswersList.size(); i++) {
-            assertEquals(newAList.get(i).getAnswer(), actualAnswersList.get(i).getAnswer());
-            assertEquals(newQList.get(i).getQuestion(), actualQuestionsList.get(i).getQuestion());
+            assertEquals(expectedAnswersList.get(i).getAnswer(), actualAnswersList.get(i).getAnswer());
+            assertEquals(expectedQuestionsList.get(i).getQuestion(), actualQuestionsList.get(i).getQuestion());
         }
     }
 }
