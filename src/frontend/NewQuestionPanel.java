@@ -74,7 +74,7 @@ public class NewQuestionPanel extends AppPanels {
 
                 IAPIRequest whisper      = new WhisperRequest(new File("prompt.wav"));
                 IAPIRequest test         = new MockAPIRequest(new File("prompt.wav"));
-                SayItAssistant assistant = new SayItAssistant(test);
+                SayItAssistant assistant = new SayItAssistant(whisper);
 
                 String[] response = assistant.respond();
 

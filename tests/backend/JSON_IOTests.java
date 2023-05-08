@@ -66,7 +66,7 @@ public class JSON_IOTests {
 
     @Test
     public void testCreateJSONIO() {
-        JSON_IO json_io = new JSON_IO("testHistory.json");
+        JSON_IO json_io = new JSON_IO("testHistory2.json");
 
         for (int i = 0; i < expectedQuestionsList.size(); i++) {
             System.out.println(expectedQuestionsList.get(i).getQuestion());
@@ -80,13 +80,13 @@ public class JSON_IOTests {
             assertEquals(expectedAnswersList.get(i).getAnswer(), actualAnswersList.get(i).getAnswer());
         }
 
-        Path path = Path.of("testHistory.json");
+        Path path = Path.of("testHistory2.json");
         assertTrue(Files.exists(path));
     }
 
     @Test
     public void textWriteTextIO() {
-        JSON_IO json_io = new JSON_IO("testHistory.json");
+        JSON_IO json_io = new JSON_IO("testHistory2.json");
         json_io.write(newQList, newAList);
         ArrayList<Question> actualQuestionsList = json_io.getQuestions();
         ArrayList<Answer>   actualAnswersList = json_io.getAnswers();
@@ -96,7 +96,7 @@ public class JSON_IOTests {
             assertEquals(expectedQuestionsList.get(i).getQuestion(), actualQuestionsList.get(i).getQuestion());
         }
         
-        Path path = Path.of("testHistory.json");
+        Path path = Path.of("testHistory2.json");
         assertTrue(Files.exists(path));
     }
 
