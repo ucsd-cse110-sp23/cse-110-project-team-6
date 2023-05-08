@@ -1,18 +1,1 @@
-a sandwich.
-
-
-A sandwich is a food item, typically made with two slices of bread and a variety of fillings. It can include any range of meats, cheeses, vegetables, condiments and spreads. Sandwiches are often served cold, though they can also be warmed in a toaster oven, on a griddle or by pan-frying. Popular sandwich fillings include ham, turkey, roast beef, tuna salad, cheese, eggs, and peanut butter.
-
-What are the side effects of drinking too many energy drinks?
-
-
-The following are potential side effects of drinking too many energy drinks:
-
-1. Insomnia or chronic sleep deprivation.
-2. High blood pressure, or hypertension.
-3. Palpitations, or feeling like your heart is racing.
-4. Increased risk for heart attack or stroke.
-5. Anxiety, restlessness, and irritability.
-6. Nausea, vomiting, and diarrhea.
-7. Dehydration.
-8. Dependence and addiction
+{"0":{"Answer":"\n\nOne reason why someone might think the Bostitch Model 8010 is so bad is that its stapling capacity is limited. It can only staple up to 100 sheets of paper at a time, while other staplers can be used to staple up to 250 sheets. Furthermore, this model has been known to jam occasionally when trying to staple more than 50 sheets together. Additionally, the quality of the staples it produces is not always reliable, with some staples being bent and not fully","Question":"so bad?"}}

@@ -11,17 +11,13 @@ import backend.*;
 public class HistoryGrabber {
 
     private History myHistory;
-    private String historyFilePath;
     private JSON_IO historyJsonIO;
-    private HistoryTextIO historyTextIO;
     private ArrayList<Question> questions;
     private ArrayList<Answer> answers;
    
     public HistoryGrabber(String historyFilePath) {
         myHistory = new History();
-        this.historyFilePath = historyFilePath;
-        //this.historyTextIO = new HistoryTextIO("src/backend/history.txt");
-        this.historyJsonIO = new JSON_IO("src/backend/history.json");
+        this.historyJsonIO = new JSON_IO(historyFilePath);
         this.populateHistory();
     }
 

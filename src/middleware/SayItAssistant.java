@@ -15,7 +15,7 @@ import backend.*;
 public class SayItAssistant implements IAssistant{
     
     private static final File AUDIO_FILE  = new File("prompt.wav");
-    private static final String HISTORY_FILE = "src/backend/history.txt";
+    private static final String HISTORY_FILE = "src/backend/history.json";
     private HistoryGrabber historyGrabber; 
     private IAPIRequest chatRequest;
     private IAPIRequest whisperRequest;

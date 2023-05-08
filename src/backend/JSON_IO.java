@@ -96,10 +96,8 @@ public class JSON_IO {
                 FileWriter file = new FileWriter(filePath);
                 file.write(JSON_IO.toString());
                 file.close();
-                System.out.println("Sjidf");
             }
             catch (IOException e) {
-                System.out.println("Sdlijf");
                 e.printStackTrace();
             }
         }
