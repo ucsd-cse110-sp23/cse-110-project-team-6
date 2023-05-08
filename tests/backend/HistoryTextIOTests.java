@@ -11,13 +11,13 @@ import java.util.*;
 
 public class HistoryTextIOTests {
     private ArrayList<Question> expectedQuestionsList = new ArrayList<>(Arrays.asList(
-            new Question("Who am I?"), new Question("What is 9 + 10?"),
-            new Question("What is the meaning of life?"), new Question("Where am I?"),
-            new Question("What is my favorite color?")));
+            new Question("Question 1"), new Question("Question 2"),
+            new Question("Question 3"), new Question("Question 4"),
+            new Question("Question 5")));
     private ArrayList<Answer> expectedAnswersList = new ArrayList<>(Arrays.asList(
-            new Answer("I am SayIt."), new Answer("That would be 21."),
-            new Answer("42"), new Answer("I am in the Matrix"),
-            new Answer("Yellow.  No, Red.")));
+            new Answer("Answer 1"), new Answer("Answer 2"),
+            new Answer("Answer 3"), new Answer("Answer 4"),
+            new Answer("Answer 5")));
     private ArrayList<Question> newQList = new ArrayList<>(Arrays.asList(
             new Question("Q1"), new Question("Q2"),
             new Question("Q3"), new Question("Q4"),
@@ -38,15 +38,14 @@ public class HistoryTextIOTests {
 
     @Test
     public void testCreateTextIO() {
-        System.err.println("HI");
         HistoryTextIO htIO = new HistoryTextIO("tests/backend/historyTest.txt");
         htIO.write(expectedQuestionsList, expectedAnswersList, "tests/backend/historyTest.txt");
         ArrayList<Question> actualQuestionsList = htIO.getQuestions();
         ArrayList<Answer> actualAnswersList = htIO.getAnswers();
         
         for (int i = 0; i < actualAnswersList.size(); i++) {
-            assertEquals(expectedAnswersList.get(i).getAnswer(), actualAnswersList.get(i).getAnswer());
             assertEquals(expectedQuestionsList.get(i).getQuestion(), actualQuestionsList.get(i).getQuestion());
+            assertEquals(expectedAnswersList.get(i).getAnswer(), actualAnswersList.get(i).getAnswer());
         }
     }
 
