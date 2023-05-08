@@ -20,12 +20,18 @@ import org.json.JSONException;
  * to a String to be used in the construction of a 
  * chatGPT object. 
  */
-public class WhisperRequest implements APIRequest {
+public class WhisperRequest implements IAPIRequest {
     private static final String API_ENDPOINT = "https://api.openai.com/v1/audio/transcriptions";
     private static final String API_KEY = "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";
     private static final String MODEL = "whisper-1";
     private File file;
 
+    /**
+     * Constructor for WhisperRequest object
+     * 
+     * @require filePath == ".mp3" || ".wav" || ".flac" || other form of audio file
+     * @param filePath Path to audio file to be converted to multipart form data
+     */
     WhisperRequest(String filePath) {
         file = new File(filePath);
     }
@@ -33,7 +39,7 @@ public class WhisperRequest implements APIRequest {
     /**
      * Helper method to write a parameter to output stream in multipart form data format
      *
-     * Identifies the parameters of the additonal fields of data to be sent to the server
+     * Essentially writes the metadata for the audio file to be sent to the server.
      * 
      * @param outputStream Stream to write parameter to
      * @param parameterName Name of related data to be sent to server
@@ -59,7 +65,10 @@ public class WhisperRequest implements APIRequest {
     /**
      * Helper method to write a file to output stream in multipart form data format
      * 
-     * Formats audio file to be sent to server in multipart form data format within output stream
+     * Multipart form data format is used to send files to the server. It formats data into
+     * multiple sections identified by a unique boundary. Each section contains a header
+     * followed by actual data payload where the header provides metadata such as 
+     * content type, content length, and other relevant information.
      * 
      * @param outputStream Stream to write file to
      * @param file File to be sent to server
@@ -96,14 +105,63 @@ public class WhisperRequest implements APIRequest {
     }
 
     /**
-     * Sends the request to the server and returns the response as an HttpResponse object
+     * Helper method to handle response from server
+     * 
+     * @param connection Connection to server
+     * @return String containing response from server
+     * @throws IOException
+     * @throws JSONException
+     */
+    private static String handleSuccessResponse(HttpURLConnection connection) 
+    throws IOException, JSONException{
+        // Create reader to read response from server
+        BufferedReader reader = new BufferedReader(
+            new InputStreamReader(connection.getInputStream())
+        );
+
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+        while ((inputLine = reader.readLine()) != null) {
+            response.append(inputLine);
+        }
+        reader.close();
+
+        // Convert response to JSON object
+        JSONObject result = new JSONObject(response.toString());
+        return result.getString("text");
+    }
+
+    /**
+     * Helper method to handle error response from server
+     * 
+     * @param connection Connection to server
+     * @return String containing error response from server
+     * @throws IOException
+     * @throws JSONException
+     */
+    private static String handleErrorResponse(HttpURLConnection connection) 
+    throws IOException, JSONException {
+        BufferedReader errorReader = new BufferedReader(
+            new InputStreamReader(connection.getErrorStream())
+        );
+        String errorLine;
+        StringBuilder errorResponse = new StringBuilder();
+        while ((errorLine = errorReader.readLine()) != null) {
+            errorResponse.append(errorLine);
+        }
+        errorReader.close();
+        String errorResult = errorResponse.toString();
+        return "Error Result: " + errorResult;
+    }
+
+    /**
+     * Sends the request to the server and returns the response as a string
      * 
      * @return HttpResponse object containing the response from the server
      */
     @SuppressWarnings("deprecation")
     @Override
-    public String sendRequest()  {
-
+    public String callAPI() {
         try {
             // Set up connection
             URL url = new URL(API_ENDPOINT); // Identifies resource on the web
@@ -122,10 +180,10 @@ public class WhisperRequest implements APIRequest {
             // Setup output stream to write request body
             OutputStream outputStream = connection.getOutputStream();
 
-            // Write model parameter to request body
+            // Write the main header of the multipart form data
             writeParameterToOutputStream(outputStream, "model", MODEL, boundary);
 
-            // Write file to request body
+            // Write file to request body of the multipart form data
             writeFileToOutputStream(outputStream, file, boundary);
 
             // Write closing boundary to request body
@@ -138,22 +196,14 @@ public class WhisperRequest implements APIRequest {
             // Get response code
             int responseCode = connection.getResponseCode();
 
-            
-
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                return handleSuccessResponse(connection);
+            } else {
+                return handleErrorResponse(connection);
+            }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Error: " + e.getMessage());
         }
-
-        return null;
-    }
-    
-    /**
-     * Sends the request to the server and returns the response as a String
-     * 
-     * @return String containing the response from the server
-     */
-    public String getResponse() {
-        // TODO Auto-generated method stub
         return null;
     }
 }

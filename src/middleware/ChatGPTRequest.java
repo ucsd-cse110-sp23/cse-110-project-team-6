@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import backend.Question;
 
-public class ChatGPTRequest implements APIRequest {
+public class ChatGPTRequest implements IAPIRequest {
 
     private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
     private static final String API_KEY = "";
@@ -47,23 +47,28 @@ public class ChatGPTRequest implements APIRequest {
     }
 
     /**
-     * Sends the request to the server and returns the response as an HttpResponse object
+     * Sends the request to the server and returns the response as a String
      * 
-     * @return HttpResponse object containing the response from the server
+     * @return String containing the response from the server
      */
     @Override
-    public String sendRequest() {
+    public String callAPI() {
         HttpResponse<String> response = null;
 
         try {
             response = client.send(this.request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
+            System.out.println("Error sending request to server");
+            if (e instanceof IOException)
+                System.out.println("IOException: " + e.getMessage());
+            else if (e instanceof InterruptedException)
+                System.out.println("InterruptedException: " + e.getMessage());
             e.printStackTrace();
         }
 
-        JSONObject json = new JSONObject(response.body());
+        JSONObject json    = new JSONObject(response.body());
         JSONArray  choices = json.getJSONArray("choices");
-        String     answer = choices.getJSONObject(0).getString("text");
+        String     answer  = choices.getJSONObject(0).getString("text");
 
         return answer;
     }
