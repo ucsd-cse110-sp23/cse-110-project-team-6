@@ -13,7 +13,7 @@ import javax.sound.sampled.LineUnavailableException;
 public class MockTargetDataLine implements TargetDataLine{
     private AudioFormat format;
 
-    MockTargetDataLine() {
+    public MockTargetDataLine() {
         this.format = new AudioFormat(44100, 16, 1, true, true);
     }
 
