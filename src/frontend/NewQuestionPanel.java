@@ -3,35 +3,47 @@ package frontend;
 import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 
-import backend.*;
 import middleware.*;
-
-import java.util.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 
-import javax.sound.sampled.TargetDataLine;
-
+/**
+ * Class which contains the Buttons for asking and deleting questions
+ */
 public class NewQuestionPanel extends AppPanels {
 
-    JTextArea display = new JTextArea();
-    JButton recordButton;
-    TargetDataLine targetDataLine;
-    VoiceRecorder recorder = new VoiceRecorder(targetDataLine);
+    //JTextArea display = new JTextArea();
+    private JButton recordButton;
+    private TargetDataLine targetDataLine;
+    private VoiceRecorder recorder;
+    private SayItAssistant assistant;
 
-    public NewQuestionPanel(MyFont myFont) {
+    /**
+     * Constructor for NewQuestionPanel class
+     * @param myFont
+     */
+    public NewQuestionPanel(MyFont myFont, SayItAssistant assistant) {
         this.setLayout(new GridLayout(0,1));
         this.setBackground(BLACK);
         this.myFont = myFont;
-        
+        this.assistant = assistant;
+        this.recorder = new VoiceRecorder(targetDataLine);
     }
 
+    /**
+     * Adds a new question button to the new question panel
+     * @param newQuestionButton NewQuestionButton object which contains the new question button
+     */
     public void addNewQuestionButton(NewQuestionButton newQuestionButton) {
         this.add(newQuestionButton);
     }
 
+    /**
+     * Populates the new question panel
+     * @param display
+     * @param history
+     */
     public void populateNewQuestionPanel(DisplayPanel display, HistoryPanel history) {
         NewQuestionButton newQuestionButton = new NewQuestionButton();
         newQuestionButton.setFont(this.myFont.getFont());
@@ -58,6 +70,12 @@ public class NewQuestionPanel extends AppPanels {
         this.add(newQuestionButton);
     }
 
+    /**
+     * Adds a record button to the new question panel
+     * @param newQuestionButton
+     * @param display
+     * @param history
+     */
     private void addRecordButton(NewQuestionButton newQuestionButton, DisplayPanel display, HistoryPanel history) {
         // Create the record button
         recordButton = new JButton("Record");
@@ -72,19 +90,12 @@ public class NewQuestionPanel extends AppPanels {
             public void mouseReleased(MouseEvent e) {
                 recorder.stopRecording();
 
-                IAPIRequest whisper      = new WhisperRequest(new File("prompt.wav"));
-                IAPIRequest test         = new MockAPIRequest(new File("prompt.wav"));
-                SayItAssistant assistant = new SayItAssistant(whisper);
-
                 String[] response = assistant.respond();
 
                 display.answer.setText(response[1]);
                 display.question.setText(response[0]);
-
-                history.getHistoryGrabber().addQuestionAndAnswer
-                    (new Question(response[0]), new Answer(response[1]));
                 
-                    history.revalidateHistory(display);
+                history.revalidateHistory(display);
 
                 removeRecordButton();
                 newQuestionButton.setEnabled(true);
@@ -108,6 +119,9 @@ public class NewQuestionPanel extends AppPanels {
         repaint();
     }
 
+    /**
+     * Removes the record button from the new question panel
+     */
     private void removeRecordButton() {
         if (recordButton != null) {
             this.remove(recordButton);

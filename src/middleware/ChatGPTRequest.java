@@ -9,8 +9,6 @@ import java.net.http.HttpResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import backend.Question;
-
 public class ChatGPTRequest implements IAPIRequest {
 
     private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";

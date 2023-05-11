@@ -1,4 +1,4 @@
-package middleware;
+package middlewareTests;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,7 +8,11 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import backend.Question;
+import middleware.ChatGPTRequest;
+import middleware.IAPIRequest;
+import middleware.MockChatGPTRequest;
+import middleware.MockWhisperRequest;
+import middleware.Question;
 
 
 /**
@@ -20,11 +24,11 @@ public class APITests {
     private static final String EXPECT_WHISPER = "This is the transcription of the audio file";
 
     @Test
-    public void testMockChat() {
+    public void testMockChatGPT() {
         Question prompt = new Question("What is the meaning of life?");
         
-        MockAPIRequest request = new MockAPIRequest(prompt);
-        String response = request.callAPI();
+        IAPIRequest chatgpt = new MockChatGPTRequest(prompt);
+        String response = chatgpt.callAPI();
 
         assertNotNull(response);
         assertTrue(response.contains(EXPECT_CHAT));
@@ -34,15 +38,13 @@ public class APITests {
     public void verifyChatInterface() {
         Question prompt = new Question("What is the meaning of life?");
         ChatGPTRequest request = new ChatGPTRequest(prompt);
-        
         assertTrue(request instanceof IAPIRequest);
     }
 
     @Test
     public void testMockWhisper() {
-        File file = new File("test.wav");
-        MockAPIRequest request = new MockAPIRequest(file);
-        String response = request.callAPI();
+        IAPIRequest whisperRequest = new MockWhisperRequest();
+        String response = whisperRequest.callAPI();
 
         assertNotNull(response);
         assertTrue(response.contains(EXPECT_WHISPER));

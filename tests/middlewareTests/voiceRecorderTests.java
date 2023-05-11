@@ -1,7 +1,11 @@
-package middleware;
+package middlewareTests;
 
 import javax.sound.sampled.*; // For sound recording and playback
 import org.junit.jupiter.api.*;
+
+import middleware.MockTargetDataLine;
+import middleware.VoiceRecorder;
+
 import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Files;
 import java.nio.file.Path;

@@ -1,4 +1,4 @@
-package backend;
+package middleware;
 
 public class Answer {
     private String answer; // answer to a user's question

@@ -21,20 +21,17 @@ import org.json.JSONException;
  * chatGPT object. 
  */
 public class WhisperRequest implements IAPIRequest {
+    private static final File AUDIO_FILE = new File("prompt.wav");
     private static final String API_ENDPOINT = "https://api.openai.com/v1/audio/transcriptions";
     private static final String API_KEY = "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";
     private static final String MODEL = "whisper-1";
-    private File file;
 
     /**
      * Constructor for WhisperRequest object
      * 
-     * @require filePath == ".mp3" || ".wav" || ".flac" || other form of audio file
-     * @param filePath Path to audio file to be converted to multipart form data
+     * @require AUDIO_FILE == ".mp3" || ".wav" || ".flac" || other form of audio file
      */
-    public WhisperRequest(File filePath) {
-        this.file = filePath;
-    }
+    public WhisperRequest() {}
 
     /**
      * Helper method to write a parameter to output stream in multipart form data format
@@ -77,7 +74,6 @@ public class WhisperRequest implements IAPIRequest {
      */
     private static void writeFileToOutputStream(
         OutputStream outputStream,
-        File file,
         String boundary
     ) throws IOException {
         
@@ -88,14 +84,14 @@ public class WhisperRequest implements IAPIRequest {
         outputStream.write(
             (
                 "Content-Disposition: form-data; name=\"file\"; filename=\"" + 
-                file.getName() + 
+                AUDIO_FILE.getName() + 
                 "\"\r\n"
             ).getBytes()
         );
         outputStream.write(("Content-Type: audio/mpeg\r\n\r\n").getBytes());
 
         // Write the file's contents to the output stream   
-        FileInputStream fileInputStream = new FileInputStream(file);
+        FileInputStream fileInputStream = new FileInputStream(AUDIO_FILE);
         byte[] buffer = new byte[1024];
         int bytesRead;
         while ((bytesRead = fileInputStream.read(buffer)) != -1) {
@@ -184,7 +180,7 @@ public class WhisperRequest implements IAPIRequest {
             writeParameterToOutputStream(outputStream, "model", MODEL, boundary);
 
             // Write file to request body of the multipart form data
-            writeFileToOutputStream(outputStream, file, boundary);
+            writeFileToOutputStream(outputStream, boundary);
 
             // Write closing boundary to request body
             outputStream.write(("\r\n--" + boundary + "--\r\n").getBytes());

@@ -1,5 +1,7 @@
 package backend;
 
+import middleware.*;
+
 import java.util.ArrayList;
 import java.io.*;
 import java.lang.reflect.MalformedParametersException;
@@ -14,6 +16,7 @@ import org.json.JSONObject;
  * This class is responsible for reading and writing the history of questions and answers
  * to a JSON file
  */
+@Deprecated
 public class JSON_IO {
 
     private String filePath;
