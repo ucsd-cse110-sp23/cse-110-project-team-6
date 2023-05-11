@@ -5,15 +5,21 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DisplayPanel extends AppPanels {
+
     JTextPane question = new JTextPane();
     JTextArea answer   = new JTextArea();
+
+    JScrollPane scrollQuestion = new JScrollPane
+        (question, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    JScrollPane scrollAnswer = new JScrollPane
+        (answer, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
     JButton newQuestionButton;
 
     public DisplayPanel() {
         this.setLayout(new GridLayout(3,1));
-        add(question);
-        add(answer);
+        add(scrollQuestion);
+        add(scrollAnswer);
         setBackground(GREY);
         question.setBackground(GREY);
         question.setForeground(WHITE);
@@ -30,4 +36,3 @@ public class DisplayPanel extends AppPanels {
     }
     
 }
-
