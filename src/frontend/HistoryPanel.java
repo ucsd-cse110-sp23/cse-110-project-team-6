@@ -3,34 +3,37 @@ package frontend;
 import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
-import backend.Question;
-import middleware.HistoryGrabber;
+
+import middleware.Question;
+import middleware.HistoryManager;
 
 /**
  * Displays history of questions and answers
  */
 public class HistoryPanel extends AppPanels {
     
-    private JScrollPane scrollPane = new JScrollPane(this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    private HistoryGrabber historyGrabber;
+    private JScrollPane scrollPane = new JScrollPane
+        (this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    
+    private HistoryManager historyManager;
 
     /**
      * Constructor for HistoryPanel class
      * @param myFont MyFont object which contains the font
      */
-    public HistoryPanel(MyFont myFont) {
+    public HistoryPanel(MyFont myFont, HistoryManager historyManager) {
         this.setLayout(new GridLayout(0, 1));
         this.setBackground(BLACK);
         this.myFont = myFont;
+        this.historyManager = historyManager;
     }
 
     /**
-     * Revalidates (udaptes) the history panel
+     * Revalidates (updates) the history panel
      * @param display DisplayPanel object which contains the display panel
      */
     public void revalidateHistory(DisplayPanel display) {
         this.removeAll();
-        historyGrabber = new HistoryGrabber(historyFilePath);
         this.populateHistoryPanel(display);
     }
 
@@ -52,11 +55,11 @@ public class HistoryPanel extends AppPanels {
     }
 
     /**
-     * Returns the history grabber
-     * @return HistoryGrabber object which contains the history grabber
+     * Returns the history manager
+     * @return HistoryManager object
      */
-    public HistoryGrabber getHistoryGrabber() {
-        return historyGrabber;
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
 
     /**
@@ -64,18 +67,22 @@ public class HistoryPanel extends AppPanels {
      * @param display DisplayPanel object which contains the display panel
      */
     public void populateHistoryPanel(DisplayPanel display) {
-        ArrayList<Question> questions = historyGrabber.getQuestions();
+        ArrayList<Question> questions = historyManager.getQuestions();
         
         for (int i = 0; i < questions.size(); i++) {
-            HistoryButton historyButton = new HistoryButton(i, questions.get(i).getQuestion());
-            Question question = questions.get(i);
+            String question = questions.get(i).getQuestion();
+            String answer   = historyManager.getAnswer(i).getAnswer();
+            HistoryButton historyButton = new HistoryButton(i, question);
+            
             historyButton.setFont(this.myFont.getFont());
+            
             historyButton.addActionListener(e -> {
-                display.question.setText(question.getQuestion());
-                display.answer.setText(historyGrabber.getAnswer(question).getAnswer());
+                display.question.setText(question);
+                display.answer.setText(answer);
                 display.setFont(this.myFont.getFont());
                 display.setForeground(WHITE);
             });
+
             this.addHistoryButton(historyButton);
         }
     }

@@ -3,11 +3,11 @@ package StoryTest;
 import javax.sound.sampled.*; // For sound recording and playback
 import org.junit.jupiter.api.*;
 
-import backend.Answer;
 import backend.History;
-import backend.Question;
+import middleware.Answer;
 import middleware.IAPIRequest;
 import middleware.MockTargetDataLine;
+import middleware.Question;
 import middleware.VoiceRecorder;
 
 import static org.junit.jupiter.api.Assertions.*;

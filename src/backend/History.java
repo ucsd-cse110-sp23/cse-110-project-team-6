@@ -4,6 +4,9 @@ import java.lang.reflect.MalformedParametersException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import middleware.*;
+
+@Deprecated
 public class History {
 
     private HashMap<Question, Answer> history;  // maps the questions asked to the answer provided
