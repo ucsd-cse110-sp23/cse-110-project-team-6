@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 import middleware.Question;
+import middleware.Answer;
 import middleware.HistoryManager;
 
 /**
@@ -32,9 +33,10 @@ public class HistoryPanel extends AppPanels {
      * Revalidates (updates) the history panel
      * @param display DisplayPanel object which contains the display panel
      */
-    public void revalidateHistory(DisplayPanel display) {
+    public void revalidateHistory(QnAPanel qnaPanel) {
         this.removeAll();
-        this.populateHistoryPanel(display);
+        this.populateHistoryPanel(qnaPanel);
+        revalidate();
     }
 
     /**
@@ -51,7 +53,6 @@ public class HistoryPanel extends AppPanels {
      */
     public void addHistoryButton(HistoryButton historyButton) {
         this.add(historyButton);
-
     }
 
     /**
@@ -66,21 +67,22 @@ public class HistoryPanel extends AppPanels {
      * Populates the history panel with the history of questions and answers
      * @param display DisplayPanel object which contains the display panel
      */
-    public void populateHistoryPanel(DisplayPanel display) {
+    public void populateHistoryPanel(QnAPanel qnaPanel) {
+
         ArrayList<Question> questions = historyManager.getQuestions();
         
         for (int i = 0; i < questions.size(); i++) {
-            String question = questions.get(i).getQuestion();
-            String answer   = historyManager.getAnswer(i).getAnswer();
-            HistoryButton historyButton = new HistoryButton(i, question);
+            Question question = questions.get(i);
+            Answer answer = historyManager.getAnswer(i);
+            HistoryButton historyButton = new HistoryButton(i, question.getQuestion());
             
             historyButton.setFont(this.myFont.getFont());
             
             historyButton.addActionListener(e -> {
-                display.question.setText(question);
-                display.answer.setText(answer);
-                display.setFont(this.myFont.getFont());
-                display.setForeground(WHITE);
+                qnaPanel.setQuestion(question);
+                qnaPanel.setAnswer(answer);
+                qnaPanel.setFont(this.myFont.getFont());
+                qnaPanel.setForeground(WHITE);
             });
 
             this.addHistoryButton(historyButton);
