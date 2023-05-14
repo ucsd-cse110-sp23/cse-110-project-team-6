@@ -39,7 +39,7 @@ public class AppFrame extends JFrame {
         MyFont myFont = new MyFont (new File(HISTORY_FONT_FILE), FONT_SIZE);
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         ge.registerFont(myFont.getFont());
-        setUpPanels(myFont);
+        setUpPanels();
 
         // adds the history panel and display panel to the appframe
         this.add(historyPanel.getScrollPane(), BorderLayout.WEST);
@@ -69,13 +69,9 @@ public class AppFrame extends JFrame {
     /**
      * Sets up the panels for the appframe
      */
-    private void setUpPanels(MyFont font) {
-        historyPanel = new HistoryPanel(font, historyManager);
-        displayPanel = new DisplayPanel(sayItAssistant, historyPanel);
-        //newQuestionPanel = new NewQuestionPanel(font, sayItAssistant);
-
-        //displayPanel.addNewQuestionPanel(newQuestionPanel);
+    private void setUpPanels() {
+        historyPanel = new HistoryPanel(historyManager);
+        displayPanel = new DisplayPanel(sayItAssistant, historyPanel, historyManager);
         historyPanel.revalidateHistory(displayPanel.getQnAPanel());
-        //newQuestionPanel.populateNewQuestionPanel(displayPanel, historyPanel);
     }
 }

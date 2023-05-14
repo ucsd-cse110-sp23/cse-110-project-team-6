@@ -142,8 +142,8 @@ public class HistoryManager implements Subject, Observer {
 
             JSONObject questionAnswer = new JSONObject();
 
-            questionAnswer.put("Question", newQuestion.getQuestion());
-            questionAnswer.put("Answer", newAnswer.getAnswer());
+            questionAnswer.put("Question", newQuestion.toString());
+            questionAnswer.put("Answer", newAnswer.toString());
 
             storedJSON.put(Integer.toString(idx), questionAnswer);
         }

@@ -3,6 +3,7 @@ package frontend;
 //import javax.print.attribute.standard.JobHoldUntil;
 import javax.swing.*;
 
+import middleware.HistoryManager;
 import middleware.SayItAssistant;
 
 import java.awt.*;
@@ -15,14 +16,14 @@ public class DisplayPanel extends AppPanels {
     ButtonPanel buttonPanel;
     HistoryPanel historyPanel;
 
-    public DisplayPanel(SayItAssistant sayItAssistant, HistoryPanel historyPanel) {
+    public DisplayPanel(SayItAssistant sayItAssistant, HistoryPanel historyPanel, HistoryManager historyManager) {
         this.sayItAssistant = sayItAssistant;
         this.setLayout(new GridBagLayout());
         
         GridBagConstraints c = new GridBagConstraints();
         this.qnaPanel = new QnAPanel();
         this.historyPanel = historyPanel;
-        this.buttonPanel = new ButtonPanel(sayItAssistant, qnaPanel, historyPanel);
+        this.buttonPanel = new ButtonPanel(sayItAssistant, qnaPanel, historyPanel, historyManager);
 
         addQnAPanel(qnaPanel, c);
         addButtonPanel(buttonPanel, c);

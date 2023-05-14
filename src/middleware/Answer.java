@@ -19,7 +19,7 @@ public class Answer {
      * 
      * @return String: answer
      */
-    public String getAnswer() {
+    public String toString() {
         return this.answer;
     }
 }

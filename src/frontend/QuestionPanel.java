@@ -20,6 +20,6 @@ public class QuestionPanel extends AppPanels{
     }
 
     public void setQuestion(Question question) {
-        this.question.setText(question.getQuestion());
+        this.question.setText(question.toString());
     }
 }

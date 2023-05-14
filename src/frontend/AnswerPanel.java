@@ -18,7 +18,7 @@ public class AnswerPanel extends AppPanels{
     }
 
     public void setAnswer(Answer answer) {
-        this.answer.setText(answer.getAnswer());
+        this.answer.setText(answer.toString());
     }
 
 }

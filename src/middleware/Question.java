@@ -23,7 +23,7 @@ public class Question {
      * 
      * @return String: user question
      */
-    public String getQuestion() {
+    public String toString() {
         return this.question;
     }
 
