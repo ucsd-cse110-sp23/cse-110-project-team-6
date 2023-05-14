@@ -3,7 +3,9 @@ package frontend;
 import java.awt.*;
 import javax.swing.*;
 
+import middleware.Answer;
 import middleware.HistoryManager;
+import middleware.Question;
 
 public class ClearAllPanel extends JPanel {
 
@@ -37,6 +39,9 @@ class ClearAllButton extends AppButtons {
         addActionListener(e -> {
             historyManager.clearAll();
             history.revalidateHistory(qna);
+            qna.setQuestion(new Question("Welcome to SayIt Assistant"));
+            qna.setAnswer(new Answer(""));
+            revalidate();
         });
     }
 

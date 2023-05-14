@@ -28,11 +28,11 @@ public class QnAPanel extends AppPanels {
     }
 
     public void addQuestionPanel(QuestionPanel questionPanel) {
-        add(questionPanel, BorderLayout.NORTH);
+        add(questionPanel.getQuestionScrollPane(), BorderLayout.NORTH);
     }
 
     public void addAnswerPanel(AnswerPanel answerPanel) {
-        add(answerPanel, BorderLayout.SOUTH);
+        add(answerPanel.getAnswerScrollPane(), BorderLayout.SOUTH);
     }
 
     public void setQuestion(Question question) {

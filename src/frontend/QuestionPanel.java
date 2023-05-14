@@ -8,6 +8,8 @@ import java.awt.*;
 
 public class QuestionPanel extends AppPanels{
     private JTextPane question = new JTextPane();
+    private JScrollPane questionScrollPane = new JScrollPane
+        (this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
     public QuestionPanel() {
         this.setLayout(new GridLayout(1, 1));
@@ -21,5 +23,9 @@ public class QuestionPanel extends AppPanels{
 
     public void setQuestion(Question question) {
         this.question.setText(question.toString());
+    }
+
+    public JScrollPane getQuestionScrollPane() {
+        return this.questionScrollPane;
     }
 }
