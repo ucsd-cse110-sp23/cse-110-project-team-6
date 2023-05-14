@@ -14,6 +14,8 @@ public class QuestionPanel extends AppPanels{
     private JScrollPane questionScrollPane = new JScrollPane
         (this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);   // wraps the question area and allows it to be scrollable
 
+    private int currentQuestionNumber; 
+
     /*
      * Initializes and formats the panel for the question.
      */
@@ -34,6 +36,7 @@ public class QuestionPanel extends AppPanels{
      */
     public void setQuestion(Question question) {
         this.question.setText(question.toString());
+        currentQuestionNumber = question.getQuestionNumber(); 
     }
 
     /*
@@ -44,4 +47,9 @@ public class QuestionPanel extends AppPanels{
     public JScrollPane getQuestionScrollPane() {
         return this.questionScrollPane;
     }
+
+    public int getCurrentQuestionNumber(){
+        return currentQuestionNumber; 
+    }
+
 }

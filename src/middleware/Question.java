@@ -6,6 +6,7 @@ package middleware;
 public class Question {
 
     private String question;    // question from user
+    private int questionNumber; //number of the question
 
     /*
      * Stores the question if it exists.
@@ -30,6 +31,17 @@ public class Question {
      */
     public String toString() {
         return this.question;
+    }
+
+    /*
+     * associate the question to its respective number in the history
+     */
+    public void setQestionNumber(int n){
+        questionNumber = n; 
+    }
+
+    public int getQuestionNumber(){
+        return this.questionNumber; 
     }
 
 }

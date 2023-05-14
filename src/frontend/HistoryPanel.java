@@ -84,6 +84,8 @@ public class HistoryPanel extends AppPanels {
 
             // sets up the question and answer that are to be associated with the button
             Question question = questions.get(i);
+            //set the question with its index from the history:
+            question.setQestionNumber(i);
             Answer answer = historyManager.getAnswer(i);
             HistoryButton historyButton = new HistoryButton(i, question.toString());
             
@@ -94,7 +96,7 @@ public class HistoryPanel extends AppPanels {
                 qnaPanel.setQuestion(question);
                 qnaPanel.setAnswer(answer);
                 qnaPanel.setFont(this.myFont.getFont());
-                qnaPanel.setForeground(WHITE);
+                qnaPanel.setForeground(BLACK);  //TODO: change back to white
             });
 
             this.addHistoryButton(historyButton); // add the button to the display
