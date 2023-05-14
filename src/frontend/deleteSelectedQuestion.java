@@ -40,18 +40,19 @@ class deleteQuestionButton extends AppButtons{
     deleteQuestionButton(HistoryManager historyManager, QnAPanel qna, HistoryPanel history){
         super(deleteQuestionLabel);
         this.setBackground(TEAL);
-        this.setForeground(BLACK);
+        this.setForeground(WHITE);
         setHorizontalAlignment(SwingConstants.CENTER);
         setPreferredSize(new Dimension(deleteQuestionButtonWidth, deleteQuestionButtonHeight));
         
         //mouse listener that takes the current int from the display and deletes it, setting back the display to the default. 
         addActionListener(e -> {
-            if (historyManager.getHistorySize() != 0){
+            if (qna.getStatus() == true){
                 historyManager.delete(qna.questionPanel.getCurrentQuestionNumber());
                 history.revalidateHistory(qna);
                 qna.setQuestion(new Question("Welcome to SayIt Assistant"));
                 qna.setAnswer(new Answer(""));
                 revalidate();
+                qna.isSet = false;
             }
         });
     }
