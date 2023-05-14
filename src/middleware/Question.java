@@ -1,11 +1,16 @@
 package middleware;
 
+/*
+ * This object holds a user's question.
+ */
 public class Question {
 
     private String question;    // question from user
 
     /*
-     * Takes in a question formatted as a String
+     * Stores the question if it exists.
+     * 
+     * @param question: the question to be stored
      */
     public Question(String question) {
 

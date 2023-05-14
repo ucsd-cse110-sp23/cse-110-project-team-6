@@ -1,54 +1,85 @@
 package frontend;
 
-//import javax.print.attribute.standard.JobHoldUntil;
-import javax.swing.*;
-
 import middleware.HistoryManager;
 import middleware.SayItAssistant;
 
 import java.awt.*;
 
+/*
+ * This panel holds the question, answer, and button panels.  It's primary function is to keep the overall 
+ * format of these panels standardized.
+ */
 public class DisplayPanel extends AppPanels {
+    
     private SayItAssistant sayItAssistant;
 
-    JButton newQuestionButton;
+    // panels that are contained within the display panel
     QnAPanel qnaPanel;
     ButtonPanel buttonPanel;
     HistoryPanel historyPanel;
 
+    /*
+     * Creates and formats the display panel.
+     * 
+     * @param sayItAssistant:   assists with API calls
+     * @param historyPanel:     panel for the history
+     * @param historyManager:   manages the history
+     */
     public DisplayPanel(SayItAssistant sayItAssistant, HistoryPanel historyPanel, HistoryManager historyManager) {
+
+        // formats the panel
         this.sayItAssistant = sayItAssistant;
         this.setLayout(new GridBagLayout());
-        
-        GridBagConstraints c = new GridBagConstraints();
+        GridBagConstraints displayFormat = new GridBagConstraints();    // this allows for finer control over formatting than GridLayout previously did
         this.qnaPanel = new QnAPanel();
         this.historyPanel = historyPanel;
         this.buttonPanel = new ButtonPanel(sayItAssistant, qnaPanel, historyPanel, historyManager);
 
-        addQnAPanel(qnaPanel, c);
-        addButtonPanel(buttonPanel, c);
+        // adds the subpanels to the display
+        addQnAPanel(qnaPanel, displayFormat);
+        addButtonPanel(buttonPanel, displayFormat);
     }
 
-    public void addQnAPanel(QnAPanel qnaPanel, GridBagConstraints c) {
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1.0;
-        c.weighty = 0.75;
-        c.gridy = 0;
-        add(qnaPanel, c);
+    /*
+     * Formats the panel for questions and answers and adds it to the display.
+     * 
+     * @param qnaPanel:         panel to be added
+     * @param displayFormat:    defines the formatting of the panel
+     */
+    public void addQnAPanel(QnAPanel qnaPanel, GridBagConstraints displayFormat) {
+
+        // qna panel will fill up the display panel all the way horizontally and only 75% of the screen vertically
+        displayFormat.fill = GridBagConstraints.BOTH;
+        displayFormat.weightx = 1.0;
+        displayFormat.weighty = 0.75;
+        displayFormat.gridy = 0;
+        add(qnaPanel, displayFormat);
     }
 
-    public void addButtonPanel(ButtonPanel buttonPanel, GridBagConstraints c) {
-        c.fill = GridBagConstraints.BOTH;
-        c.weightx = 1.0;
-        c.weighty = 0.25;
-        c.gridy = 1;
-        buttonPanel.setMaximumSize(new Dimension(20,20));
-        add(buttonPanel, c);
+    /*
+     * Formats the panel for the main buttons (new question, clear all, delete).
+     * 
+     * @param buttonPanel:      panel to be added
+     * @param displayFormat:    defines the formatting of the panel
+     */
+    public void addButtonPanel(ButtonPanel buttonPanel, GridBagConstraints displayFormat) {
+
+        // button panel will fill up the display panel all the way horizontally and only 25% of the screen vertically
+        displayFormat.fill = GridBagConstraints.BOTH;
+        displayFormat.weightx = 1.0;
+        displayFormat.weighty = 0.25;
+        displayFormat.gridy = 1;    // button panel should be on top
+        buttonPanel.setMaximumSize(new Dimension(20,20));   // keeping the maximum size small ensures that it is exceeded, making the button and qna panels size ratio remain constant
+        add(buttonPanel, displayFormat);
     }
 
+    /*
+     * Returns the qna panel on the display.
+     * 
+     * @return QnAPanel: the qna panel that is on the display
+     */
     public QnAPanel getQnAPanel() {
         return this.qnaPanel;
     }
     
 }
-
