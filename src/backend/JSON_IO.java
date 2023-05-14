@@ -87,8 +87,8 @@ public class JSON_IO {
 
             for (; id < insertQuestion.size(); id++) {
                 JSONObject questionAnswer = new JSONObject();
-                questionAnswer.put("Question", insertQuestion.get(id).getQuestion());
-                questionAnswer.put("Answer", answers.get(id).getAnswer());
+                questionAnswer.put("Question", insertQuestion.get(id).toString());
+                questionAnswer.put("Answer", answers.get(id).toString());
 
                 JSON_IO.put(Integer.toString(id), questionAnswer);
 

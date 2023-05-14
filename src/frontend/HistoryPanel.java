@@ -20,12 +20,11 @@ public class HistoryPanel extends AppPanels {
 
     /**
      * Constructor for HistoryPanel class
-     * @param myFont MyFont object which contains the font
+     * @param historyManager
      */
-    public HistoryPanel(MyFont myFont, HistoryManager historyManager) {
+    public HistoryPanel(HistoryManager historyManager) {
         this.setLayout(new GridLayout(0, 1));
         this.setBackground(BLACK);
-        this.myFont = myFont;
         this.historyManager = historyManager;
     }
 
@@ -74,7 +73,7 @@ public class HistoryPanel extends AppPanels {
         for (int i = 0; i < questions.size(); i++) {
             Question question = questions.get(i);
             Answer answer = historyManager.getAnswer(i);
-            HistoryButton historyButton = new HistoryButton(i, question.getQuestion());
+            HistoryButton historyButton = new HistoryButton(i, question.toString());
             
             historyButton.setFont(this.myFont.getFont());
             

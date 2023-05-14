@@ -128,12 +128,12 @@ public class HistoryManagerTests {
         assertEquals(allQASize, historyManager.getQuestions().size());
 
         for (int i = 0; i < allQASize; i++) {
-            String expectedQuestion = allQuestions.get(i).getQuestion();
-            String actualQuestion = historyManager.getQuestions().get(i).getQuestion();
+            String expectedQuestion = allQuestions.get(i).toString();
+            String actualQuestion = historyManager.getQuestions().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
-            String expectedAnswer = allAnswers.get(i).getAnswer();
-            String actualAnswer = historyManager.getAnswer(i).getAnswer();
+            String expectedAnswer = allAnswers.get(i).toString();
+            String actualAnswer = historyManager.getAnswer(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
     }
@@ -145,14 +145,14 @@ public class HistoryManagerTests {
     public void testDuplicateQA() {
         addAllQuestions();
         assertEquals(allQuestions.size(), historyManager.getHistorySize());
-        assertEquals(QUESTION1.getQuestion(), DUPLICATE_QUESTION.getQuestion());
-        assertEquals(ANSWER1.getAnswer(), DUPLICATE_ANSWER.getAnswer());
+        assertEquals(QUESTION1.toString(), DUPLICATE_QUESTION.toString());
+        assertEquals(ANSWER1.toString(), DUPLICATE_ANSWER.toString());
         historyManager.add(DUPLICATE_QUESTION, DUPLICATE_ANSWER);
         assertEquals(allQuestions.size() + 1, historyManager.getHistorySize());
-        assertEquals(DUPLICATE_QUESTION.getQuestion(), 
-                     historyManager.getQuestions().get(allQuestions.size()).getQuestion());
-        assertEquals(DUPLICATE_ANSWER.getAnswer(),
-                        historyManager.getAnswer(allQuestions.size()).getAnswer());
+        assertEquals(DUPLICATE_QUESTION.toString(), 
+                     historyManager.getQuestions().get(allQuestions.size()).toString());
+        assertEquals(DUPLICATE_ANSWER.toString(),
+                        historyManager.getAnswer(allQuestions.size()).toString());
     }
 
     /**
@@ -162,10 +162,10 @@ public class HistoryManagerTests {
     public void testMultilineQA() {
         historyManager.add(MULTILINE_QUESTION, MULTILINE_ANSWER);
         assertEquals(1, historyManager.getHistorySize());
-        assertEquals(MULTILINE_QUESTION.getQuestion(), 
-                     historyManager.getQuestions().get(0).getQuestion());
-        assertEquals(MULTILINE_ANSWER.getAnswer(), 
-                     historyManager.getAnswer(0).getAnswer());
+        assertEquals(MULTILINE_QUESTION.toString(), 
+                     historyManager.getQuestions().get(0).toString());
+        assertEquals(MULTILINE_ANSWER.toString(), 
+                     historyManager.getAnswer(0).toString());
     }
 
     /**
@@ -175,10 +175,10 @@ public class HistoryManagerTests {
     public void testEmptyQA() {
         historyManager.add(EMPTY_QUESTION, EMPTY_ANSWER);
         assertEquals(1, historyManager.getHistorySize());
-        assertEquals(EMPTY_QUESTION.getQuestion(), 
-                     historyManager.getQuestions().get(0).getQuestion());
-        assertEquals(EMPTY_ANSWER.getAnswer(), 
-                     historyManager.getAnswer(0).getAnswer());
+        assertEquals(EMPTY_QUESTION.toString(), 
+                     historyManager.getQuestions().get(0).toString());
+        assertEquals(EMPTY_ANSWER.toString(), 
+                     historyManager.getAnswer(0).toString());
     }
 
     /**
@@ -199,12 +199,12 @@ public class HistoryManagerTests {
         assertEquals(allQASize, newHistoryManager.getQuestions().size());
         
         for (int i = 0; i < allQASize; i++) {
-            String expectedQuestion = allQuestions.get(i).getQuestion();
-            String actualQuestion = newHistoryManager.getQuestions().get(i).getQuestion();
+            String expectedQuestion = allQuestions.get(i).toString();
+            String actualQuestion = newHistoryManager.getQuestions().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
-            String expectedAnswer = allAnswers.get(i).getAnswer();
-            String actualAnswer = newHistoryManager.getAnswer(i).getAnswer();
+            String expectedAnswer = allAnswers.get(i).toString();
+            String actualAnswer = newHistoryManager.getAnswer(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
 
@@ -223,12 +223,12 @@ public class HistoryManagerTests {
         assertEquals(allQASize, anotherHistoryManager.getQuestions().size());
 
         for (int i = 0; i < allQASize; i++) {
-            String expectedQuestion = allQuestions.get(i).getQuestion();
-            String actualQuestion = anotherHistoryManager.getQuestions().get(i).getQuestion();
+            String expectedQuestion = allQuestions.get(i).toString();
+            String actualQuestion = anotherHistoryManager.getQuestions().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
-            String expectedAnswer = allAnswers.get(i).getAnswer();
-            String actualAnswer = anotherHistoryManager.getAnswer(i).getAnswer();
+            String expectedAnswer = allAnswers.get(i).toString();
+            String actualAnswer = anotherHistoryManager.getAnswer(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
     }
@@ -253,12 +253,12 @@ public class HistoryManagerTests {
 
         // Checks that the remaining questions and answers are still in the history
         for (int i = 0; i < origSize - 1; i++) {
-            String expectedQuestion = allQuestions.get(i).getQuestion();
-            String actualQuestion = historyManager.getQuestions().get(i).getQuestion();
+            String expectedQuestion = allQuestions.get(i).toString();
+            String actualQuestion = historyManager.getQuestions().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
-            String expectedAnswer = allAnswers.get(i).getAnswer();
-            String actualAnswer = historyManager.getAnswer(i).getAnswer();
+            String expectedAnswer = allAnswers.get(i).toString();
+            String actualAnswer = historyManager.getAnswer(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
 
@@ -285,12 +285,12 @@ public class HistoryManagerTests {
 
         // Checks that the remaining questions and answers are still in the history
         for (int i = 0; i < origSize - 1; i++) {
-            String expectedQuestion = allQuestions.get(i).getQuestion();
-            String actualQuestion = newHistoryManager.getQuestions().get(i).getQuestion();
+            String expectedQuestion = allQuestions.get(i).toString();
+            String actualQuestion = newHistoryManager.getQuestions().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
-            String expectedAnswer = allAnswers.get(i).getAnswer();
-            String actualAnswer = newHistoryManager.getAnswer(i).getAnswer();
+            String expectedAnswer = allAnswers.get(i).toString();
+            String actualAnswer = newHistoryManager.getAnswer(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
 
@@ -324,12 +324,12 @@ public class HistoryManagerTests {
 
         // Checks that the remaining questions and answers are still in the history
         for (int i = 0; i < origSize - 1; i++) {
-            String expectedQuestion = allQuestions.get(i).getQuestion();
-            String actualQuestion = historyManager.getQuestions().get(i).getQuestion();
+            String expectedQuestion = allQuestions.get(i).toString();
+            String actualQuestion = historyManager.getQuestions().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
-            String expectedAnswer = allAnswers.get(i).getAnswer();
-            String actualAnswer = historyManager.getAnswer(i).getAnswer();
+            String expectedAnswer = allAnswers.get(i).toString();
+            String actualAnswer = historyManager.getAnswer(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
 
@@ -356,12 +356,12 @@ public class HistoryManagerTests {
 
         // Checks that the remaining questions and answers are still in the history
         for (int i = 0; i < origSize - 1; i++) {
-            String expectedQuestion = allQuestions.get(i).getQuestion();
-            String actualQuestion = newHistoryManager.getQuestions().get(i).getQuestion();
+            String expectedQuestion = allQuestions.get(i).toString();
+            String actualQuestion = newHistoryManager.getQuestions().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
-            String expectedAnswer = allAnswers.get(i).getAnswer();
-            String actualAnswer = newHistoryManager.getAnswer(i).getAnswer();
+            String expectedAnswer = allAnswers.get(i).toString();
+            String actualAnswer = newHistoryManager.getAnswer(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
 

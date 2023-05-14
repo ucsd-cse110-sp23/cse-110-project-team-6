@@ -34,7 +34,7 @@ public class ChatGPTRequest implements IAPIRequest {
         requestBody.put("model", MODEL);
         requestBody.put("max_tokens", MAX_TOKENS);
         requestBody.put("temperature", TEMPERATURE);
-        requestBody.put("prompt", prompt.getQuestion());
+        requestBody.put("prompt", prompt.toString());
 
         this.request = HttpRequest.newBuilder()
             .uri(URI.create(API_ENDPOINT)) // Identifies resource on the web similar to URL

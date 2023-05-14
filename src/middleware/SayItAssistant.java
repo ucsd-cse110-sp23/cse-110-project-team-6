@@ -65,7 +65,7 @@ public class SayItAssistant implements Subject {
         // Notify that new question was made
         notifyObservers();
 
-        String[] responseArray = {question.getQuestion(), answer.getAnswer()};
+        String[] responseArray = {question.toString(), answer.toString()};
 
         return responseArray;
     }

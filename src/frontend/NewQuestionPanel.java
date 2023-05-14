@@ -14,17 +14,16 @@ import java.awt.event.MouseEvent;
  */
 public class NewQuestionPanel extends AppPanels {
 
-     private TargetDataLine targetDataLine;
+    private TargetDataLine targetDataLine;
     private VoiceRecorder recorder;
     private SayItAssistant assistant;
 
     /**
      * Constructor for NewQuestionPanel class
-     * @param myFont
+     * @param assistant
      */
-    public NewQuestionPanel(MyFont myFont, SayItAssistant assistant, QnAPanel qna, HistoryPanel history) {
+    public NewQuestionPanel(SayItAssistant assistant, QnAPanel qna, HistoryPanel history) {
         this.setLayout(new GridLayout(0,1));
-        this.myFont = myFont;
         this.assistant = assistant;
         this.recorder = new VoiceRecorder(targetDataLine);
         populateNewQuestionPanel(qna, history);

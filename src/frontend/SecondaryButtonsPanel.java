@@ -1,22 +1,27 @@
 package frontend;
 
 import javax.swing.*;
+
+import middleware.HistoryManager;
+
 import java.awt.*;
 import java.io.File;
 
 public class SecondaryButtonsPanel extends AppPanels{
 
-    public SecondaryButtonsPanel() {
+    public SecondaryButtonsPanel(HistoryManager historyManager, QnAPanel qna, HistoryPanel history) {
         this.setPreferredSize(new Dimension(400,20));
-        this.setLayout(new GridLayout(1,2)); 
-       addDeleteButton();
-       addClearAllButton(); 
+        this.setLayout(new GridLayout(1,2));
+
+        ClearAllPanel clearAllPanel = new ClearAllPanel(historyManager, qna, history);
+
+        this.addDeletePanel();
+        this.addClearAllPanel(clearAllPanel);
        
     }
 
-    public void addDeleteButton() {
+    public void addDeletePanel() {
         JTextArea jt = new JTextArea();
-        myFont = new MyFont(new File("src/fonts/OpenSans-Regular.ttf"), 18);
         jt.setFont(myFont.getFont());
         jt.setText("Delete Button Area");
         jt.setBackground(TEAL);
@@ -24,13 +29,8 @@ public class SecondaryButtonsPanel extends AppPanels{
         add(jt);
     }
 
-    public void addClearAllButton() {
-        JTextArea jt2 = new JTextArea();
-        jt2.setFont(myFont.getFont());
-        jt2.setBorder(BorderFactory.createLineBorder(BLACK));
-        jt2.setText("Clear All Button Area");
-        jt2.setBackground(TEAL);
-        add(jt2);
+    public void addClearAllPanel(ClearAllPanel clearAllPanel) {
+        add(clearAllPanel);
     }
 
 }
