@@ -32,7 +32,7 @@ public class deleteSelectedQuestion extends JPanel{
 }
 
 class deleteQuestionButton extends AppButtons{
-    // formatting for the clear all button
+    // formatting for the delete all button
      private final int deleteQuestionButtonWidth = 600;
      private final int deleteQuestionButtonHeight = 50;
      private final static String deleteQuestionLabel = "Delete Question";
@@ -44,6 +44,7 @@ class deleteQuestionButton extends AppButtons{
         setHorizontalAlignment(SwingConstants.CENTER);
         setPreferredSize(new Dimension(deleteQuestionButtonWidth, deleteQuestionButtonHeight));
         
+        //mouse listener that takes the current int from the display and deletes it, setting back the display to the default. 
         addActionListener(e -> {
             if (historyManager.getHistorySize() != 0){
                 historyManager.delete(qna.questionPanel.getCurrentQuestionNumber());

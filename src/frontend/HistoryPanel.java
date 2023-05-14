@@ -96,7 +96,7 @@ public class HistoryPanel extends AppPanels {
                 qnaPanel.setQuestion(question);
                 qnaPanel.setAnswer(answer);
                 qnaPanel.setFont(this.myFont.getFont());
-                qnaPanel.setForeground(BLACK);  //TODO: change back to white
+                qnaPanel.setForeground(WHITE);  
             });
 
             this.addHistoryButton(historyButton); // add the button to the display
