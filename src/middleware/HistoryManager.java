@@ -300,7 +300,6 @@ public class HistoryManager implements Subject, Observer {
         
         // Delete backwards to avoid index out of bounds
         for (int i = history.size() - 1; i >= 0; i--) {
-            System.out.println(i);
             delete(i);
         }
     }

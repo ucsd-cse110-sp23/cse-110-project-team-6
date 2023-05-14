@@ -69,7 +69,6 @@ public class HistoryPanel extends AppPanels {
     public void populateHistoryPanel(QnAPanel qnaPanel) {
 
         ArrayList<Question> questions = historyManager.getQuestions();
-        
         for (int i = 0; i < questions.size(); i++) {
             Question question = questions.get(i);
             Answer answer = historyManager.getAnswer(i);
