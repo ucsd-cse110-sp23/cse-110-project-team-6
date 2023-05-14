@@ -3,6 +3,7 @@ package frontend;
 import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 
+import frontend.*;
 import middleware.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -13,9 +14,7 @@ import java.awt.event.MouseEvent;
  */
 public class NewQuestionPanel extends AppPanels {
 
-    //JTextArea display = new JTextArea();
-    private JButton recordButton;
-    private TargetDataLine targetDataLine;
+     private TargetDataLine targetDataLine;
     private VoiceRecorder recorder;
     private SayItAssistant assistant;
 
@@ -23,12 +22,13 @@ public class NewQuestionPanel extends AppPanels {
      * Constructor for NewQuestionPanel class
      * @param myFont
      */
-    public NewQuestionPanel(MyFont myFont, SayItAssistant assistant) {
+    public NewQuestionPanel(MyFont myFont, SayItAssistant assistant, QnAPanel qna, HistoryPanel history) {
         this.setLayout(new GridLayout(0,1));
-        this.setBackground(BLACK);
         this.myFont = myFont;
         this.assistant = assistant;
         this.recorder = new VoiceRecorder(targetDataLine);
+        populateNewQuestionPanel(qna, history);
+        
     }
 
     /**
@@ -44,45 +44,16 @@ public class NewQuestionPanel extends AppPanels {
      * @param display
      * @param history
      */
-    public void populateNewQuestionPanel(DisplayPanel display, HistoryPanel history) {
+    public void populateNewQuestionPanel(QnAPanel qna, HistoryPanel history) {
         NewQuestionButton newQuestionButton = new NewQuestionButton();
-        newQuestionButton.setFont(this.myFont.getFont());
-        newQuestionButton.addActionListener(
-            e -> {
-                    addRecordButton(newQuestionButton, display, history);
-                    recordButton.setFont(myFont.getFont());
-                   
-                    repaint();
-                    newQuestionButton.setEnabled(false);
-                    revalidate();
-/*
-    ***NOTES***: save new question and answer from the API to a new Question and Answser.  Then:
-    Replace the new Question() below with the new question asked.  
-    Replace the new Answer() with the new answer.
-
-                    
-                    revalidate();
-
-*/
-            }
-        );
-            
-        this.add(newQuestionButton);
-    }
-
-    /**
-     * Adds a record button to the new question panel
-     * @param newQuestionButton
-     * @param display
-     * @param history
-     */
-    private void addRecordButton(NewQuestionButton newQuestionButton, DisplayPanel display, HistoryPanel history) {
-        // Create the record button
-        recordButton = new JButton("Record");
-        recordButton.addMouseListener(new MouseAdapter() {
+        //newQuestionButton.setFont(this.myFont.getFont());
+       
+        newQuestionButton.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                newQuestionButton.setEnabled(false);
+                revalidate();
                 recorder.startRecording();
             }
 
@@ -92,44 +63,17 @@ public class NewQuestionPanel extends AppPanels {
 
                 String[] response = assistant.respond();
 
-                display.answer.setText(response[1]);
-                display.question.setText(response[0]);
-                
-                history.revalidateHistory(display);
-
-                removeRecordButton();
+                qna.setQuestion(new Question(response[0]));
+                qna.setAnswer(new Answer(response[1]));
+                history.revalidateHistory(qna);
                 newQuestionButton.setEnabled(true);
+                revalidate();
             }
         });
-
-        Rectangle answerBounds = display.answer.getBounds();
-
-        // Set position and size of record button
-        int buttonWidth = 100;
-        int buttonHeight = 30;
-        int buttonX = answerBounds.x + (answerBounds.width - buttonWidth) / 2;
-        int buttonY = answerBounds.y + (answerBounds.height - buttonHeight) / 2;
-        recordButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
-
-       // Add the record button the the display panel
-        this.add(recordButton);
-        this.setComponentZOrder(recordButton, 0);
-        this.setComponentZOrder(newQuestionButton, 1);
-        revalidate();
-        repaint();
+            
+        add(newQuestionButton);
     }
 
-    /**
-     * Removes the record button from the new question panel
-     */
-    private void removeRecordButton() {
-        if (recordButton != null) {
-            this.remove(recordButton);
-            recordButton = null;
-            revalidate();
-            repaint();
-        }
-    }
 }
 
 class NewQuestionButton extends AppButtons {
@@ -142,9 +86,7 @@ class NewQuestionButton extends AppButtons {
         super(newQuestionLabel);
         this.setBackground(GREEN);
         this.setForeground(WHITE);
-        setHorizontalAlignment(SwingConstants.LEFT);
-
-        setAlignmentX(Component.LEFT_ALIGNMENT);
+        setHorizontalAlignment(SwingConstants.CENTER);
         setPreferredSize(new Dimension(newQuestionButtonWidth, newQuestionButtonHeight));
     }
 

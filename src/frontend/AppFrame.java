@@ -35,7 +35,7 @@ public class AppFrame extends JFrame {
         sayItAssistant = new SayItAssistant(new WhisperRequest());
         historyManager = new HistoryManager(sayItAssistant);
 
-        // Sets the font, overall display panel, and the history sidepanel
+        // Sets the font, ovierall display panel, and the history sidepanel
         MyFont myFont = new MyFont (new File(HISTORY_FONT_FILE), FONT_SIZE);
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         ge.registerFont(myFont.getFont());
@@ -70,12 +70,12 @@ public class AppFrame extends JFrame {
      * Sets up the panels for the appframe
      */
     private void setUpPanels(MyFont font) {
-        displayPanel = new DisplayPanel();
         historyPanel = new HistoryPanel(font, historyManager);
-        newQuestionPanel = new NewQuestionPanel(font, sayItAssistant);
+        displayPanel = new DisplayPanel(sayItAssistant, historyPanel);
+        //newQuestionPanel = new NewQuestionPanel(font, sayItAssistant);
 
-        displayPanel.addNewQuestionPanel(newQuestionPanel);
-        historyPanel.revalidateHistory(displayPanel);
-        newQuestionPanel.populateNewQuestionPanel(displayPanel, historyPanel);
+        //displayPanel.addNewQuestionPanel(newQuestionPanel);
+        historyPanel.revalidateHistory(displayPanel.getQnAPanel());
+        //newQuestionPanel.populateNewQuestionPanel(displayPanel, historyPanel);
     }
 }
