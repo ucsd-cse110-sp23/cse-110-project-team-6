@@ -1,26 +1,30 @@
 package frontend;
 
-import java.awt.*;
-import java.util.ArrayList;
-import javax.swing.*;
-
 import middleware.Question;
 import middleware.Answer;
 import middleware.HistoryManager;
 
+import javax.swing.*;
+import java.awt.*;
+
+import java.util.ArrayList;
+
+
 /**
- * Displays history of questions and answers
+ * Displays history of questions and answers.
  */
 public class HistoryPanel extends AppPanels {
     
+    // wraps the history panel and adds a scrollbar to it when needed
     private JScrollPane scrollPane = new JScrollPane
         (this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     
-    private HistoryManager historyManager;
+    private HistoryManager historyManager;  // manages the history
 
     /**
-     * Constructor for HistoryPanel class
-     * @param historyManager
+     * Constructor for HistoryPanel class.
+     * 
+     * @param historyManager: manages the history
      */
     public HistoryPanel(HistoryManager historyManager) {
         this.setLayout(new GridLayout(0, 1));
@@ -29,8 +33,9 @@ public class HistoryPanel extends AppPanels {
     }
 
     /**
-     * Revalidates (updates) the history panel
-     * @param display DisplayPanel object which contains the display panel
+     * Revalidates (updates) the history panel.
+     * 
+     * @param qnaPanel: the panel that holds the current question and answer
      */
     public void revalidateHistory(QnAPanel qnaPanel) {
         this.removeAll();
@@ -39,24 +44,27 @@ public class HistoryPanel extends AppPanels {
     }
 
     /**
-     * Returns the scroll pane
-     * @return JScrollPane object which contains the scroll pane
+     * Returns the scroll pane.
+     * 
+     * @return JScrollPane: object which contains the scroll pane
      */
     public JScrollPane getScrollPane() {
         return scrollPane;
     }
 
     /**
-     * Adds a history button to the history panel
-     * @param historyButton HistoryButton object which contains the history button
+     * Adds a history button to the history panel.
+     * 
+     * @param historyButton: the history button to be added
      */
     public void addHistoryButton(HistoryButton historyButton) {
         this.add(historyButton);
     }
 
     /**
-     * Returns the history manager
-     * @return HistoryManager object
+     * Returns the history manager.
+     * 
+     * @return HistoryManager: manages the history
      */
     public HistoryManager getHistoryManager() {
         return historyManager;
@@ -64,18 +72,24 @@ public class HistoryPanel extends AppPanels {
 
     /**
      * Populates the history panel with the history of questions and answers
-     * @param display DisplayPanel object which contains the display panel
+     * 
+     * @param qnaPanel: panel that contains the current question and answer
      */
     public void populateHistoryPanel(QnAPanel qnaPanel) {
 
-        ArrayList<Question> questions = historyManager.getQuestions();
+        ArrayList<Question> questions = historyManager.getQuestions();  // list of the questions that have been asked
+
+        // for each question, creates a button that when clicked displays the full question and the answer associated with it
         for (int i = 0; i < questions.size(); i++) {
+
+            // sets up the question and answer that are to be associated with the button
             Question question = questions.get(i);
             Answer answer = historyManager.getAnswer(i);
             HistoryButton historyButton = new HistoryButton(i, question.toString());
             
             historyButton.setFont(this.myFont.getFont());
             
+            // updates the question and answer panels when clicked
             historyButton.addActionListener(e -> {
                 qnaPanel.setQuestion(question);
                 qnaPanel.setAnswer(answer);
@@ -83,15 +97,26 @@ public class HistoryPanel extends AppPanels {
                 qnaPanel.setForeground(WHITE);
             });
 
-            this.addHistoryButton(historyButton);
+            this.addHistoryButton(historyButton); // add the button to the display
+
         }
     }
 }
 
-
+/*
+ * The history button displays the full question and answer associated with it when pressed.
+ */
 class HistoryButton extends AppButtons {
     
+    /*
+     * Creates the history button.
+     * 
+     * @param id:           the question number
+     * @param displayText:  the text to be displayed
+     */
     public HistoryButton(int id, String displayText) {
+
+        // formats the button
         super(displayText);
         this.buttonWidth = 200;
         this.buttonHeight = 50;
@@ -99,7 +124,6 @@ class HistoryButton extends AppButtons {
         this.setBackground(BLACK);
         this.setForeground(WHITE);
         setHorizontalAlignment(SwingConstants.LEFT);
-
         setAlignmentX(Component.LEFT_ALIGNMENT);
         setPreferredSize(new Dimension(buttonWidth, buttonHeight));
     }

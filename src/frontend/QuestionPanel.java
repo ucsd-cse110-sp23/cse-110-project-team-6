@@ -1,16 +1,22 @@
 package frontend;
 
-import javax.swing.*;
-
 import middleware.Question;
 
+import javax.swing.*;
 import java.awt.*;
 
+/*
+ * Panel that contains the area for questions to be displayed.
+ */
 public class QuestionPanel extends AppPanels{
-    private JTextPane question = new JTextPane();
+    
+    private JTextPane question = new JTextPane();   // area for the question to be displayed with text
     private JScrollPane questionScrollPane = new JScrollPane
-        (this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        (this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);   // wraps the question area and allows it to be scrollable
 
+    /*
+     * Initializes and formats the panel for the question.
+     */
     public QuestionPanel() {
         this.setLayout(new GridLayout(1, 1));
         question.setBackground(GREY);
@@ -21,10 +27,20 @@ public class QuestionPanel extends AppPanels{
         add(question);
     }
 
+    /*
+     * Allows the question area to be explicitly set.
+     * 
+     * @param question: the question to be displayed
+     */
     public void setQuestion(Question question) {
         this.question.setText(question.toString());
     }
 
+    /*
+     * Returns the question area with the scrollbar.
+     * 
+     * @return JScrollPane: the question pane with scrollbar
+     */
     public JScrollPane getQuestionScrollPane() {
         return this.questionScrollPane;
     }

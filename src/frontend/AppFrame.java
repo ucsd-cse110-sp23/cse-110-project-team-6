@@ -1,16 +1,20 @@
 package frontend;
 
-import javax.swing.*;
-
 import middleware.HistoryManager;
 import middleware.SayItAssistant;
 import middleware.WhisperRequest;
 
+import javax.swing.*;
 import java.awt.*;
+
 import java.io.File;
 
+/*
+ * The AppFrame is the overall skeleton of the app, providing the structure and delegating function.
+ */
 public class AppFrame extends JFrame {
 
+    // formatting
     private final String HISTORY_FONT_FILE = "src/fonts/OpenSans-Regular.ttf";
     private final String ICON_FILE         = "src/icon.png";
     private final String APPFRAME_TITLE    = "SayIt Assistant";
@@ -18,6 +22,7 @@ public class AppFrame extends JFrame {
     private final int    APPFRAME_WIDTH    = 1280;
     private final int    APPFRAME_HEIGHT   = 720;
     
+    // paneling
     private DisplayPanel displayPanel;
     private HistoryPanel historyPanel;
     private NewQuestionPanel newQuestionPanel;
@@ -35,7 +40,7 @@ public class AppFrame extends JFrame {
         sayItAssistant = new SayItAssistant(new WhisperRequest());
         historyManager = new HistoryManager(sayItAssistant);
 
-        // Sets the font, ovierall display panel, and the history sidepanel
+        // Sets the font, overall display panel, and the history sidepanel
         MyFont myFont = new MyFont (new File(HISTORY_FONT_FILE), FONT_SIZE);
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         ge.registerFont(myFont.getFont());
@@ -46,11 +51,6 @@ public class AppFrame extends JFrame {
         this.add(displayPanel, BorderLayout.CENTER);
 
         revalidate();
-
-        //TODO: add mouse listener for new Question
-        // Add mouse listener for new question button
-        // newQuestionButton.addMouseListener(
-        //     new MouseAdapter() {
         
     }
 
