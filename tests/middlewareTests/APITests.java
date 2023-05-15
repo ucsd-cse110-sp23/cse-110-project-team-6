@@ -3,11 +3,6 @@ package middlewareTests;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.File;
-
 import middleware.ChatGPTRequest;
 import middleware.IAPIRequest;
 import middleware.MockChatGPTRequest;
