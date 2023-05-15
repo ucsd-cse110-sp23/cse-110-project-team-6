@@ -10,9 +10,9 @@ import java.awt.*;
  */
 public class AnswerPanel extends AppPanels{
 
-    private JTextPane answer = new JTextPane(); // area for the answer to be displayed with text
+    private JTextArea answer = new JTextArea(); // area for the answer to be displayed with text
     private JScrollPane answerScrollPane = new JScrollPane
-        (this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);   // wraps the answer area and allows it to be scrollable
+        (this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);   // wraps the answer area and allows it to be scrollable
 
     /*
      * Initializes and formats the panel for the answer.
@@ -21,6 +21,8 @@ public class AnswerPanel extends AppPanels{
         this.setLayout(new GridLayout(1, 1));
         answer.setBackground(LIGHT_GREY);
         answer.setForeground(WHITE);
+        answer.setLineWrap(true);
+        answer.setWrapStyleWord(true);
         add(answer);
     }
 

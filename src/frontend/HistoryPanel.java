@@ -27,7 +27,7 @@ public class HistoryPanel extends AppPanels {
      * @param historyManager: manages the history
      */
     public HistoryPanel(HistoryManager historyManager) {
-        this.setLayout(new GridLayout(0, 1));
+        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.setBackground(BLACK);
         this.historyManager = historyManager;
     }
@@ -100,7 +100,6 @@ public class HistoryPanel extends AppPanels {
             });
 
             this.addHistoryButton(historyButton); // add the button to the display
-
         }
     }
 }
@@ -117,9 +116,7 @@ class HistoryButton extends AppButtons {
      * @param displayText:  the text to be displayed
      */
     public HistoryButton(int id, String displayText) {
-
-        // formats the button
-        super(displayText);
+        super(displayText + " ".repeat(100));
         this.buttonWidth = 200;
         this.buttonHeight = 50;
         this.id = id;
