@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Class containing all of the tests for the HistoryManager class
  */
-public class StoryTest4 {
+public class FourthStoryTest {
     private static final int NOT_SELECTED = -1;
     private static final String EXPECT_HISTORY_PATH = 
         System.getProperty("user.dir") + "/bin/backend/history.json";

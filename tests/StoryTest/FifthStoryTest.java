@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-public class StoryTest5 {
+public class FifthStoryTest {
     @Test
     public void testClearAllEmpty() {
        /* Scenario 2: There are no questions in SayIt Assistant’s history
