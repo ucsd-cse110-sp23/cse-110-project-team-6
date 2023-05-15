@@ -41,6 +41,7 @@ public class HistoryPanel extends AppPanels {
         this.removeAll();
         this.populateHistoryPanel(qnaPanel);
         revalidate();
+        repaint();
     }
 
     /**
