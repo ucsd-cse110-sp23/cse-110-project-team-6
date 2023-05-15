@@ -12,4 +12,6 @@ Helen opens up her laptop so that she can work on a research project for her his
 The following link serves as a quick access to the UML-diagram which we will be basing our design of SayIt Assistant onto: [UML Diagram](https://lucid.app/documents/embedded/17ab531a-61ba-403e-af4a-f8c5e90cff15)
 
 # Run Instructions
-Double-Click the `SayItAssistant.jar` to run the program!
+Windows: Double-Click the `SayItAssistant.jar` to run the program!
+Linux: `chmod 777 SayItAssistant.jar` --> `java -jar SayItAssistant.jar`
+MacOS: `java -jar SayItAssistant.jar`
