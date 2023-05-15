@@ -75,6 +75,7 @@ class ClearAllButton extends AppButtons {
             qna.setQuestion(new Question("Welcome to SayIt Assistant"));
             qna.setAnswer(new Answer(""));
             revalidate();
+            qna.isSet = false; 
         });
     }
 

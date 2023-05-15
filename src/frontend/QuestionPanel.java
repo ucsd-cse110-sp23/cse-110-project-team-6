@@ -10,9 +10,11 @@ import java.awt.*;
  */
 public class QuestionPanel extends AppPanels{
     
-    private JTextPane question = new JTextPane();   // area for the question to be displayed with text
+    private JTextArea question = new JTextArea();   // area for the question to be displayed with text
     private JScrollPane questionScrollPane = new JScrollPane
-        (this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);   // wraps the question area and allows it to be scrollable
+        (this, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);   // wraps the question area and allows it to be scrollable
+
+    private int currentQuestionNumber; //position of the current question displayed in the database
 
     /*
      * Initializes and formats the panel for the question.
@@ -24,6 +26,8 @@ public class QuestionPanel extends AppPanels{
         question.setAlignmentX(BOTTOM_ALIGNMENT);
         question.setAlignmentY(BOTTOM_ALIGNMENT);
         question.setText("Welcome to SayIt Assistant");
+        question.setLineWrap(true);
+        question.setWrapStyleWord(true);
         add(question);
     }
 
@@ -34,6 +38,7 @@ public class QuestionPanel extends AppPanels{
      */
     public void setQuestion(Question question) {
         this.question.setText(question.toString());
+        currentQuestionNumber = question.getQuestionNumber(); 
     }
 
     /*
@@ -44,4 +49,12 @@ public class QuestionPanel extends AppPanels{
     public JScrollPane getQuestionScrollPane() {
         return this.questionScrollPane;
     }
+
+    /*
+     * getting the position of the current question in the database. 
+     */
+    public int getCurrentQuestionNumber(){
+        return currentQuestionNumber; 
+    }
+
 }

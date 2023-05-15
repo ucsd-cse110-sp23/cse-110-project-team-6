@@ -23,8 +23,9 @@ public class SecondaryButtonsPanel extends AppPanels{
         this.setLayout(new GridLayout(1,2));
 
         ClearAllPanel clearAllPanel = new ClearAllPanel(historyManager, qna, history);
+        deleteSelectedQuestion DeleteSelectedQuestion = new deleteSelectedQuestion(historyManager, qna, history);
 
-        this.addDeletePanel();
+        this.addDeletePanel(DeleteSelectedQuestion);
         this.addClearAllPanel(clearAllPanel);
        
     }
@@ -32,13 +33,8 @@ public class SecondaryButtonsPanel extends AppPanels{
     /*
      * Adds the delete panel to the display.
      */
-    public void addDeletePanel() {
-        JTextArea jt = new JTextArea();
-        jt.setFont(myFont.getFont());
-        jt.setText("Delete Button Area");
-        jt.setBackground(TEAL);
-        jt.setBorder(BorderFactory.createLineBorder(BLACK));
-        add(jt);
+    public void addDeletePanel(deleteSelectedQuestion deleteSelectedQuestion) {
+        add(deleteSelectedQuestion);
     }
 
     /*

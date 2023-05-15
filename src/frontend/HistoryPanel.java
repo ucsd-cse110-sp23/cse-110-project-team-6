@@ -27,7 +27,7 @@ public class HistoryPanel extends AppPanels {
      * @param historyManager: manages the history
      */
     public HistoryPanel(HistoryManager historyManager) {
-        this.setLayout(new GridLayout(0, 1));
+        this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.setBackground(BLACK);
         this.historyManager = historyManager;
     }
@@ -41,6 +41,7 @@ public class HistoryPanel extends AppPanels {
         this.removeAll();
         this.populateHistoryPanel(qnaPanel);
         revalidate();
+        repaint();
     }
 
     /**
@@ -84,6 +85,8 @@ public class HistoryPanel extends AppPanels {
 
             // sets up the question and answer that are to be associated with the button
             Question question = questions.get(i);
+            //set the question with its index from the history:
+            question.setQestionNumber(i);
             Answer answer = historyManager.getAnswer(i);
             HistoryButton historyButton = new HistoryButton(i, question.toString());
             
@@ -94,11 +97,10 @@ public class HistoryPanel extends AppPanels {
                 qnaPanel.setQuestion(question);
                 qnaPanel.setAnswer(answer);
                 qnaPanel.setFont(this.myFont.getFont());
-                qnaPanel.setForeground(WHITE);
+                qnaPanel.setForeground(WHITE);  
             });
 
             this.addHistoryButton(historyButton); // add the button to the display
-
         }
     }
 }
@@ -115,9 +117,7 @@ class HistoryButton extends AppButtons {
      * @param displayText:  the text to be displayed
      */
     public HistoryButton(int id, String displayText) {
-
-        // formats the button
-        super(displayText);
+        super(displayText + " ".repeat(100));
         this.buttonWidth = 200;
         this.buttonHeight = 50;
         this.id = id;

@@ -14,6 +14,7 @@ public class QnAPanel extends AppPanels {
 
     QuestionPanel questionPanel;    // panel for the question
     AnswerPanel answerPanel;        // panel for the answer
+    Boolean isSet = false; //boolean to confirm if there is a question set or not
 
     /*
      * Creates and formats the panel for questions and answers.
@@ -58,6 +59,7 @@ public class QnAPanel extends AppPanels {
      */
     public void setQuestion(Question question) {
         questionPanel.setQuestion(question);
+        isSet = true; //confirm the display is set
     }
 
     /*
@@ -67,5 +69,9 @@ public class QnAPanel extends AppPanels {
      */
     public void setAnswer(Answer answer) {
         answerPanel.setAnswer(answer);
+    }
+    
+    public boolean getStatus(){
+        return this.isSet;
     }
 }
