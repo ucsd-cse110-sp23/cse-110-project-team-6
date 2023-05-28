@@ -3,12 +3,12 @@ package middleware;
 /*
  * This object holds a user's question.
  */
-public class Question implements Prompt{
+public class Question implements IPrompt{
 
     private String question;    // question from user
     private int questionNumber; //number of the question in the database
 
-    public Prompt createPrompt(String prompt){
+    public IPrompt createPrompt(String prompt){
         return new Question(prompt);
     }
     

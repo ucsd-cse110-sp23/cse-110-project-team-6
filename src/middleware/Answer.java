@@ -3,11 +3,11 @@ package middleware;
 /*
  * This object holds the answer to a user's question.
  */
-public class Answer implements Response {
+public class Answer implements IResponse {
 
     private String answer; // answer to a user's question
 
-    public Response createResponse(String response) {
+    public IResponse createResponse(String response) {
         return new Answer(response);
     }
     /*

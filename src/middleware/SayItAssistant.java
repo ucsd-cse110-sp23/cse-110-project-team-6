@@ -13,6 +13,11 @@ public class SayItAssistant implements Subject {
     private Question question;
     private Answer answer;
     private ArrayList<Observer> observers;
+    private PromptFactory promptFactory;
+    private Object[] prompt_command_pair;
+    private IPrompt prompt;
+    private IResponse response;
+    private String command;
 
     /**
      * Constructor for SayItAssistant class
@@ -25,15 +30,18 @@ public class SayItAssistant implements Subject {
     public SayItAssistant(IAPIRequest whisperRequest) {
         observers = new ArrayList<Observer>();
         this.whisperRequest = whisperRequest;
+        this.promptFactory = new PromptFactory();
     }
 
     /**
      * Gets the prompt from the API request class
      * @return
      */
-    private Question getPrompt() {
-        question = new Question(whisperRequest.callAPI());
-        return question;
+    private void getPromptandCommand() {
+        //question = new Question(whisperRequest.callAPI());
+        prompt_command_pair = promptFactory.createPrompt(whisperRequest.callAPI());
+        prompt = (IPrompt) prompt_command_pair[0];
+        command = (String) prompt_command_pair[1];
     }
 
     /**
@@ -59,14 +67,23 @@ public class SayItAssistant implements Subject {
      * @return String containing the response from the API request
      */
     public String[] respond() {
-        question       = getPrompt();
-        answer         = new Answer(getAnswer(question));
+        getPromptandCommand();
+        String[] responseArray;
 
-        // Notify that new question was made
-        notifyObservers();
+        if(command == null) {
+            responseArray = new String[]{"No command found.", "Apologies, no valid command was found within your request. I can assist you if you start your requests with Question, Delete Prompt, Clear All, Setup Email, Create Email, or Send Email to <email>."};
+            question = new Question (responseArray[0]);
+            answer = new Answer (responseArray[1]);
+        }
 
-        String[] responseArray = {question.toString(), answer.toString()};
+        else {
+            answer = new Answer(getAnswer((Question) prompt_command_pair[0]));
+            question = new Question(prompt_command_pair[1] + "\n" + prompt_command_pair[0]);
+            responseArray = new String[]{question.toString(), answer.toString()};//{question.toString(), answer.toString()};
 
+        }
+        System.out.println(responseArray[0] + "\n" + responseArray[1] + "\n");
+        notifyObservers(); 
         return responseArray;
     }
 
