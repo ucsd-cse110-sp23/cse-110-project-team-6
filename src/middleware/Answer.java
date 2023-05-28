@@ -3,10 +3,13 @@ package middleware;
 /*
  * This object holds the answer to a user's question.
  */
-public class Answer {
+public class Answer implements Response {
 
     private String answer; // answer to a user's question
 
+    public Response createResponse(String response) {
+        return new Answer(response);
+    }
     /*
      * Stores the user's answer if it exists.
      * 
