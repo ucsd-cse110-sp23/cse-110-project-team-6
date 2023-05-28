@@ -1,9 +1,10 @@
 package frontend;
 
 import java.awt.*;
-
-import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class MyFont {
 
@@ -15,17 +16,19 @@ public class MyFont {
      * @param fontFile: the file to load the font from
      * @param fontSize: the size that the font should be
      */
-    public MyFont (File fontFile, float fontSize) {
+    public MyFont (String fontFile, float fontSize) {
 
         // makes sure that font format is acceptable
         try {
-            this.myFont = Font.createFont(Font.TRUETYPE_FONT, fontFile);
+            InputStream inStream = new BufferedInputStream(new FileInputStream(fontFile));
+
+            this.myFont = Font.createFont(Font.TRUETYPE_FONT, inStream);
+            this.myFont = this.myFont.deriveFont(fontSize);
         } catch (FontFormatException | IOException e) {
             throw new RuntimeException(e);
         }
 
         // sets the size of the font
-        this.myFont = this.myFont.deriveFont(fontSize);
    } 
 
    /*

@@ -40,7 +40,7 @@ class deleteQuestionButton extends AppButtons{
     deleteQuestionButton(HistoryManager historyManager, QnAPanel qna, HistoryPanel history){
         super(deleteQuestionLabel);
         this.setBackground(TEAL);
-        this.setForeground(WHITE);
+        this.setForeground(BLACK);
         setHorizontalAlignment(SwingConstants.CENTER);
         setPreferredSize(new Dimension(deleteQuestionButtonWidth, deleteQuestionButtonHeight));
         

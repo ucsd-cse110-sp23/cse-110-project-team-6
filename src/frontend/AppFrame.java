@@ -25,7 +25,6 @@ public class AppFrame extends JFrame {
     // paneling
     private DisplayPanel displayPanel;
     private HistoryPanel historyPanel;
-    private NewQuestionPanel newQuestionPanel;
     private SayItAssistant sayItAssistant;
     private HistoryManager historyManager;
 
@@ -34,6 +33,11 @@ public class AppFrame extends JFrame {
      */
     public AppFrame() {
 
+        // Get the relative path of HISTORY_FONT_FILE
+        File file = new File(HISTORY_FONT_FILE);
+        String font_file = file.getAbsolutePath();
+
+
         setInformation();
 
         // Initalizes the history manager and SayIt Assistant for Panels
@@ -41,7 +45,7 @@ public class AppFrame extends JFrame {
         historyManager = new HistoryManager(sayItAssistant);
 
         // Sets the font, overall display panel, and the history sidepanel
-        MyFont myFont = new MyFont (new File(HISTORY_FONT_FILE), FONT_SIZE);
+        MyFont myFont = new MyFont (font_file, FONT_SIZE);
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         ge.registerFont(myFont.getFont());
         setUpPanels();

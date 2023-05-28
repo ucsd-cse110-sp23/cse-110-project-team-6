@@ -63,7 +63,7 @@ class ClearAllButton extends AppButtons {
         // formats the clear all button
         super(clearAllLabel);
         this.setBackground(TEAL);
-        this.setForeground(WHITE);
+        this.setForeground(BLACK);
         setHorizontalAlignment(SwingConstants.CENTER);
         setPreferredSize(new Dimension(ClearAllButtonWidth, ClearAllButtonHeight));
 

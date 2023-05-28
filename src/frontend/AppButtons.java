@@ -13,6 +13,7 @@ public class AppButtons extends JButton {
     protected final static Color WHITE = new Color(255, 255, 255);
     protected final static Color TEAL = new Color(0,126,126);
     protected final static Color GREEN = new Color(0,50,0);
+    protected final static Color LIGHT_GREY = new Color(100,100,100);
 
     // button attributes
     protected int id;
