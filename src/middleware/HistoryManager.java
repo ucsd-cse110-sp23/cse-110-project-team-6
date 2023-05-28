@@ -3,6 +3,7 @@ package middleware;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.MalformedParametersException;
 import java.net.URI;
@@ -232,15 +233,13 @@ public class HistoryManager implements Subject, Observer {
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String body = response.body();
-            JSONObject out = new JSONObject();
-            for(String s: body.split("\n")){
-                JSONObject jsonRes = new JSONObject(s);
-                JSONObject obj = new JSONObject(s);
-                obj.put("Question", jsonRes.getString("Question"));
-                obj.put("Answer", jsonRes.getString("Answer"));
-                out.put(String.valueOf(obj.getInt("id")),obj);
+            JSONObject json = new JSONObject(body);
+            try (FileWriter f = new FileWriter("history.json")) {
+                f.write(json.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            return out;
+            return json;
         }
 
         /**
@@ -308,18 +307,6 @@ public class HistoryManager implements Subject, Observer {
             questionAnswer.put("Answer", newAnswer.toString());
 
             storedJSON.put(Integer.toString(idx), questionAnswer);
-            questionAnswer.put("id", idx);
-            //POST to server
-            try {
-                HttpClient client = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:1337/question"))
-                        .POST(HttpRequest.BodyPublishers.ofString(questionAnswer.toString()))
-                        .build();
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
 
         /**
@@ -327,8 +314,14 @@ public class HistoryManager implements Subject, Observer {
          */
         public void write() {
             try {
-                Files.write(Paths.get(HISTORY_PATH),
+                Files.write(Paths.get("history.json"),
                         storedJSON.toString().getBytes());
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:1337/question"))
+                        .PUT(HttpRequest.BodyPublishers.ofString(storedJSON.toString()))
+                        .build();
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             } catch (Exception e) {
                 e.printStackTrace();
             }

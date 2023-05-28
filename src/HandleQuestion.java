@@ -1,9 +1,6 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.net.URLDecoder;
-import middleware.Answer;
-import middleware.Question;
-import org.json.JSONObject;
 
 import java.io.*;
 import java.util.HashMap;
@@ -15,8 +12,8 @@ public class HandleQuestion implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         String response = "Request Received";
         String method = exchange.getRequestMethod();
-        if(method.equals("POST")) {
-            response = handlePost(exchange);
+        if(method.equals("PUT")) {
+            response = handlePut(exchange);
         }
         else if(method.equals("GET")) {
             response = handleGet(exchange);
@@ -34,9 +31,9 @@ public class HandleQuestion implements HttpHandler {
             sb.append(line);
         return sb.toString();
     }
-    private String handlePost(HttpExchange exchange) throws IOException {
-        FileWriter file = new FileWriter("data.txt", true);
-        file.write(IStoStr(exchange.getRequestBody())+"\n");
+    private String handlePut(HttpExchange exchange) throws IOException {
+        FileWriter file = new FileWriter("data.txt");
+        file.write(IStoStr(exchange.getRequestBody()));
         file.close();
         return "posted";
     }

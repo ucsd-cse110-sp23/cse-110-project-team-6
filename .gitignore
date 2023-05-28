@@ -11,3 +11,4 @@ prompt.wav
 **/*.json
 /src/backend/history.txt
 /src/backend/history.json
+/src/addq.http
