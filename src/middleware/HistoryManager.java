@@ -1,169 +1,24 @@
 package middleware;
 
-import java.lang.reflect.MalformedParametersException;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-
-import java.nio.file.*;
-
-import java.io.*;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.lang.reflect.MalformedParametersException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * Class responsible for grabbing history of questions and answers
  * from the JSON and storing it within the History class.
  */
 public class HistoryManager implements Subject, Observer {
-
-    /**
-     * Nested class of HistoryManager acting as tuple for a question and answer
-     */
-    private class QuestionAnswerPair {
-        private Question question;
-        private Answer answer;
-
-        public QuestionAnswerPair(Question newQuestion, Answer newAnswer) {
-            question = newQuestion;
-            answer   = newAnswer;
-        }
-
-        public Question getQuestion() {
-            return question;
-        }
-
-        public Answer getAnswer() {
-            return answer;
-        }
-    }
-
-    /**
-     * Nested class of HistoryManager responsible for reading and writing
-     * the history of questions and answers to a JSON file
-     */
-    private class JSON_IO implements Observer {
-        private Subject historySubject;
-        private JSONObject storedJSON;
-        
-        /**
-         * Constructor for JSON_IO class which initializes the relevant fields for the class and
-         * History Manager
-         * 
-         * @param HISTORY_PATH path to the JSON file containing the history of questions and answers
-         */
-        private JSON_IO() {
-            try {
-                HistoryManager.this.questions = new ArrayList<Question>();
-                historySubject = HistoryManager.this;
-                historySubject.registerObserver(this);
-                storedJSON = openJSON();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        /**
-         * Open JSON file and read in the history of questions and answers as JSONObject
-         * Creates the directory and file for history if they do not exist
-         * 
-         * @param HISTORY_PATH path to the JSON file containing the history of questions and answers
-         */
-        private JSONObject openJSON() {
-            try {
-                Files.createDirectories(Paths.get(HISTORY_DIR));
-                File storedHistory = new File(HISTORY_PATH);
-                if (storedHistory.createNewFile() || storedHistory.length() == 0) {
-                    return new JSONObject();
-                } else {
-                    String rawJSON  = new String(Files.readAllBytes(Paths.get(HISTORY_PATH)));
-                    return new JSONObject(rawJSON);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        /**
-         * Updates the JSON file with the most recent question and answer
-         * 
-         * @require args[0] instanceof QuestionAnswerPair
-         * @param args Object... args containing the history of questions and answers
-         */
-        @Override
-        public void update(Question newQuestion, Answer newAnswer) {
-            storedJSON = new JSONObject();
-            for (int i = 0; i < history.size(); i++) {
-                QuestionAnswerPair qaPair = history.get(i);
-                add(qaPair.getQuestion(), qaPair.getAnswer());
-            }
-            write();
-        }
-
-        /**
-         * Reads in the history of questions and answers from the JSON file
-         * @return LinkedHashMap<Integer, QuestionAnswerPair> history of questions and answers
-         */
-        public LinkedHashMap<Integer, QuestionAnswerPair> readHistory() {
-            LinkedHashMap<Integer, QuestionAnswerPair> history 
-                = new LinkedHashMap<Integer, QuestionAnswerPair>();
-
-            JSONArray storedQA = storedJSON.names();
-            
-            if (storedQA == null) {
-                return history;
-            }
-
-            // Iterate through the JSON and split it into questions and answers
-            for (int idx = 0; idx < storedQA.length(); idx++) {
-                JSONObject questionAnswer = storedJSON.getJSONObject(Integer.toString(idx));
-
-                Question questionObj = new Question(questionAnswer.getString("Question"));
-                // Tracks questions in order for HistoryManager
-                HistoryManager.this.questions.add(questionObj);
-                Answer answerObj     = new Answer(questionAnswer.getString("Answer"));
-
-                QuestionAnswerPair qaPair = new QuestionAnswerPair(questionObj, answerObj);
-
-                history.put(idx, qaPair);
-            }
-
-            return history;
-        }
-
-        /**
-         * Updates the stored JSON with the most recent question and answer
-         * @require newQuestion != null && newAnswer != null &&
-         *          newQuestion instanceof Question && newAnswer instanceof Answer
-         * @param newQuestion Question object containing the question asked
-         * @param newAnswer Answer object containing the answer to the question asked
-         */
-        public void add(Question newQuestion, Answer newAnswer) {
-            int idx = storedJSON.length();
-
-            JSONObject questionAnswer = new JSONObject();
-
-            questionAnswer.put("Question", newQuestion.toString());
-            questionAnswer.put("Answer", newAnswer.toString());
-
-            storedJSON.put(Integer.toString(idx), questionAnswer);
-        }
-
-        /**
-         * Writes the history of questions and answers to a JSON file
-         */
-        public void write() {
-            try {
-                Files.write(Paths.get(HISTORY_PATH), 
-                            storedJSON.toString().getBytes());
-                
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     private static final String HISTORY_DIR = System.getProperty("user.dir") + "/bin/backend";
     private static final String HISTORY_PATH = HISTORY_DIR + "/history.json";
@@ -172,24 +27,25 @@ public class HistoryManager implements Subject, Observer {
     private LinkedHashMap<Integer, QuestionAnswerPair> history;
     private ArrayList<Question> questions;
     private ArrayList<Observer> observers;
-    
     /**
      * Constructor for HistoryManager class
+     *
      * @param HISTORY_PATH path to the JSON file containing the history of
      */
     public HistoryManager(SayItAssistant assistantSubject) {
         observers = new ArrayList<Observer>();
-        jsonIO    = new JSON_IO();
-        history   = jsonIO.readHistory();
+        jsonIO = new JSON_IO();
+        history = jsonIO.readHistory();
         this.assistantSubject = assistantSubject;
         this.assistantSubject.registerObserver(this);
     }
 
     /**
      * Getter method for the answer to a given question indicated by that question's number
-     * @require questionNum >= 0 && questionNum < history.size() && knowledge of questionNum
+     *
      * @param questionNum index of the question in the history of all questions asked
      * @return Answer object containing the answer to the given question
+     * @require questionNum >= 0 && questionNum < history.size() && knowledge of questionNum
      */
     public Answer getAnswer(int questionNum) {
         return history.get(questionNum).getAnswer();
@@ -197,6 +53,7 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Getter method for the list of all questions asked
+     *
      * @return ArrayList<Question> list of all questions asked
      */
     public ArrayList<Question> getQuestions() {
@@ -205,6 +62,7 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Getter method for the number of questions asked
+     *
      * @return int number of questions asked
      */
     public int getHistorySize() {
@@ -235,10 +93,10 @@ public class HistoryManager implements Subject, Observer {
         Question recentQuestion = null;
         Answer recentAnswer = null;
         if (history.size() != 0) {
-            recentQuestion   = history.get(history.size() - 1).getQuestion();
-            recentAnswer     = history.get(history.size() - 1).getAnswer();
+            recentQuestion = history.get(history.size() - 1).getQuestion();
+            recentAnswer = history.get(history.size() - 1).getAnswer();
         }
-        
+
         for (Observer o : observers) {
             o.update(recentQuestion, recentAnswer);
         }
@@ -246,10 +104,11 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Updates the history of questions and answers with the most recent question and answer
-     * @require newQuestion != null && newAnswer != null && 
-     *          newQuestion instanceof Question && newAnswer instanceof Answer
+     *
      * @param question Question object containing the question asked
-     * @param answer Answer object containing the answer to the question asked
+     * @param answer   Answer object containing the answer to the question asked
+     * @require newQuestion != null && newAnswer != null &&
+     * newQuestion instanceof Question && newAnswer instanceof Answer
      */
     public void add(Question newQuestion, Answer newAnswer) {
         if (newQuestion == null || newAnswer == null) {
@@ -265,6 +124,7 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Updates the history of questions and answers with the most recent question and answer
+     *
      * @param questionNum
      */
     @Override
@@ -274,14 +134,17 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Deletes the question and answer indicated by the question number
-     * @require questionNum >= 0 && questionNum < history.size() && knowledge of questionNum
+     *
      * @param question
+     * @require questionNum >= 0 && questionNum < history.size() && knowledge of questionNum
      */
     public void delete(int questionNum) {
         // Store answers to rebuild history
         ArrayList<Answer> answers = new ArrayList<Answer>();
-        for (Integer i : history.keySet()) { answers.add(history.get(i).getAnswer()); }
-        
+        for (Integer i : history.keySet()) {
+            answers.add(history.get(i).getAnswer());
+        }
+
         history.remove(questionNum);
         questions.remove(questionNum);
         answers.remove(questionNum);
@@ -296,14 +159,179 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Clears all questions and answers from the history
+     *
      * @param question
      */
     public void clearAll() {
-        if (history.size() == 0) { return; }
-        
+        if (history.size() == 0) {
+            return;
+        }
+
         // Delete backwards to avoid index out of bounds
         for (int i = history.size() - 1; i >= 0; i--) {
             delete(i);
+        }
+    }
+
+    /**
+     * Nested class of HistoryManager acting as tuple for a question and answer
+     */
+    private class QuestionAnswerPair {
+        private Question question;
+        private Answer answer;
+
+        public QuestionAnswerPair(Question newQuestion, Answer newAnswer) {
+            question = newQuestion;
+            answer = newAnswer;
+        }
+
+        public Question getQuestion() {
+            return question;
+        }
+
+        public Answer getAnswer() {
+            return answer;
+        }
+    }
+
+    /**
+     * Nested class of HistoryManager responsible for reading and writing
+     * the history of questions and answers to a JSON file
+     */
+    private class JSON_IO implements Observer {
+        private Subject historySubject;
+        private JSONObject storedJSON;
+
+        /**
+         * Constructor for JSON_IO class which initializes the relevant fields for the class and
+         * History Manager
+         *
+         * @param HISTORY_PATH path to the JSON file containing the history of questions and answers
+         */
+        private JSON_IO() {
+            try {
+                HistoryManager.this.questions = new ArrayList<Question>();
+                historySubject = HistoryManager.this;
+                historySubject.registerObserver(this);
+                storedJSON = openJSON();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        /**
+         * Open JSON file and read in the history of questions and answers as JSONObject
+         * Creates the directory and file for history if they do not exist
+         *
+         * @param HISTORY_PATH path to the JSON file containing the history of questions and answers
+         */
+        private JSONObject openJSON() throws IOException, InterruptedException {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:1337/question"))
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            String body = response.body();
+            JSONObject out = new JSONObject();
+            for(String s: body.split("\n")){
+                JSONObject jsonRes = new JSONObject(s);
+                JSONObject obj = new JSONObject(s);
+                obj.put("Question", jsonRes.getString("Question"));
+                obj.put("Answer", jsonRes.getString("Answer"));
+                out.put(String.valueOf(obj.getInt("id")),obj);
+            }
+            return out;
+        }
+
+        /**
+         * Updates the JSON file with the most recent question and answer
+         *
+         * @param args Object... args containing the history of questions and answers
+         * @require args[0] instanceof QuestionAnswerPair
+         */
+        @Override
+        public void update(Question newQuestion, Answer newAnswer) {
+            storedJSON = new JSONObject();
+            for (int i = 0; i < history.size(); i++) {
+                QuestionAnswerPair qaPair = history.get(i);
+                add(qaPair.getQuestion(), qaPair.getAnswer());
+            }
+            write();
+        }
+
+        /**
+         * Reads in the history of questions and answers from the JSON file
+         *
+         * @return LinkedHashMap<Integer, QuestionAnswerPair> history of questions and answers
+         */
+        public LinkedHashMap<Integer, QuestionAnswerPair> readHistory() {
+            LinkedHashMap<Integer, QuestionAnswerPair> history
+                    = new LinkedHashMap<Integer, QuestionAnswerPair>();
+
+            JSONArray storedQA = storedJSON.names();
+
+            if (storedQA == null) {
+                return history;
+            }
+
+            // Iterate through the JSON and split it into questions and answers
+            for (int idx = 0; idx < storedQA.length(); idx++) {
+                JSONObject questionAnswer = storedJSON.getJSONObject(Integer.toString(idx));
+
+                Question questionObj = new Question(questionAnswer.getString("Question"));
+                // Tracks questions in order for HistoryManager
+                HistoryManager.this.questions.add(questionObj);
+                Answer answerObj = new Answer(questionAnswer.getString("Answer"));
+
+                QuestionAnswerPair qaPair = new QuestionAnswerPair(questionObj, answerObj);
+
+                history.put(idx, qaPair);
+            }
+
+            return history;
+        }
+
+        /**
+         * Updates the stored JSON with the most recent question and answer
+         *
+         * @param newQuestion Question object containing the question asked
+         * @param newAnswer   Answer object containing the answer to the question asked
+         * @require newQuestion != null && newAnswer != null &&
+         * newQuestion instanceof Question && newAnswer instanceof Answer
+         */
+        public void add(Question newQuestion, Answer newAnswer) {
+            int idx = storedJSON.length();
+
+            JSONObject questionAnswer = new JSONObject();
+
+            questionAnswer.put("Question", newQuestion.toString());
+            questionAnswer.put("Answer", newAnswer.toString());
+
+            storedJSON.put(Integer.toString(idx), questionAnswer);
+            questionAnswer.put("id", idx);
+            //POST to server
+            try {
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:1337/question"))
+                        .POST(HttpRequest.BodyPublishers.ofString(questionAnswer.toString()))
+                        .build();
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        /**
+         * Writes the history of questions and answers to a JSON file
+         */
+        public void write() {
+            try {
+                Files.write(Paths.get(HISTORY_PATH),
+                        storedJSON.toString().getBytes());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

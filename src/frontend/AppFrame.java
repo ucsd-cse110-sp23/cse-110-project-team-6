@@ -28,32 +28,39 @@ public class AppFrame extends JFrame {
     private NewQuestionPanel newQuestionPanel;
     private SayItAssistant sayItAssistant;
     private HistoryManager historyManager;
-
+    private boolean loggedIn = false;
     /**
      * Constructor for AppFrame class which coordinates the GUI
      */
     public AppFrame() {
-
+        MyFont myFont = new MyFont(new File(HISTORY_FONT_FILE), FONT_SIZE);
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        ge.registerFont(myFont.getFont());
         setInformation();
+        LoginWindow loginWindow = new LoginWindow();
+        this.add(loginWindow);
+        AbstractButton loginWindowButton = loginWindow.getButton();
+        loginWindowButton.addActionListener(e -> {
+            loggedIn = true; //TODO: Add login functionality
+            this.remove(loginWindow);
+            setupQuestion();
+            revalidate();
+        });
+        revalidate();
+    }
 
+    private void setupQuestion(){
         // Initalizes the history manager and SayIt Assistant for Panels
         sayItAssistant = new SayItAssistant(new WhisperRequest());
         historyManager = new HistoryManager(sayItAssistant);
 
         // Sets the font, overall display panel, and the history sidepanel
-        MyFont myFont = new MyFont (new File(HISTORY_FONT_FILE), FONT_SIZE);
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        ge.registerFont(myFont.getFont());
         setUpPanels();
 
         // adds the history panel and display panel to the appframe
         this.add(historyPanel.getScrollPane(), BorderLayout.WEST);
         this.add(displayPanel, BorderLayout.CENTER);
-
-        revalidate();
-        
     }
-
     /**
      * Sets the information for the appframe
      */
