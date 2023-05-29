@@ -1,5 +1,4 @@
 package frontend;
-
 import middleware.HistoryManager;
 
 import javax.swing.*;
@@ -8,6 +7,7 @@ import java.awt.*;
 /*
  * Panel that contains the secondary function buttons (delete, clear all).
  */
+
 public class SecondaryButtonsPanel extends AppPanels{
 
     /*
@@ -18,7 +18,7 @@ public class SecondaryButtonsPanel extends AppPanels{
      * @param qnaPanel:         panel for the questions and answers
      * @param history:          panel for the history
      */
-    public SecondaryButtonsPanel(HistoryManager historyManager, QnAPanel qna, HistoryPanel history) {
+    public SecondaryButtonsPanel(HistoryManager historyManager, PromptAndResponsePanel qna, HistoryPanel history) {
         this.setPreferredSize(new Dimension(400,20));
         this.setLayout(new GridLayout(1,2));
 

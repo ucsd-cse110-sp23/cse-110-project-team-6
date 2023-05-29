@@ -37,7 +37,7 @@ public class HistoryPanel extends AppPanels {
      * 
      * @param qnaPanel: the panel that holds the current question and answer
      */
-    public void revalidateHistory(QnAPanel qnaPanel) {
+    public void revalidateHistory(PromptAndResponsePanel qnaPanel) {
         this.removeAll();
         this.populateHistoryPanel(qnaPanel);
         revalidate();
@@ -76,7 +76,7 @@ public class HistoryPanel extends AppPanels {
      * 
      * @param qnaPanel: panel that contains the current question and answer
      */
-    public void populateHistoryPanel(QnAPanel qnaPanel) {
+    public void populateHistoryPanel(PromptAndResponsePanel qnaPanel) {
 
         ArrayList<Question> questions = historyManager.getQuestions();  // list of the questions that have been asked
 
@@ -86,7 +86,7 @@ public class HistoryPanel extends AppPanels {
             // sets up the question and answer that are to be associated with the button
             Question question = questions.get(i);
             //set the question with its index from the history:
-            question.setQestionNumber(i);
+            question.setPromptNumber(i);
             Answer answer = historyManager.getAnswer(i);
             HistoryButton historyButton = new HistoryButton(i, question.toString());
             
@@ -94,8 +94,8 @@ public class HistoryPanel extends AppPanels {
             
             // updates the question and answer panels when clicked
             historyButton.addActionListener(e -> {
-                qnaPanel.setQuestion(question);
-                qnaPanel.setAnswer(answer);
+                qnaPanel.setPrompt(question);
+                qnaPanel.setResponse(answer);
                 qnaPanel.setFont(this.myFont.getFont());
                 qnaPanel.setForeground(BLACK);  
             });

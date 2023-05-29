@@ -76,6 +76,6 @@ public class AppFrame extends JFrame {
     private void setUpPanels() {
         historyPanel = new HistoryPanel(historyManager);
         displayPanel = new DisplayPanel(sayItAssistant, historyPanel, historyManager);
-        historyPanel.revalidateHistory(displayPanel.getQnAPanel());
+        historyPanel.revalidateHistory(displayPanel.getPromptAndResponsePanel());
     }
 }

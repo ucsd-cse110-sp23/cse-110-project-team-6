@@ -25,7 +25,7 @@ public class StartPanel extends AppPanels {
      * @param qna:          panel for questions and answers
      * @param history:      panel for the history
      */
-    public StartPanel(SayItAssistant assistant, QnAPanel qna, HistoryPanel history, HistoryManager historyManager) {
+    public StartPanel(SayItAssistant assistant, PromptAndResponsePanel qna, HistoryPanel history, HistoryManager historyManager) {
         this.setLayout(new GridLayout(0,1));
         this.assistant = assistant;
         this.recorder = new VoiceRecorder(targetDataLine);
@@ -49,7 +49,7 @@ public class StartPanel extends AppPanels {
      * @param qna:      panel for questions and answers
      * @param history:  panel for the history
      */
-    public void populateStartPanel(QnAPanel qna, HistoryPanel history) {
+    public void populateStartPanel(PromptAndResponsePanel qna, HistoryPanel history) {
 
         StartButton StartButton = new StartButton();    
         
@@ -71,8 +71,8 @@ public class StartPanel extends AppPanels {
 
                 // displays the question and answer
                 String[] response = assistant.respond();
-                qna.setQuestion(new Question(response[0]));
-                qna.setAnswer(new Answer(response[1]));
+                qna.setPrompt(new Question(response[0]));
+                qna.setResponse(new Answer(response[1]));
                 history.revalidateHistory(qna);
                 StartButton.setEnabled(true);
                 revalidate();

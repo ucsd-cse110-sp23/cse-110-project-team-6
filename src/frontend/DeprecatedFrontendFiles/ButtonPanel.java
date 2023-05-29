@@ -22,7 +22,7 @@ public class ButtonPanel extends AppPanels{
      * @param history:          the panel that holds the history
      * @param historyManager:   manages the history of the app
      */
-    public ButtonPanel(SayItAssistant sayItAssistant, QnAPanel qna, HistoryPanel history, HistoryManager historyManager) {
+    public ButtonPanel(SayItAssistant sayItAssistant, PromptAndResponsePanel qna, HistoryPanel history, HistoryManager historyManager) {
 
         // formatting and structuring the button panel
         this.assistant = sayItAssistant;

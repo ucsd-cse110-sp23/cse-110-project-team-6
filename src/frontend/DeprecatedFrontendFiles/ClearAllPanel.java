@@ -20,7 +20,7 @@ public class ClearAllPanel extends JPanel {
      * @param qna:              panel for the questions / answers
      * @param history:          panel for the history
      */
-    public ClearAllPanel(HistoryManager historyManager, QnAPanel qna, HistoryPanel history) {
+    public ClearAllPanel(HistoryManager historyManager, PromptAndResponsePanel qna, HistoryPanel history) {
         this.setLayout(new GridLayout(1,1));
 
         // creates the button and adds it to the panel to be displayed
@@ -59,7 +59,7 @@ class ClearAllButton extends AppButtons {
      * @param qna:              panel for the questions and answers
      * @param history:          panel for the history
      */
-    public ClearAllButton(HistoryManager historyManager, QnAPanel qna, HistoryPanel history) {
+    public ClearAllButton(HistoryManager historyManager, PromptAndResponsePanel qna, HistoryPanel history) {
 
         // formats the clear all button
         super(clearAllLabel);
@@ -73,8 +73,8 @@ class ClearAllButton extends AppButtons {
         addActionListener(e -> {
             historyManager.clearAll();
             history.revalidateHistory(qna);
-            qna.setQuestion(new Question("Welcome to SayIt Assistant"));
-            qna.setAnswer(new Answer(""));
+            qna.setPrompt(new Question("Welcome to SayIt Assistant"));
+            qna.setResponse(new Answer(""));
             revalidate();
             qna.isSet = false; 
         });

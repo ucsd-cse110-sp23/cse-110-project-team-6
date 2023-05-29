@@ -26,7 +26,7 @@ public class NewQuestionPanel extends AppPanels {
      * @param qna:          panel for questions and answers
      * @param history:      panel for the history
      */
-    public NewQuestionPanel(SayItAssistant assistant, QnAPanel qna, HistoryPanel history) {
+    public NewQuestionPanel(SayItAssistant assistant, PromptAndResponsePanel qna, HistoryPanel history) {
         this.setLayout(new GridLayout(0,1));
         this.assistant = assistant;
         this.recorder = new VoiceRecorder(targetDataLine);
@@ -49,7 +49,7 @@ public class NewQuestionPanel extends AppPanels {
      * @param qna:      panel for questions and answers
      * @param history:  panel for the history
      */
-    public void populateNewQuestionPanel(QnAPanel qna, HistoryPanel history) {
+    public void populateNewQuestionPanel(PromptAndResponsePanel qna, HistoryPanel history) {
 
         NewQuestionButton newQuestionButton = new NewQuestionButton();    
         
@@ -71,8 +71,8 @@ public class NewQuestionPanel extends AppPanels {
 
                 // displays the question and answer
                 String[] response = assistant.respond();
-                qna.setQuestion(new Question(response[0]));
-                qna.setAnswer(new Answer(response[1]));
+                qna.setPrompt(new Question(response[0]));
+                qna.setResponse(new Answer(response[1]));
                 history.revalidateHistory(qna);
                 newQuestionButton.setEnabled(true);
                 revalidate();

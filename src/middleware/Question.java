@@ -40,14 +40,14 @@ public class Question implements IPrompt{
     /*
      * associate the question to its respective number in the history
      */
-    public void setQestionNumber(int n){
-        questionNumber = n; 
+    public void setPromptNumber(int promptNumber){
+        questionNumber = promptNumber; 
     }
 
     /*
      * get the current number of the question in the database. 
      */
-    public int getQuestionNumber(){
+    public int getPromptNumber(){
         return this.questionNumber; 
     }
 

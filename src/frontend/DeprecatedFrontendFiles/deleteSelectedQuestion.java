@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 
 @Deprecated
 public class deleteSelectedQuestion extends JPanel{
-    public deleteSelectedQuestion(HistoryManager historyManager, QnAPanel qna, HistoryPanel history){
+    public deleteSelectedQuestion(HistoryManager historyManager, PromptAndResponsePanel qna, HistoryPanel history){
         this.setLayout(new GridLayout(1,1));
         
         deleteQuestionButton deleteButton = new deleteQuestionButton(historyManager, qna, history);
@@ -38,7 +38,7 @@ class deleteQuestionButton extends AppButtons{
      private final int deleteQuestionButtonHeight = 50;
      private final static String deleteQuestionLabel = "Delete Question";
 
-    deleteQuestionButton(HistoryManager historyManager, QnAPanel qna, HistoryPanel history){
+    deleteQuestionButton(HistoryManager historyManager, PromptAndResponsePanel qna, HistoryPanel history){
         super(deleteQuestionLabel);
         this.setBackground(TEAL);
         this.setForeground(BLACK);
@@ -48,10 +48,10 @@ class deleteQuestionButton extends AppButtons{
         //mouse listener that takes the current int from the display and deletes it, setting back the display to the default. 
         addActionListener(e -> {
             if (qna.getStatus() == true){
-                historyManager.delete(qna.questionPanel.getCurrentQuestionNumber());
+                historyManager.delete(qna.questionPanel.getCurrentPromptNumber());
                 history.revalidateHistory(qna);
-                qna.setQuestion(new Question("Welcome to SayIt Assistant"));
-                qna.setAnswer(new Answer(""));
+                qna.setPrompt(new Question("Welcome to SayIt Assistant"));
+                qna.setResponse(new Answer(""));
                 revalidate();
                 qna.isSet = false;
             }

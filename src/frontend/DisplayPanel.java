@@ -14,7 +14,7 @@ public class DisplayPanel extends AppPanels {
     private SayItAssistant sayItAssistant;
 
     // panels that are contained within the display panel
-    QnAPanel qnaPanel;
+    PromptAndResponsePanel promptAndResponsePanel;
     HistoryPanel historyPanel;
     StartPanel startPanel;
 
@@ -31,29 +31,29 @@ public class DisplayPanel extends AppPanels {
         this.sayItAssistant = sayItAssistant;
         this.setLayout(new GridBagLayout());
         GridBagConstraints displayFormat = new GridBagConstraints();    // this allows for finer control over formatting than GridLayout previously did
-        this.qnaPanel = new QnAPanel();
+        this.promptAndResponsePanel = new PromptAndResponsePanel();
         this.historyPanel = historyPanel;
-        this.startPanel = new StartPanel(sayItAssistant, qnaPanel, historyPanel, historyManager);
+        this.startPanel = new StartPanel(sayItAssistant, promptAndResponsePanel, historyPanel, historyManager);
 
         // adds the subpanels to the display
-        addQnAPanel(qnaPanel, displayFormat);
+        addPromptAndResponsePanel(promptAndResponsePanel, displayFormat);
         addStartPanel(startPanel, displayFormat);
     }
 
     /*
      * Formats the panel for questions and answers and adds it to the display.
      * 
-     * @param qnaPanel:         panel to be added
+     * @param promptAndResponsePanel:         panel to be added
      * @param displayFormat:    defines the formatting of the panel
      */
-    public void addQnAPanel(QnAPanel qnaPanel, GridBagConstraints displayFormat) {
+    public void addPromptAndResponsePanel(PromptAndResponsePanel promptAndResponsePanel, GridBagConstraints displayFormat) {
 
-        // qna panel will fill up the display panel all the way horizontally and only 75% of the screen vertically
+        // prompt and response panel will fill up the display panel all the way horizontally and only 75% of the screen vertically
         displayFormat.fill = GridBagConstraints.BOTH;
         displayFormat.weightx = 1.0;
         displayFormat.weighty = 0.75;
         displayFormat.gridy = 0;
-        add(qnaPanel, displayFormat);
+        add(promptAndResponsePanel, displayFormat);
     }
 
     /*
@@ -69,17 +69,17 @@ public class DisplayPanel extends AppPanels {
         displayFormat.weightx = 1.0;
         displayFormat.weighty = 0.25;
         displayFormat.gridy = 1;    // button panel should be on top
-        startPanel.setMaximumSize(new Dimension(20,20));   // keeping the maximum size small ensures that it is exceeded, making the button and qna panels size ratio remain constant
+        startPanel.setMaximumSize(new Dimension(20,20));   // keeping the maximum size small ensures that it is exceeded, making the button and prompt and response panels size ratio remain constant
         add(startPanel, displayFormat);
     }
 
     /*
-     * Returns the qna panel on the display.
+     * Returns the prompt and response panel on the display.
      * 
-     * @return QnAPanel: the qna panel that is on the display
+     * @return PromptAndResponsePanel: the prompt and response panel that is on the display
      */
-    public QnAPanel getQnAPanel() {
-        return this.qnaPanel;
+    public PromptAndResponsePanel getPromptAndResponsePanel() {
+        return this.promptAndResponsePanel;
     }
     
 }
