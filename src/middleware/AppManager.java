@@ -3,11 +3,22 @@ import java.util.ArrayList;
 
 import frontend.*;
 
-public class AppManager implements StartButtonObserver{
+/**
+ * Class which manages the logic of the UI of the app. 
+ * 
+ * Coordinates the various frames and panels of the app.
+ * 
+ * @field appFrame: the main frame of the app
+ * @field historyPanel: the panel which displays the history of questions
+ * @field displayPanel: the panel which displays the question and answer
+ * @field historyManager: the manager which handles the history of questions
+ * @field sayItAssistant: the assistant which handles the logic of the app
+ */
+public class AppManager implements Observer {
     
-    private AppFrame appFrame;
-    private HistoryPanel historyPanel;
-    private DisplayPanel displayPanel;
+    private AppFrame       appFrame;
+    private HistoryPanel   historyPanel;
+    private DisplayPanel   displayPanel;
     private HistoryManager historyManager;
     private SayItAssistant sayItAssistant;
 
@@ -16,14 +27,14 @@ public class AppManager implements StartButtonObserver{
      */
     public AppManager() {
 
-        this.appFrame = new AppFrame(); 
+        this.appFrame     = new AppFrame(); 
         this.historyPanel = appFrame.getHistoryPanel();
         this.displayPanel = appFrame.getDisplayPanel();
 
         this.sayItAssistant = new SayItAssistant(new WhisperRequest());
         this.historyManager = new HistoryManager(this.sayItAssistant);
 
-        // this statement starts the main functionality and logic of the app
+        // Starts main functionality of the app
         run();
     }
 
@@ -38,30 +49,35 @@ public class AppManager implements StartButtonObserver{
     }
 
     /*
-     * Creates buttons for each prompt in the history and then puts the buttons in the history panel.
+     * Creates buttons for each prompt in the history 
+     * and then puts the buttons in the history panel.
      */
     public void populateHistoryPanel() {
 
         historyPanel.removeAll();
 
-        ArrayList<Question> questions = historyManager.getQuestions();  // list of the questions that have been asked
+        ArrayList<IPrompt> questions = historyManager.getPrompts();
 
-        // for each question, creates a button that when clicked displays the full question and the answer associated with it
+        // Creates button to get the previous prompt and response for each question
         for (int i = 0; i < questions.size(); i++) {
 
-            // sets up the question and answer that are to be associated with the button
+            // Sets prompt associated with button
             IPrompt prompt = questions.get(i);
 
-            //set the question with its index from the history:
+            // Set the question with its index from the history
             prompt.setPromptNumber(i);
-            IResponse response = historyManager.getAnswer(i);
-            HistoryButton historyButton = new HistoryButton(i, prompt.toString());
-            historyButton.registerHistoryButtonObserver(displayPanel.getPromptAndResponsePanel());
+
+            // Set the response associated with the prompt
+            IResponse response = historyManager.getResponse(i);
+
+            HistoryButton historyButton = new HistoryButton(i, prompt, response);
             historyButton.setFont(historyPanel.myFont.getFont());
+
+            historyButton.registerObserver(displayPanel.getPromptAndResponsePanel());
             
             // updates the question and answer panels when clicked
             historyButton.addActionListener(e -> {
-                historyButton.notifyHistoryButtonObservers(prompt, response); 
+                historyButton.notifyObservers(); 
             });
 
             historyPanel.addHistoryButton(historyButton); // add the button to the display
@@ -81,8 +97,8 @@ public class AppManager implements StartButtonObserver{
         // the order that the observers are registered below is important!!!
         // If the order changes, the new prompt will not be displayed and the
         // user will instead have to click on it in the history panel to see it.
-        startButton.registerStartButtonObserver(this);
-        startButton.registerStartButtonObserver(displayPanel.getPromptAndResponsePanel());
+        startButton.registerObserver(this);
+        startButton.registerObserver(displayPanel.getPromptAndResponsePanel());
         displayPanel.addStartButton(startButton);
 
         appFrame.revalidate();
@@ -96,6 +112,4 @@ public class AppManager implements StartButtonObserver{
     public void update(IPrompt prompt, IResponse response) {
         populateHistoryPanel();
     }
-
-
 }

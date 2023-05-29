@@ -11,48 +11,55 @@ import java.awt.event.MouseEvent;;
 /*
  * The new question button allows the user to record and submit questions.
  */
-public class StartButton extends frontend.AppButtons implements StartButtonSubject {
+public class StartButton extends frontend.AppButtons implements Subject {
 
     // formatting for the new question button
     private final int StartButtonWidth = 1200;
     private final int StartButtonHeight = 50;
     private final static String StartButtonLabel = "Start";
+    private final static String RecordingLabel = "Recording...";
     private VoiceRecorder recorder;
     private TargetDataLine targetDataLine;
-    private ArrayList<StartButtonObserver> observers;
+    private ArrayList<Observer> observers;
+    private IPrompt prompt;
+    private IResponse response;
 
     /*
-     * Creates and formats the new question button.
+     * Creates and formats the Start button
      */
     public StartButton(SayItAssistant assistant) {
         super(StartButtonLabel);
         this.recorder = new VoiceRecorder(targetDataLine);
         this.setBackground(GREEN);
         this.setForeground(BLACK);
-        this.observers = new ArrayList<StartButtonObserver>();
+        this.observers = new ArrayList<Observer>();
         setHorizontalAlignment(SwingConstants.CENTER);
         setPreferredSize(new Dimension(StartButtonWidth, StartButtonHeight));
         addMouseListener(new MouseAdapter() {
 
-            // when pressed, voice recording will commence
+            // Commence voice recording once the button is pressed
             @Override
             public void mousePressed(MouseEvent e) {
                 setEnabled(false);
+                setText(RecordingLabel);
                 revalidate();
                 recorder.startRecording();
             }
 
-            // once released, voice recording will stop and the question / answer will be displayed
+            // Terminate voice recording once the button is released
             @Override
             public void mouseReleased(MouseEvent e) {
 
                 recorder.stopRecording();
+                setText(StartButtonLabel);
 
-                // displays the question and answer
-                String[] response = assistant.respond();
+                // Get the prompt and response from the assistant
+                PromptResponsePair promptResponse = assistant.respond();
 
-                // **************************TODO: CHANGE THIS TO WORK FOR ALL PROMPT / RESPONSE TYPES**********************************
-                notifyStartButtonObservers(new Question(response[0]), new Answer(response[1]));
+                prompt   = promptResponse.getPrompt();
+                response = promptResponse.getResponse();
+
+                notifyObservers();
                 setEnabled(true);
                 revalidate();
             }
@@ -61,19 +68,19 @@ public class StartButton extends frontend.AppButtons implements StartButtonSubje
     }
 
     @Override
-    public void registerStartButtonObserver(StartButtonObserver o) {
+    public void registerObserver(Observer o) {
         observers.add(o);
     }
 
     @Override
-    public void removeHStartButtonObserver(StartButtonObserver o) {
+    public void removeObserver(Observer o) {
         observers.remove(o);
     }
 
     @Override
-    public void notifyStartButtonObservers(IPrompt prompt, IResponse response) {
+    public void notifyObservers() {
         System.out.println("Start button is notifying observers");
-        for (StartButtonObserver o : observers) {
+        for (Observer o : observers) {
             o.update(prompt, response);
         }
     }

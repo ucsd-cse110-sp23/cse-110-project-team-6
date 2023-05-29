@@ -7,9 +7,10 @@ public class Answer implements IResponse {
 
     private String answer; // answer to a user's question
 
-    public IResponse createResponse(String response) {
-        return new Answer(response);
+    public Answer createResponse(String answer) {
+        return new Answer(answer);
     }
+    
     /*
      * Stores the user's answer if it exists.
      * 

@@ -1,8 +1,7 @@
 package frontend;
 
 import middleware.IResponse;
-import middleware.StartButtonObserver;
-import middleware.HistoryButtonObserver;
+import middleware.Observer;
 import middleware.IPrompt;
 
 import java.awt.BorderLayout;
@@ -12,7 +11,7 @@ import java.awt.GridLayout;
 /**
  * This panel contains space for a prompt and response to be displayed.
  */
-public class PromptAndResponsePanel extends AppPanels implements HistoryButtonObserver, StartButtonObserver {
+public class PromptAndResponsePanel extends AppPanels implements Observer {
 
     PromptPanel promptPanel;     // panel for the prompt
     ResponsePanel responsePanel; // panel for the response
@@ -35,7 +34,6 @@ public class PromptAndResponsePanel extends AppPanels implements HistoryButtonOb
         // adds the prompt and response panels to the display
         addPromptPanel(promptPanel);
         addResponsePanel(responsePanel);
-
     }
 
     /*

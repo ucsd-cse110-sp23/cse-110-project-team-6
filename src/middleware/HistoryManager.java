@@ -13,35 +13,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Class responsible for grabbing history of questions and answers
+ * Class responsible for grabbing history of prompts and responses
  * from the JSON and storing it within the History class.
  */
 public class HistoryManager implements Subject, Observer {
 
     /**
-     * Nested class of HistoryManager acting as tuple for a question and answer
-     */
-    private class QuestionAnswerPair {
-        private Question question;
-        private Answer answer;
-
-        public QuestionAnswerPair(Question newQuestion, Answer newAnswer) {
-            question = newQuestion;
-            answer   = newAnswer;
-        }
-
-        public Question getQuestion() {
-            return question;
-        }
-
-        public Answer getAnswer() {
-            return answer;
-        }
-    }
-
-    /**
      * Nested class of HistoryManager responsible for reading and writing
-     * the history of questions and answers to a JSON file
+     * the history of prompts and responses to a JSON file
      */
     private class JSON_IO implements Observer {
         private Subject historySubject;
@@ -51,11 +30,11 @@ public class HistoryManager implements Subject, Observer {
          * Constructor for JSON_IO class which initializes the relevant fields for the class and
          * History Manager
          * 
-         * @param HISTORY_PATH path to the JSON file containing the history of questions and answers
+         * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
          */
         private JSON_IO() {
             try {
-                HistoryManager.this.questions = new ArrayList<Question>();
+                HistoryManager.this.prompts = new ArrayList<IPrompt>();
                 historySubject = HistoryManager.this;
                 historySubject.registerObserver(this);
                 storedJSON = openJSON();
@@ -65,10 +44,10 @@ public class HistoryManager implements Subject, Observer {
         }
 
         /**
-         * Open JSON file and read in the history of questions and answers as JSONObject
+         * Open JSON file and read in the history of prompts and responses as JSONObject
          * Creates the directory and file for history if they do not exist
          * 
-         * @param HISTORY_PATH path to the JSON file containing the history of questions and answers
+         * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
          */
         private JSONObject openJSON() {
             try {
@@ -87,28 +66,28 @@ public class HistoryManager implements Subject, Observer {
         }
 
         /**
-         * Updates the JSON file with the most recent question and answer
+         * Updates the JSON file with the most recent prompt and response
          * 
-         * @require args[0] instanceof QuestionAnswerPair
-         * @param args Object... args containing the history of questions and answers
+         * @require args[0] instanceof PromptResponsePair
+         * @param args Object... args containing the history of prompts and responses
          */
         @Override
-        public void update(Question newQuestion, Answer newAnswer) {
+        public void update(IPrompt newPrompt, IResponse newResponse) {
             storedJSON = new JSONObject();
             for (int i = 0; i < history.size(); i++) {
-                QuestionAnswerPair qaPair = history.get(i);
-                add(qaPair.getQuestion(), qaPair.getAnswer());
+                PromptResponsePair qaPair = history.get(i);
+                add(qaPair.getPrompt(), qaPair.getResponse());
             }
             write();
         }
 
         /**
-         * Reads in the history of questions and answers from the JSON file
-         * @return LinkedHashMap<Integer, QuestionAnswerPair> history of questions and answers
+         * Reads in the history of prompts and responses from the JSON file
+         * @return LinkedHashMap<Integer, PromptResponsePair> history of prompts and responses
          */
-        public LinkedHashMap<Integer, QuestionAnswerPair> readHistory() {
-            LinkedHashMap<Integer, QuestionAnswerPair> history 
-                = new LinkedHashMap<Integer, QuestionAnswerPair>();
+        public LinkedHashMap<Integer, PromptResponsePair> readHistory() {
+            LinkedHashMap<Integer, PromptResponsePair> history 
+                = new LinkedHashMap<Integer, PromptResponsePair>();
 
             JSONArray storedQA = storedJSON.names();
             
@@ -116,16 +95,25 @@ public class HistoryManager implements Subject, Observer {
                 return history;
             }
 
-            // Iterate through the JSON and split it into questions and answers
+            // Iterate through the JSON and split it into prompts and responses
             for (int idx = 0; idx < storedQA.length(); idx++) {
-                JSONObject questionAnswer = storedJSON.getJSONObject(Integer.toString(idx));
+                JSONObject commandPromptResponse = storedJSON.getJSONObject(Integer.toString(idx));
 
-                Question questionObj = new Question(questionAnswer.getString("Question"));
-                // Tracks questions in order for HistoryManager
-                HistoryManager.this.questions.add(questionObj);
-                Answer answerObj     = new Answer(questionAnswer.getString("Answer"));
+                IPrompt promptObj = null;
+                IResponse responseObj = null;
 
-                QuestionAnswerPair qaPair = new QuestionAnswerPair(questionObj, answerObj);
+                String command = commandPromptResponse.getString("Command");
+
+                switch (command) {
+                    case "Question":
+                        promptObj = new Question(commandPromptResponse.getString("Prompt"));
+                        responseObj = new Answer(commandPromptResponse.getString("Response"));
+                        break;
+                }
+
+                // Tracks prompts in order for HistoryManager
+                HistoryManager.this.prompts.add(promptObj);
+                PromptResponsePair qaPair = new PromptResponsePair(promptObj, responseObj);
 
                 history.put(idx, qaPair);
             }
@@ -134,25 +122,32 @@ public class HistoryManager implements Subject, Observer {
         }
 
         /**
-         * Updates the stored JSON with the most recent question and answer
-         * @require newQuestion != null && newAnswer != null &&
-         *          newQuestion instanceof Question && newAnswer instanceof Answer
-         * @param newQuestion Question object containing the question asked
-         * @param newAnswer Answer object containing the answer to the question asked
+         * Updates the stored JSON with the most recent prompt and response
+         * @require newPrompt != null && newResponse != null &&
+         *          newPrompt instanceof Prompt && newResponse instanceof Response
+         * @param newPrompt Prompt object containing the prompt asked
+         * @param newResponse Response object containing the response to the prompt asked
          */
-        public void add(Question newQuestion, Answer newAnswer) {
+        public void add(IPrompt newPrompt, IResponse newResponse) {
             int idx = storedJSON.length();
 
-            JSONObject questionAnswer = new JSONObject();
+            JSONObject commandPromptResponse = new JSONObject();
 
-            questionAnswer.put("Question", newQuestion.toString());
-            questionAnswer.put("Answer", newAnswer.toString());
+            // Look at the type of the prompt to figure out the command associated 
+            if (newPrompt instanceof Question) {
+                commandPromptResponse.put("Command", "Question");
+            } else {
+                commandPromptResponse.put("Command", "None");
+            }
 
-            storedJSON.put(Integer.toString(idx), questionAnswer);
+            commandPromptResponse.put("Prompt", newPrompt.toString());
+            commandPromptResponse.put("Response", newResponse.toString());
+
+            storedJSON.put(Integer.toString(idx), commandPromptResponse);
         }
 
         /**
-         * Writes the history of questions and answers to a JSON file
+         * Writes the history of prompts and responses to a JSON file
          */
         public void write() {
             try {
@@ -169,8 +164,8 @@ public class HistoryManager implements Subject, Observer {
     private static final String HISTORY_PATH = HISTORY_DIR + "/history.json";
     private JSON_IO jsonIO;
     private SayItAssistant assistantSubject;
-    private LinkedHashMap<Integer, QuestionAnswerPair> history;
-    private ArrayList<Question> questions;
+    private LinkedHashMap<Integer, PromptResponsePair> history;
+    private ArrayList<IPrompt> prompts;
     private ArrayList<Observer> observers;
     
     /**
@@ -186,26 +181,26 @@ public class HistoryManager implements Subject, Observer {
     }
 
     /**
-     * Getter method for the answer to a given question indicated by that question's number
-     * @require questionNum >= 0 && questionNum < history.size() && knowledge of questionNum
-     * @param questionNum index of the question in the history of all questions asked
-     * @return Answer object containing the answer to the given question
+     * Getter method for the response to a given prompt indicated by that prompt's number
+     * @require promptNum >= 0 && promptNum < history.size() && knowledge of promptNum
+     * @param promptNum index of the prompt in the history of all prompts asked
+     * @return Response object containing the response to the given prompt
      */
-    public Answer getAnswer(int questionNum) {
-        return history.get(questionNum).getAnswer();
+    public IResponse getResponse(int promptNum) {
+        return history.get(promptNum).getResponse();
     }
 
     /**
-     * Getter method for the list of all questions asked
-     * @return ArrayList<Question> list of all questions asked
+     * Getter method for the list of all prompts asked
+     * @return ArrayList<Prompt> list of all prompts asked
      */
-    public ArrayList<Question> getQuestions() {
-        return questions;
+    public ArrayList<IPrompt> getPrompts() {
+        return prompts;
     }
 
     /**
-     * Getter method for the number of questions asked
-     * @return int number of questions asked
+     * Getter method for the number of prompts asked
+     * @return int number of prompts asked
      */
     public int getHistorySize() {
         return history.size();
@@ -228,75 +223,75 @@ public class HistoryManager implements Subject, Observer {
     }
 
     /**
-     * Notifies all observers of the change in the history of questions and answers
+     * Notifies all observers of the change in the history of prompts and responses
      */
     @Override
     public void notifyObservers() {
-        Question recentQuestion = null;
-        Answer recentAnswer = null;
+        IPrompt   recentPrompt = null;
+        IResponse recentResponse = null;
         if (history.size() != 0) {
-            recentQuestion   = history.get(history.size() - 1).getQuestion();
-            recentAnswer     = history.get(history.size() - 1).getAnswer();
+            recentPrompt   = history.get(history.size() - 1).getPrompt();
+            recentResponse     = history.get(history.size() - 1).getResponse();
         }
         
         for (Observer o : observers) {
-            o.update(recentQuestion, recentAnswer);
+            o.update(recentPrompt, recentResponse);
         }
     }
 
     /**
-     * Updates the history of questions and answers with the most recent question and answer
-     * @require newQuestion != null && newAnswer != null && 
-     *          newQuestion instanceof Question && newAnswer instanceof Answer
-     * @param question Question object containing the question asked
-     * @param answer Answer object containing the answer to the question asked
+     * Updates the history of prompts and responses with the most recent prompt and response
+     * @require newPrompt != null && newResponse != null && 
+     *          newPrompt instanceof Prompt && newResponse instanceof Response
+     * @param prompt Prompt object containing the prompt asked
+     * @param response Response object containing the response to the prompt asked
      */
-    public void add(Question newQuestion, Answer newAnswer) {
-        if (newQuestion == null || newAnswer == null) {
+    public void add(IPrompt newPrompt, IResponse newResponse) {
+        if (newPrompt == null || newResponse == null) {
             throw new MalformedParametersException("Attempted use of null ArrayList.");
         } else {
             int newIdx = history.size();
-            QuestionAnswerPair newQA = new QuestionAnswerPair(newQuestion, newAnswer);
+            PromptResponsePair newQA = new PromptResponsePair(newPrompt, newResponse);
             history.put(newIdx, newQA);
             notifyObservers();
-            questions.add(newQuestion);
+            prompts.add(newPrompt);
         }
     }
 
     /**
-     * Updates the history of questions and answers with the most recent question and answer
-     * @param questionNum
+     * Updates the history of prompts and responses with the most recent prompt and response
+     * @param promptNum
      */
     @Override
-    public void update(Question newQuestion, Answer newAnswer) {
-        add(newQuestion, newAnswer);
+    public void update(IPrompt newPrompt, IResponse newResponse) {
+        add(newPrompt, newResponse);
     }
 
     /**
-     * Deletes the question and answer indicated by the question number
-     * @require questionNum >= 0 && questionNum < history.size() && knowledge of questionNum
-     * @param question
+     * Deletes the prompt and response indicated by the prompt number
+     * @require promptNum >= 0 && promptNum < history.size() && knowledge of promptNum
+     * @param prompt
      */
-    public void delete(int questionNum) {
-        // Store answers to rebuild history
-        ArrayList<Answer> answers = new ArrayList<Answer>();
-        for (Integer i : history.keySet()) { answers.add(history.get(i).getAnswer()); }
+    public void delete(int promptNum) {
+        // Store responses to rebuild history
+        ArrayList<IResponse> responses = new ArrayList<IResponse>();
+        for (Integer i : history.keySet()) { responses.add(history.get(i).getResponse()); }
         
-        history.remove(questionNum);
-        questions.remove(questionNum);
-        answers.remove(questionNum);
+        history.remove(promptNum);
+        prompts.remove(promptNum);
+        responses.remove(promptNum);
 
         // Rebuild the history to update the indices
-        history = new LinkedHashMap<Integer, QuestionAnswerPair>();
-        for (int i = 0; i < questions.size(); i++) {
-            history.put(i, new QuestionAnswerPair(questions.get(i), answers.get(i)));
+        history = new LinkedHashMap<Integer, PromptResponsePair>();
+        for (int i = 0; i < prompts.size(); i++) {
+            history.put(i, new PromptResponsePair(prompts.get(i), responses.get(i)));
         }
         notifyObservers();
     }
 
     /**
-     * Clears all questions and answers from the history
-     * @param question
+     * Clears all prompts and responses from the history
+     * @param prompt
      */
     public void clearAll() {
         if (history.size() == 0) { return; }

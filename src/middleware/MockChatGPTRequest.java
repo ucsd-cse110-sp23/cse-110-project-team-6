@@ -5,7 +5,7 @@ public class MockChatGPTRequest implements IAPIRequest {
     /**
      * Constructor for MockChatGPTRequest class
      */
-    public MockChatGPTRequest(Question prompt) {}
+    public MockChatGPTRequest(IPrompt prompt) {}
 
     @Override
     public String callAPI() {

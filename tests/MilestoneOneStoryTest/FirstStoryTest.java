@@ -1,4 +1,4 @@
-package StoryTest;
+package MilestoneOneStoryTest;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,11 +79,11 @@ public class FirstStoryTest {
         assertTrue(historyManager.getHistorySize() == 0);
 
         // Verify that looking questions returns nothing
-        assertEquals(historyManager.getQuestions(), new ArrayList<Question>());
+        assertEquals(historyManager.getPrompts(), new ArrayList<Question>());
 
         // Verify that looking for an answer to a question that has not been asked does nothing
         try {
-            historyManager.getAnswer(0);
+            historyManager.getResponse(0);
             fail("Expected NullPointerException");
         } catch (NullPointerException e) {
             assertTrue(true);
@@ -101,7 +101,7 @@ public class FirstStoryTest {
      */
     @Test 
     public void testScenario2() {
-        String question = "Who was Louis Braille?";
+        String question = "Question. Who was Louis Braille?";
         askQuestion(question);
 
         // Verify that the question was added to the history
@@ -109,11 +109,12 @@ public class FirstStoryTest {
 
         
         // Verify that the question was added to the history
-        String receivedQuestion = historyManager.getQuestions().get(0).toString();
+        String receivedQuestion = historyManager.getPrompts().get(0).toString();
+
         assertEquals(receivedQuestion, question);
 
         // Verify that the answer to the question is correct
-        assertEquals(historyManager.getAnswer(0).toString(), "This is the response to the prompt");
+        assertEquals(historyManager.getResponse(0).toString(), "This is the response to the prompt");
     }
 
     /**
@@ -131,7 +132,7 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario3() {
-        String firstQuestion = "Who was Louis Braille?";
+        String firstQuestion = "Question. Who was Louis Braille?";
         String genericQuestion = "Why is Louis Braille?";
         String lastQuestion = "What was utilized before Braille?";
 
@@ -150,16 +151,16 @@ public class FirstStoryTest {
         assertTrue(historyManager.getHistorySize() == MAX_WINDOW_QUESTION_SIZE + 1);
 
         // Verify that the questions were added to the history
-        String receivedFirstQuestion = historyManager.getQuestions().get(0).toString();
+        String receivedFirstQuestion = historyManager.getPrompts().get(0).toString();
         assertEquals(receivedFirstQuestion, firstQuestion);
 
         String receivedGenericQuestion; 
         for (int i = 1; i < MAX_WINDOW_QUESTION_SIZE; i++) {
-            receivedGenericQuestion = historyManager.getQuestions().get(i).toString();
+            receivedGenericQuestion = historyManager.getPrompts().get(i).toString();
             assertEquals(receivedGenericQuestion, genericQuestion);
         }
 
-        String receivedLastQuestion = historyManager.getQuestions().get(10).toString();
+        String receivedLastQuestion = historyManager.getPrompts().get(10).toString();
         assertEquals(receivedLastQuestion, lastQuestion);
     }
 
@@ -180,7 +181,7 @@ public class FirstStoryTest {
         assertTrue(historyManager.getHistorySize() == 1);
 
         // Verify that the question was added to the history
-        String receivedQuestion = historyManager.getQuestions().get(0).toString();
+        String receivedQuestion = historyManager.getPrompts().get(0).toString();
         assertEquals(receivedQuestion, question);
 
         // Delete the question
@@ -190,11 +191,11 @@ public class FirstStoryTest {
         assertTrue(historyManager.getHistorySize() == 0);
 
         // Verify that looking questions returns nothing
-        assertEquals(historyManager.getQuestions(), new ArrayList<Question>());
+        assertEquals(historyManager.getPrompts(), new ArrayList<Question>());
 
         // Verify that looking for an answer to a question that has not been asked does nothing
         try {
-            historyManager.getAnswer(0);
+            historyManager.getResponse(0);
             fail("Expected NullPointerException");
         } catch (NullPointerException e) {
             assertTrue(true);
@@ -247,11 +248,11 @@ public class FirstStoryTest {
 
         // Verify that the thirdQuestion was deleted from the history
         for (int i = 0; i < MAX_WINDOW_QUESTION_SIZE; i++) {
-            assertNotEquals(historyManager.getQuestions().get(i).toString(), thirdQuestion);
+            assertNotEquals(historyManager.getPrompts().get(i).toString(), thirdQuestion);
         }
 
         // Verify that the last question was moved up to the 9th question
-        String receivedLastQuestion = historyManager.getQuestions().get(9).toString();
+        String receivedLastQuestion = historyManager.getPrompts().get(9).toString();
         assertEquals(receivedLastQuestion, lastQuestion);
     }
 
@@ -280,10 +281,10 @@ public class FirstStoryTest {
         assertTrue(historyManager.getHistorySize() == 2);
 
         // Verify that the questions were added to the history
-        String receivedFirstQuestion = historyManager.getQuestions().get(0).toString();
+        String receivedFirstQuestion = historyManager.getPrompts().get(0).toString();
         assertEquals(receivedFirstQuestion, firstQuestion);
 
-        String receivedLastQuestion = historyManager.getQuestions().get(1).toString();
+        String receivedLastQuestion = historyManager.getPrompts().get(1).toString();
         assertEquals(receivedLastQuestion, lastQuestion);
 
         // Close SayIt Assistant
@@ -297,10 +298,10 @@ public class FirstStoryTest {
         assertTrue(historyManager.getHistorySize() == 2);
 
         // Verify that the questions were added to the history
-        receivedFirstQuestion = historyManager.getQuestions().get(0).toString();
+        receivedFirstQuestion = historyManager.getPrompts().get(0).toString();
         assertEquals(receivedFirstQuestion, firstQuestion);
 
-        receivedLastQuestion = historyManager.getQuestions().get(1).toString();
+        receivedLastQuestion = historyManager.getPrompts().get(1).toString();
         assertEquals(receivedLastQuestion, lastQuestion);
     }
 }

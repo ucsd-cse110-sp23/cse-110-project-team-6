@@ -6,9 +6,11 @@ import java.awt.*;
 /*
  * The history button displays the full question and answer associated with it when pressed.
  */
-public class HistoryButton extends frontend.AppButtons implements HistoryButtonSubject {
+public class HistoryButton extends frontend.AppButtons implements Subject {
     
-    private ArrayList<HistoryButtonObserver> observers;
+    private ArrayList<Observer> observers;
+    private IPrompt prompt;
+    private IResponse response;
 
     /*
      * Creates the history button.
@@ -16,12 +18,14 @@ public class HistoryButton extends frontend.AppButtons implements HistoryButtonS
      * @param id:           the question number
      * @param displayText:  the text to be displayed
      */
-    public HistoryButton(int id, String displayText) {
-        super(displayText + " ".repeat(100));
+    public HistoryButton(int id, IPrompt displayText, IResponse newResponse) {
+        super(displayText.toString() + " ".repeat(100));
+        prompt   = displayText;
+        response = newResponse;
         this.buttonWidth = 200;
         this.buttonHeight = 50;
         this.id = id;
-        this.observers = new ArrayList<HistoryButtonObserver>();
+        this.observers = new ArrayList<Observer>();
         this.setBackground(BLACK);
         this.setForeground(LIGHT_GREY);
         setHorizontalAlignment(SwingConstants.LEFT);
@@ -30,19 +34,19 @@ public class HistoryButton extends frontend.AppButtons implements HistoryButtonS
     }
 
     @Override
-    public void registerHistoryButtonObserver(HistoryButtonObserver o) {
+    public void registerObserver(Observer o) {
         observers.add(o);
     }
 
     @Override
-    public void removeHistoryButtonObserver(HistoryButtonObserver o) {
+    public void removeObserver(Observer o) {
         observers.remove(o);
     }
 
     @Override
-    public void notifyHistoryButtonObservers(IPrompt prompt, IResponse response) {
+    public void notifyObservers() {
         System.out.println("History Button is notifying observers");
-        for (HistoryButtonObserver o : observers) {
+        for (Observer o : observers) {
             o.update(prompt, response);
         }
     }

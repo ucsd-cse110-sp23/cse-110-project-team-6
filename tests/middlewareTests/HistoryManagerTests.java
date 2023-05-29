@@ -22,16 +22,16 @@ public class HistoryManagerTests {
     private static final String EXPECT_HISTORY_PATH = 
         System.getProperty("user.dir") + "/bin/backend/history.json";
 
-    private static final Question QUESTION1 = new Question("What is your name?");
-    private static final Question QUESTION2 = new Question("What is your quest?");
-    private static final Question QUESTION3 = new Question("What is your favorite color?");
-    private static final Question QUESTION4 = new Question("What is bubble tea?");
-    private static final Question QUESTION5 = new Question("What is the meaning of life?");
-    private static final Question QUESTION6 = new Question("What is 9 + 10?");
-    private static final Question DUPLICATE_QUESTION = new Question("What is your name?");
+    private static final Question QUESTION1 = new Question("Question. What is your name?");
+    private static final Question QUESTION2 = new Question("Question. What is your quest?");
+    private static final Question QUESTION3 = new Question("Question. What is your favorite color?");
+    private static final Question QUESTION4 = new Question("Question. What is bubble tea?");
+    private static final Question QUESTION5 = new Question("Question. What is the meaning of life?");
+    private static final Question QUESTION6 = new Question("Question. What is 9 + 10?");
+    private static final Question DUPLICATE_QUESTION = new Question("Question. What is your name?");
     private static final Question MULTILINE_QUESTION = 
-        new Question("What is your name?\nWhat is your quest?");
-    private static final Question EMPTY_QUESTION = new Question("");
+        new Question("Question. What is your name?\nWhat is your quest?");
+    private static final Question EMPTY_QUESTION = new Question("Question.");
     
     private static final Answer ANSWER1 = new Answer("My name is SayIt.");
     private static final Answer ANSWER2 = new Answer("My quest is to find the Holy Grail.");
@@ -46,16 +46,16 @@ public class HistoryManagerTests {
 
     private static SayItAssistant assistant;
     private static HistoryManager historyManager;
-    private static ArrayList<Question> allQuestions;
+    private static ArrayList<Question> allPrompts;
     private static ArrayList<Answer> allAnswers;
 
     /**
      * Helper Method to quickly add all the questions to the history manager
      */
-    private static void addAllQuestions() {
-        int allQASize = allQuestions.size();
+    private static void addAllPrompts() {
+        int allQASize = allPrompts.size();
         for (int i = 0; i < allQASize; i++) {
-            historyManager.add(allQuestions.get(i), allAnswers.get(i));
+            historyManager.add(allPrompts.get(i), allAnswers.get(i));
         }
     }
 
@@ -64,13 +64,13 @@ public class HistoryManagerTests {
         assistant = new SayItAssistant(new MockWhisperRequest());
         historyManager = new HistoryManager(assistant);
 
-        allQuestions = new ArrayList<Question>();
-        allQuestions.add(QUESTION1);
-        allQuestions.add(QUESTION2);
-        allQuestions.add(QUESTION3);
-        allQuestions.add(QUESTION4);
-        allQuestions.add(QUESTION5);
-        allQuestions.add(QUESTION6);
+        allPrompts = new ArrayList<Question>();
+        allPrompts.add(QUESTION1);
+        allPrompts.add(QUESTION2);
+        allPrompts.add(QUESTION3);
+        allPrompts.add(QUESTION4);
+        allPrompts.add(QUESTION5);
+        allPrompts.add(QUESTION6);
         
         allAnswers = new ArrayList<Answer>();
         allAnswers.add(ANSWER1);
@@ -98,7 +98,7 @@ public class HistoryManagerTests {
         File jsonFile = new File(EXPECT_HISTORY_PATH);
         assertTrue(jsonFile.length() == 0);
         // Verify that the history manager is empty
-        assertEquals(0, historyManager.getQuestions().size());
+        assertEquals(0, historyManager.getPrompts().size());
     }
 
     /**
@@ -124,16 +124,16 @@ public class HistoryManagerTests {
         historyManager.add(QUESTION6, ANSWER6);
         assertEquals(6, historyManager.getHistorySize());
 
-        int allQASize = allQuestions.size();
-        assertEquals(allQASize, historyManager.getQuestions().size());
+        int allQASize = allPrompts.size();
+        assertEquals(allQASize, historyManager.getPrompts().size());
 
         for (int i = 0; i < allQASize; i++) {
-            String expectedQuestion = allQuestions.get(i).toString();
-            String actualQuestion = historyManager.getQuestions().get(i).toString();
+            String expectedQuestion = allPrompts.get(i).toString();
+            String actualQuestion = historyManager.getPrompts().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
             String expectedAnswer = allAnswers.get(i).toString();
-            String actualAnswer = historyManager.getAnswer(i).toString();
+            String actualAnswer = historyManager.getResponse(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
     }
@@ -143,16 +143,16 @@ public class HistoryManagerTests {
      */
     @Test
     public void testDuplicateQA() {
-        addAllQuestions();
-        assertEquals(allQuestions.size(), historyManager.getHistorySize());
+        addAllPrompts();
+        assertEquals(allPrompts.size(), historyManager.getHistorySize());
         assertEquals(QUESTION1.toString(), DUPLICATE_QUESTION.toString());
         assertEquals(ANSWER1.toString(), DUPLICATE_ANSWER.toString());
         historyManager.add(DUPLICATE_QUESTION, DUPLICATE_ANSWER);
-        assertEquals(allQuestions.size() + 1, historyManager.getHistorySize());
+        assertEquals(allPrompts.size() + 1, historyManager.getHistorySize());
         assertEquals(DUPLICATE_QUESTION.toString(), 
-                     historyManager.getQuestions().get(allQuestions.size()).toString());
+                     historyManager.getPrompts().get(allPrompts.size()).toString());
         assertEquals(DUPLICATE_ANSWER.toString(),
-                        historyManager.getAnswer(allQuestions.size()).toString());
+                        historyManager.getResponse(allPrompts.size()).toString());
     }
 
     /**
@@ -163,9 +163,9 @@ public class HistoryManagerTests {
         historyManager.add(MULTILINE_QUESTION, MULTILINE_ANSWER);
         assertEquals(1, historyManager.getHistorySize());
         assertEquals(MULTILINE_QUESTION.toString(), 
-                     historyManager.getQuestions().get(0).toString());
+                     historyManager.getPrompts().get(0).toString());
         assertEquals(MULTILINE_ANSWER.toString(), 
-                     historyManager.getAnswer(0).toString());
+                     historyManager.getResponse(0).toString());
     }
 
     /**
@@ -176,9 +176,9 @@ public class HistoryManagerTests {
         historyManager.add(EMPTY_QUESTION, EMPTY_ANSWER);
         assertEquals(1, historyManager.getHistorySize());
         assertEquals(EMPTY_QUESTION.toString(), 
-                     historyManager.getQuestions().get(0).toString());
+                     historyManager.getPrompts().get(0).toString());
         assertEquals(EMPTY_ANSWER.toString(), 
-                     historyManager.getAnswer(0).toString());
+                     historyManager.getResponse(0).toString());
     }
 
     /**
@@ -186,8 +186,8 @@ public class HistoryManagerTests {
      */
     @Test
     public void testPersistentHistory() {
-        int allQASize = allQuestions.size();
-        addAllQuestions();
+        int allQASize = allPrompts.size();
+        addAllPrompts();
 
         // "Close" the current history manager
         historyManager = null;
@@ -196,21 +196,21 @@ public class HistoryManagerTests {
         // Create a new history manager
         HistoryManager newHistoryManager = new HistoryManager(assistant);
         assertNotEquals(newHistoryManager, historyManager);
-        assertEquals(allQASize, newHistoryManager.getQuestions().size());
+        assertEquals(allQASize, newHistoryManager.getPrompts().size());
         
         for (int i = 0; i < allQASize; i++) {
-            String expectedQuestion = allQuestions.get(i).toString();
-            String actualQuestion = newHistoryManager.getQuestions().get(i).toString();
+            String expectedQuestion = allPrompts.get(i).toString();
+            String actualQuestion = newHistoryManager.getPrompts().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
             String expectedAnswer = allAnswers.get(i).toString();
-            String actualAnswer = newHistoryManager.getAnswer(i).toString();
+            String actualAnswer = newHistoryManager.getResponse(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
 
         // Add more questions to the new history manager
         newHistoryManager.add(DUPLICATE_QUESTION, DUPLICATE_ANSWER);
-        allQuestions.add(DUPLICATE_QUESTION);
+        allPrompts.add(DUPLICATE_QUESTION);
         allAnswers.add(DUPLICATE_ANSWER);
         allQASize++;
         // Close the new history manager
@@ -220,15 +220,15 @@ public class HistoryManagerTests {
         // Create another new history manager
         HistoryManager anotherHistoryManager = new HistoryManager(assistant);
         assertNotEquals(anotherHistoryManager, newHistoryManager);
-        assertEquals(allQASize, anotherHistoryManager.getQuestions().size());
+        assertEquals(allQASize, anotherHistoryManager.getPrompts().size());
 
         for (int i = 0; i < allQASize; i++) {
-            String expectedQuestion = allQuestions.get(i).toString();
-            String actualQuestion = anotherHistoryManager.getQuestions().get(i).toString();
+            String expectedQuestion = allPrompts.get(i).toString();
+            String actualQuestion = anotherHistoryManager.getPrompts().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
             String expectedAnswer = allAnswers.get(i).toString();
-            String actualAnswer = anotherHistoryManager.getAnswer(i).toString();
+            String actualAnswer = anotherHistoryManager.getResponse(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
     }
@@ -238,7 +238,7 @@ public class HistoryManagerTests {
      */
     @Test
     public void testDeleteRecent() {
-        addAllQuestions();
+        addAllPrompts();
         String fullFile = "";
         String changedFile = "";
 
@@ -246,25 +246,25 @@ public class HistoryManagerTests {
         try { fullFile = Files.readString(Path.of(EXPECT_HISTORY_PATH)); } 
         catch (Exception e) { assertTrue(false); }
 
-        int origSize = allQuestions.size();
+        int origSize = allPrompts.size();
         historyManager.delete(origSize - 1);
         assertEquals(origSize - 1, historyManager.getHistorySize());
-        assertEquals(origSize - 1, historyManager.getQuestions().size());
+        assertEquals(origSize - 1, historyManager.getPrompts().size());
 
         // Checks that the remaining questions and answers are still in the history
         for (int i = 0; i < origSize - 1; i++) {
-            String expectedQuestion = allQuestions.get(i).toString();
-            String actualQuestion = historyManager.getQuestions().get(i).toString();
+            String expectedQuestion = allPrompts.get(i).toString();
+            String actualQuestion = historyManager.getPrompts().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
             String expectedAnswer = allAnswers.get(i).toString();
-            String actualAnswer = historyManager.getAnswer(i).toString();
+            String actualAnswer = historyManager.getResponse(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
 
         // Makes sure that that the last question and answer is no longer in the history
         try { 
-            historyManager.getAnswer(origSize); 
+            historyManager.getResponse(origSize); 
             assertTrue(false); 
         } catch (Exception e) { assertTrue(true); }
 
@@ -281,22 +281,22 @@ public class HistoryManagerTests {
         // Open a new history manager and check question no longer exists
         HistoryManager newHistoryManager = new HistoryManager(assistant);
         assertEquals(origSize - 1, newHistoryManager.getHistorySize());
-        assertEquals(origSize - 1, newHistoryManager.getQuestions().size());
+        assertEquals(origSize - 1, newHistoryManager.getPrompts().size());
 
         // Checks that the remaining questions and answers are still in the history
         for (int i = 0; i < origSize - 1; i++) {
-            String expectedQuestion = allQuestions.get(i).toString();
-            String actualQuestion = newHistoryManager.getQuestions().get(i).toString();
+            String expectedQuestion = allPrompts.get(i).toString();
+            String actualQuestion = newHistoryManager.getPrompts().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
             String expectedAnswer = allAnswers.get(i).toString();
-            String actualAnswer = newHistoryManager.getAnswer(i).toString();
+            String actualAnswer = newHistoryManager.getResponse(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
 
         // Makes sure that that the last question and answer is no longer in the history
         try { 
-            newHistoryManager.getAnswer(origSize); 
+            newHistoryManager.getResponse(origSize); 
             assertTrue(false); 
         } catch (Exception e) { assertTrue(true); }
     }
@@ -306,7 +306,7 @@ public class HistoryManagerTests {
      */
     @Test
     public void testDeleteSpecific() {
-        addAllQuestions();
+        addAllPrompts();
         int removedIndex = 3;
         String fullFile = "";
         String changedFile = "";
@@ -315,27 +315,27 @@ public class HistoryManagerTests {
         try { fullFile = Files.readString(Path.of(EXPECT_HISTORY_PATH)); } 
         catch (Exception e) { assertTrue(false); }
 
-        int origSize = allQuestions.size();
+        int origSize = allPrompts.size();
         historyManager.delete(removedIndex);
-        allQuestions.remove(removedIndex);
+        allPrompts.remove(removedIndex);
         allAnswers.remove(removedIndex);
         assertEquals(origSize - 1, historyManager.getHistorySize());
-        assertEquals(origSize - 1, historyManager.getQuestions().size());
+        assertEquals(origSize - 1, historyManager.getPrompts().size());
 
         // Checks that the remaining questions and answers are still in the history
         for (int i = 0; i < origSize - 1; i++) {
-            String expectedQuestion = allQuestions.get(i).toString();
-            String actualQuestion = historyManager.getQuestions().get(i).toString();
+            String expectedQuestion = allPrompts.get(i).toString();
+            String actualQuestion = historyManager.getPrompts().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
             String expectedAnswer = allAnswers.get(i).toString();
-            String actualAnswer = historyManager.getAnswer(i).toString();
+            String actualAnswer = historyManager.getResponse(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
 
         // Makes sure that that the last question and answer is no longer in the history
         try { 
-            historyManager.getAnswer(origSize); 
+            historyManager.getResponse(origSize); 
             assertTrue(false); 
         } catch (Exception e) { assertTrue(true); }
 
@@ -352,22 +352,22 @@ public class HistoryManagerTests {
         // Open a new history manager and check question no longer exists
         HistoryManager newHistoryManager = new HistoryManager(assistant);
         assertEquals(origSize - 1, newHistoryManager.getHistorySize());
-        assertEquals(origSize - 1, newHistoryManager.getQuestions().size());
+        assertEquals(origSize - 1, newHistoryManager.getPrompts().size());
 
         // Checks that the remaining questions and answers are still in the history
         for (int i = 0; i < origSize - 1; i++) {
-            String expectedQuestion = allQuestions.get(i).toString();
-            String actualQuestion = newHistoryManager.getQuestions().get(i).toString();
+            String expectedQuestion = allPrompts.get(i).toString();
+            String actualQuestion = newHistoryManager.getPrompts().get(i).toString();
             assertEquals(expectedQuestion, actualQuestion);
 
             String expectedAnswer = allAnswers.get(i).toString();
-            String actualAnswer = newHistoryManager.getAnswer(i).toString();
+            String actualAnswer = newHistoryManager.getResponse(i).toString();
             assertEquals(expectedAnswer, actualAnswer);
         }
 
         // Makes sure that that the last question and answer is no longer in the history
         try { 
-            newHistoryManager.getAnswer(origSize); 
+            newHistoryManager.getResponse(origSize); 
             assertTrue(false); 
         } catch (Exception e) { assertTrue(true); }
     }
@@ -377,7 +377,7 @@ public class HistoryManagerTests {
      */
     @Test
     public void testClearAll() {
-        addAllQuestions();
+        addAllPrompts();
         String fullFile = "";
         String changedFile = "";
 
@@ -387,11 +387,11 @@ public class HistoryManagerTests {
 
         historyManager.clearAll();
         assertEquals(0, historyManager.getHistorySize());
-        assertEquals(0, historyManager.getQuestions().size());
+        assertEquals(0, historyManager.getPrompts().size());
 
         // Makes sure that that the last question and answer is no longer in the history
         try { 
-            historyManager.getAnswer(0); 
+            historyManager.getResponse(0); 
             assertTrue(false); 
         } catch (Exception e) { assertTrue(true); }
 
@@ -408,11 +408,11 @@ public class HistoryManagerTests {
         // Open a new history manager and check question no longer exists
         HistoryManager newHistoryManager = new HistoryManager(assistant);
         assertEquals(0, newHistoryManager.getHistorySize());
-        assertEquals(0, newHistoryManager.getQuestions().size());
+        assertEquals(0, newHistoryManager.getPrompts().size());
 
         // Makes sure that that the last question and answer is no longer in the history
         try { 
-            newHistoryManager.getAnswer(0); 
+            newHistoryManager.getResponse(0); 
             assertTrue(false); 
         } catch (Exception e) { assertTrue(true); }
     }

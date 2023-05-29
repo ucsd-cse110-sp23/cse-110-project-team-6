@@ -8,16 +8,16 @@ import java.util.ArrayList;
  * History and UI.
  */
 public class SayItAssistant implements Subject {
-    
+
+    private final String NO_COMMAND_WARN = "No command found";
+    private final String NO_COMMAND_RESPONSE = 
+    "Apologies, no valid command was found within your request. I can assist you if you start your requests with Question, Delete Prompt, Clear All, Setup Email, Create Email, or Send Email to <email>.";
+
     private IAPIRequest chatRequest, whisperRequest;
-    private Question question;
-    private Answer answer;
     private ArrayList<Observer> observers;
     private PromptFactory promptFactory;
-    private Object[] prompt_command_pair;
-    private IPrompt prompt;
+    private IPrompt   prompt;
     private IResponse response;
-    private String command;
 
     /**
      * Constructor for SayItAssistant class
@@ -37,11 +37,9 @@ public class SayItAssistant implements Subject {
      * Gets the prompt from the API request class
      * @return
      */
-    private void getPromptandCommand() {
-        //question = new Question(whisperRequest.callAPI());
-        prompt_command_pair = promptFactory.createPrompt(whisperRequest.callAPI());
-        prompt = (IPrompt) prompt_command_pair[0];
-        command = (String) prompt_command_pair[1];
+    private IPrompt getPromptandCommand() {
+        IPrompt newPrompt = promptFactory.createPrompt(whisperRequest.callAPI());
+        return newPrompt;
     }
 
     /**
@@ -49,10 +47,10 @@ public class SayItAssistant implements Subject {
      * @param question
      * @return
      */
-    private String getAnswer(Question question) {
+    private String getResponse(IPrompt prompt) {
         // Checks if we are utilizing a MockAPIRequest or a ChatGPTRequest based on whisperRequest
         chatRequest = (whisperRequest instanceof MockWhisperRequest) ? 
-            new MockChatGPTRequest(question) : new ChatGPTRequest(question);
+            new MockChatGPTRequest(prompt) : new ChatGPTRequest(prompt);
         
         String response = chatRequest.callAPI();
         return response;
@@ -66,25 +64,21 @@ public class SayItAssistant implements Subject {
      * @param file File object containing the audio file
      * @return String containing the response from the API request
      */
-    public String[] respond() {
-        getPromptandCommand();
-        String[] responseArray;
+    public PromptResponsePair respond() {
+        PromptResponsePair promptResponse;
+        prompt = getPromptandCommand();
 
-        if(command == null) {
-            responseArray = new String[]{"No command found.", "Apologies, no valid command was found within your request. I can assist you if you start your requests with Question, Delete Prompt, Clear All, Setup Email, Create Email, or Send Email to <email>."};
-            question = new Question (responseArray[0]);
-            answer = new Answer (responseArray[1]);
+        if(prompt instanceof Question) {
+            response        = new Answer(getResponse(prompt));
+            promptResponse  = new PromptResponsePair(prompt, response);
+            notifyObservers();
+        } else {
+            Question warning       = new Question(NO_COMMAND_WARN);
+            Answer   warning_reply = new Answer(NO_COMMAND_RESPONSE);
+            promptResponse = new PromptResponsePair(warning, warning_reply);
         }
-
-        else {
-            answer = new Answer(getAnswer((Question) prompt_command_pair[0]));
-            question = new Question(prompt_command_pair[1] + "\n" + prompt_command_pair[0]);
-            responseArray = new String[]{question.toString(), answer.toString()};//{question.toString(), answer.toString()};
-
-        }
-        System.out.println(responseArray[0] + "\n" + responseArray[1] + "\n");
-        notifyObservers(); 
-        return responseArray;
+        
+        return promptResponse;
     }
 
     /**
@@ -111,7 +105,7 @@ public class SayItAssistant implements Subject {
     @Override
     public void notifyObservers() {
         for (Observer observer : observers) {
-            observer.update(question, answer);
+            observer.update(prompt, response);
         }
     }
 }

@@ -1,4 +1,4 @@
-package StoryTest;
+package MilestoneOneStoryTest;
 
 import org.junit.jupiter.api.*;
 

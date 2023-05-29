@@ -1,8 +1,5 @@
-import frontend.AppFrame;
-
 import javax.swing.UIManager;
 
-import frontend.*;
 import middleware.*;
 public class App {
     public static void main(String[] args) {

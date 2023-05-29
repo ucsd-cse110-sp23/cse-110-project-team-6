@@ -2,7 +2,7 @@ package middleware;
 
 public class MockWhisperRequest implements IAPIRequest {
 
-    public String testString = "This is the transcription of the audio file";
+    public String testString = "Question. This is the transcription of the audio file";
 
     /**
      * Constructor for MockWhisperRequest class

@@ -26,9 +26,9 @@ public class ChatGPTRequest implements IAPIRequest {
      * Constructor for ChatGPTRequest class 
      * Initializes the client, request, and requestBody fields
      * 
-     * @param prompt Question object containing the prompt for the chatbot
+     * @param prompt IPrompt object containing the prompt for the chatbot
      */
-    public ChatGPTRequest(Question prompt) {
+    public ChatGPTRequest(IPrompt prompt) {
         this.client = HttpClient.newHttpClient();
 
         this.requestBody = new JSONObject();

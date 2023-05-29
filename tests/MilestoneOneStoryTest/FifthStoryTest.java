@@ -1,4 +1,4 @@
-package StoryTest;
+package MilestoneOneStoryTest;
 
 import middleware.HistoryManager;
 import middleware.SayItAssistant;
@@ -16,9 +16,9 @@ public class FifthStoryTest {
         When: History Helen wants to click the clear all button
         Then: Nothing will happen.*/
         HistoryManager newHistoryManager = new HistoryManager(new SayItAssistant(new WhisperRequest()));
-        Assertions.assertEquals(newHistoryManager.getQuestions(), new ArrayList<>());
+        Assertions.assertEquals(newHistoryManager.getPrompts(), new ArrayList<>());
         newHistoryManager.clearAll();
-        Assertions.assertEquals(newHistoryManager.getQuestions(), new ArrayList<>());
+        Assertions.assertEquals(newHistoryManager.getPrompts(), new ArrayList<>());
         Assertions.assertEquals(newHistoryManager.getHistorySize(), 0);
     }
 }
