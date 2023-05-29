@@ -101,7 +101,7 @@ public class FirstStoryTest {
      */
     @Test 
     public void testScenario2() {
-        String question = "Who was Louis Braille?";
+        String question = "Question Who was Louis Braille?";
         askQuestion(question);
 
         // Verify that the question was added to the history
@@ -131,9 +131,9 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario3() {
-        String firstQuestion = "Who was Louis Braille?";
-        String genericQuestion = "Why is Louis Braille?";
-        String lastQuestion = "What was utilized before Braille?";
+        String firstQuestion = "Question Who was Louis Braille?";
+        String genericQuestion = "Question Why is Louis Braille?";
+        String lastQuestion = "Question What was utilized before Braille?";
 
         // Ask first question
         askQuestion(firstQuestion);
@@ -173,7 +173,7 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario4() {
-        String question = "Who was Louis Braille?";
+        String question = "Question Who was Louis Braille?";
         askQuestion(question);
 
         // Verify that the question was added to the history
@@ -216,9 +216,9 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario5() {
-        String thirdQuestion = "Who was Louis Braille?";
-        String genericQuestion = "Why is Louis Braille?";
-        String lastQuestion = "What was utilized before Braille?";
+        String thirdQuestion = "Question Who was Louis Braille?";
+        String genericQuestion = "Question Why is Louis Braille?";
+        String lastQuestion = "Question What was utilized before Braille?";
 
         // Ask first through second question
         for (int i = 0; i < 2; i++) {
@@ -267,8 +267,8 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario6() {
-        String firstQuestion = "Who was Louis Braille?";
-        String lastQuestion = "What was utilized before Braille?";
+        String firstQuestion = "Question Who was Louis Braille?";
+        String lastQuestion = "Question What was utilized before Braille?";
 
         // Ask first question
         askQuestion(firstQuestion);

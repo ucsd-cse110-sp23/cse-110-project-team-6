@@ -71,7 +71,24 @@ public class QnAPanel extends AppPanels {
         answerPanel.setAnswer(answer);
     }
     
+    /*
+     * returns the status of the panel
+     */
     public boolean getStatus(){
         return this.isSet;
+    }
+
+    /*
+     * returns the panel. 
+     */
+    public QuestionPanel getQuestionPanel(){
+        return this.questionPanel; 
+    }
+
+    /*
+     * sets the "set" variable as false. 
+     */
+    public void setDisplayFalse(){
+        this.isSet = false; 
     }
 }

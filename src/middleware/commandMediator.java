@@ -1,21 +1,24 @@
 package middleware;
 
-
-import frontend.DisplayPanel;
+import frontend.HistoryPanel;
+import frontend.QnAPanel;
 
 public class commandMediator {
 
     PromptFactory factory;
     SayItAssistant sayIt;
     HistoryManager historyManager; 
-    DisplayPanel display; 
+    HistoryPanel history; 
+    QnAPanel qna; 
     String command; 
 
-    commandMediator(SayItAssistant sayIt, HistoryManager historyManager, DisplayPanel display){
+    commandMediator(SayItAssistant sayIt, HistoryManager historyManager, QnAPanel qna, HistoryPanel history){
         this.sayIt = sayIt; 
         this.historyManager = historyManager;
-        this.display = display; 
+        this.qna = qna; 
+        this.history = history;
         factory = new PromptFactory(); 
+
     }
 
     /*
@@ -28,18 +31,36 @@ public class commandMediator {
     void newCommand(String prompt){
         
         Object[] promptCommandPair = factory.createPrompt(prompt);
-        String command = promptCommandPair[1].toString();
-        String query = promptCommandPair[2].toString();
+        String command = promptCommandPair[0].toString();
+        String query = promptCommandPair[1].toString();
         
         switch(command){
             case "question": 
+                /*
+                 * sayIt respond method calls the whisper api to get the prompt
+                 */
                 sayIt.respond();
 
             case "delete prompt":
-                //re-route delete button logic to here
+                if (qna.getStatus() == true){
+                    historyManager.delete(qna.getQuestionPanel().getCurrentQuestionNumber());
+                    history.revalidateHistory(qna);
+                    qna.setQuestion(new Question("Welcome to SayIt Assistant"));
+                    qna.setAnswer(new Answer(""));
+                    //revalidating the question and answer display
+                    qna.revalidate();
+
+                    //setting the display to be false
+                    qna.setDisplayFalse();
+                }
 
             case "clear all":
-                //re-route clear all button logic to here
+                historyManager.clearAll();
+                history.revalidateHistory(qna);
+                qna.setQuestion(new Question("Welcome to SayIt Assistant"));
+                qna.setAnswer(new Answer(""));
+                qna.revalidate();
+                qna.setDisplayFalse(); 
 
             case "setup email":
                 //insert method here
