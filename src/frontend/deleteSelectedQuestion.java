@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
+@Deprecated
 public class deleteSelectedQuestion extends JPanel{
     public deleteSelectedQuestion(HistoryManager historyManager, QnAPanel qna, HistoryPanel history){
         this.setLayout(new GridLayout(1,1));

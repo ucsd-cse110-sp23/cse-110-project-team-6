@@ -7,6 +7,7 @@ import middleware.Question;
 import javax.swing.*;
 import java.awt.*;
 
+@Deprecated
 /*
  * This panel simply contains the clear all button.
  */
