@@ -3,8 +3,6 @@ package frontend;
 import javax.swing.*;
 import java.awt.*;
 
-import java.io.File;
-
 /*
  * Buttons created within the app use this for formatting.
  */

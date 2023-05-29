@@ -155,7 +155,6 @@ public class WhisperRequest implements IAPIRequest {
      * 
      * @return HttpResponse object containing the response from the server
      */
-    @SuppressWarnings("deprecation")
     @Override
     public String callAPI() {
         try {

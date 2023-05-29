@@ -14,9 +14,9 @@ import java.awt.GridLayout;
  */
 public class PromptAndResponsePanel extends AppPanels implements HistoryButtonObserver, StartButtonObserver {
 
-    PromptPanel promptPanel;    // panel for the prompt
-    ResponsePanel responsePanel;        // panel for the response
-    Boolean isSet = false; //boolean to confirm if there is a prompt set or not
+    PromptPanel promptPanel;     // panel for the prompt
+    ResponsePanel responsePanel; // panel for the response
+    Boolean isSet = false;       // Confirmation for set or not
 
     /*
      * Creates and formats the panel for prompts and responses.
