@@ -5,9 +5,19 @@ import middleware.SayItAssistant;
 import middleware.WhisperRequest;
 
 import javax.swing.*;
+
+import org.json.JSONObject;
+
 import java.awt.*;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 /*
  * The AppFrame is the overall skeleton of the app, providing the structure and delegating function.
@@ -41,18 +51,29 @@ public class AppFrame extends JFrame {
         this.add(loginWindow);
         AbstractButton loginWindowButton = loginWindow.getButton();
         loginWindowButton.addActionListener(e -> {
-            loggedIn = true; //TODO: Add login functionality
-            this.remove(loginWindow);
-            setupQuestion();
-            revalidate();
+            try {
+                String username = loginWindow.getData()[0];
+                String password = loginWindow.getData()[1];
+                loggedIn = this.checkValid(username,password);
+                if(loggedIn){
+                    this.remove(loginWindow);
+                    setupQuestion(username, password);
+                    revalidate();
+                }
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            } 
+            
         });
         revalidate();
     }
 
-    private void setupQuestion(){
+    private void setupQuestion(String username, String password){
         // Initalizes the history manager and SayIt Assistant for Panels
         sayItAssistant = new SayItAssistant(new WhisperRequest());
-        historyManager = new HistoryManager(sayItAssistant);
+        historyManager = new HistoryManager(sayItAssistant, username, password);
 
         // Sets the font, overall display panel, and the history sidepanel
         setUpPanels();
@@ -80,5 +101,19 @@ public class AppFrame extends JFrame {
         historyPanel = new HistoryPanel(historyManager);
         displayPanel = new DisplayPanel(sayItAssistant, historyPanel, historyManager);
         historyPanel.revalidateHistory(displayPanel.getQnAPanel());
+    }
+
+    private boolean checkValid(String userName, String userPassword) throws IOException, InterruptedException{
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create(String.format("http://localhost:1337/question?u=%s&p=%s", URLEncoder.encode(userName,"UTF-8"), URLEncoder.encode(userPassword,"UTF-8"))))
+        .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        String body = response.body();
+        if(body.equals("Incorrect")){
+            return false;
+        }else{
+            return true;
+        }
     }
 }

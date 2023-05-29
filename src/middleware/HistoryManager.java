@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.MalformedParametersException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -28,14 +29,15 @@ public class HistoryManager implements Subject, Observer {
     private LinkedHashMap<Integer, QuestionAnswerPair> history;
     private ArrayList<Question> questions;
     private ArrayList<Observer> observers;
+
     /**
      * Constructor for HistoryManager class
      *
      * @param HISTORY_PATH path to the JSON file containing the history of
      */
-    public HistoryManager(SayItAssistant assistantSubject) {
+    public HistoryManager(SayItAssistant assistantSubject, String username, String password) {
         observers = new ArrayList<Observer>();
-        jsonIO = new JSON_IO();
+        jsonIO = new JSON_IO(username,password);
         history = jsonIO.readHistory();
         this.assistantSubject = assistantSubject;
         this.assistantSubject.registerObserver(this);
@@ -202,18 +204,20 @@ public class HistoryManager implements Subject, Observer {
     private class JSON_IO implements Observer {
         private Subject historySubject;
         private JSONObject storedJSON;
-
+        private String username,password;
         /**
          * Constructor for JSON_IO class which initializes the relevant fields for the class and
          * History Manager
          *
          * @param HISTORY_PATH path to the JSON file containing the history of questions and answers
          */
-        private JSON_IO() {
+        private JSON_IO(String username,String password) {
             try {
                 HistoryManager.this.questions = new ArrayList<Question>();
                 historySubject = HistoryManager.this;
                 historySubject.registerObserver(this);
+                this.username = username;
+                this.password = password;
                 storedJSON = openJSON();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -229,7 +233,7 @@ public class HistoryManager implements Subject, Observer {
         private JSONObject openJSON() throws IOException, InterruptedException {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:1337/question"))
+                    .uri(URI.create(String.format("http://localhost:1337/question?u=%s&p=%s",URLEncoder.encode(username,"UTF-8"), URLEncoder.encode(password,"UTF-8"))))
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String body = response.body();
@@ -318,8 +322,8 @@ public class HistoryManager implements Subject, Observer {
                         storedJSON.toString().getBytes());
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:1337/question"))
-                        .PUT(HttpRequest.BodyPublishers.ofString(storedJSON.toString()))
+                .uri(URI.create(String.format("http://localhost:1337/question?u=%s&p=%s",URLEncoder.encode(username,"UTF-8"), URLEncoder.encode(password,"UTF-8"))))
+                .PUT(HttpRequest.BodyPublishers.ofString(storedJSON.toString()))
                         .build();
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             } catch (Exception e) {

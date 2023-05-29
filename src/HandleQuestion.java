@@ -1,13 +1,20 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import java.net.URLDecoder;
 
+import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
+
+
 public class HandleQuestion implements HttpHandler {
 
+    private static final String DATA = "data.json";
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String response = "Request Received";
@@ -32,28 +39,35 @@ public class HandleQuestion implements HttpHandler {
         return sb.toString();
     }
     private String handlePut(HttpExchange exchange) throws IOException {
-        FileWriter file = new FileWriter("data.txt");
-        file.write(IStoStr(exchange.getRequestBody()));
+        String question = exchange.getRequestURI().getQuery();
+        String body = IStoStr(exchange.getRequestBody());
+        JSONObject history = new JSONObject(body);
+        Map<String,String> params = parseQueryParams(question);
+        String content = new String(Files.readAllBytes(Paths.get(DATA)));
+        JSONObject json = new JSONObject(content);
+        String password = json.getJSONObject(params.get("u")).getString("password");
+        if(password.equals(params.get("p"))){
+            json.getJSONObject(params.get("u")).put("history", history);
+        FileWriter file = new FileWriter(DATA);
+        file.write(json.toString());
         file.close();
         return "posted";
+    }
+        return "Incorrect";    
     }
 
     private String handleGet(HttpExchange exchange) throws IOException {
         String question = exchange.getRequestURI().getQuery();
-
         Map<String,String> params = parseQueryParams(question);
-        StringBuilder answer = new StringBuilder();
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("data.txt"));
-            String line;
-            while ((line = br.readLine()) != null) {
-                answer.append(line).append("\n");
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        String content = new String(Files.readAllBytes(Paths.get(DATA)));
+        JSONObject json = new JSONObject(content);
+        String password = json.getJSONObject(params.get("u")).getString("password");
+        if(password.equals(params.get("p"))){
+           return json.getJSONObject(params.get("u")).getJSONObject("history").toString();
         }
-        return answer.toString();
+        return "Incorrect";
     }
+
     private static Map<String, String> parseQueryParams(String query) throws UnsupportedEncodingException {
         Map<String, String> queryParams = new HashMap<>();
 

@@ -30,4 +30,9 @@ public class LoginWindow extends AppPanels {
     public AbstractButton getButton(){
         return loginButton;
     }
+
+    public String[] getData(){
+        return new String[]{usernameField.getText(), String.valueOf(passwordField.getPassword())};
+    }
+    
 }
