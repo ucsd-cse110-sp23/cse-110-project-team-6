@@ -1,16 +1,19 @@
 package frontend;
 
 import middleware.IResponse;
+import middleware.HistoryButtonObserver;
 import middleware.IPrompt;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
+import org.junit.platform.engine.support.discovery.SelectorResolver.Resolution;
+
 /**
  * This panel contains space for a prompt and response to be displayed.
  */
-public class PromptAndResponsePanel extends AppPanels {
+public class PromptAndResponsePanel extends AppPanels implements HistoryButtonObserver {
 
     PromptPanel promptPanel;    // panel for the prompt
     ResponsePanel responsePanel;        // panel for the response
@@ -27,6 +30,8 @@ public class PromptAndResponsePanel extends AppPanels {
         this.setPreferredSize(new Dimension(30,30));
         this.promptPanel = new PromptPanel();
         this.responsePanel = new ResponsePanel();
+        this.setFont(this.myFont.getFont());
+        this.setForeground(BLACK); 
 
         // adds the prompt and response panels to the display
         addPromptPanel(promptPanel);
@@ -35,7 +40,7 @@ public class PromptAndResponsePanel extends AppPanels {
     }
 
     /*
-     * Adds the prompt panel to the QNA panel.
+     * Adds the prompt panel to the prompt and response panel.
      * 
      * @param promptPanel: the prompt panel to be added
      */
@@ -44,7 +49,7 @@ public class PromptAndResponsePanel extends AppPanels {
     }
 
     /*
-     * Adds the response panel to the QNA panel.
+     * Adds the response panel to the prompt and response panel.
      * 
      * @param responsePanel: the response panel to be added
      */
@@ -73,5 +78,11 @@ public class PromptAndResponsePanel extends AppPanels {
     
     public boolean getStatus(){
         return this.isSet;
+    }
+
+    @Override
+    public void update(IPrompt prompt, IResponse response) {
+        setPrompt(prompt);
+        setResponse(response);
     }
 }

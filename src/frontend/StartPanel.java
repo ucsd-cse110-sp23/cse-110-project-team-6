@@ -22,15 +22,15 @@ public class StartPanel extends AppPanels {
      * Constructs the panel for Start button.
      * 
      * @param assistant:    assists with API calls
-     * @param qna:          panel for questions and answers
+     * @param promptAndResponsePanel:          panel for questions and answers
      * @param history:      panel for the history
      */
-    public StartPanel(SayItAssistant assistant, PromptAndResponsePanel qna, HistoryPanel history, HistoryManager historyManager) {
+    public StartPanel(SayItAssistant assistant, PromptAndResponsePanel promptAndResponsePanel, HistoryPanel history, HistoryManager historyManager) {
         this.setLayout(new GridLayout(0,1));
         this.assistant = assistant;
         this.recorder = new VoiceRecorder(targetDataLine);
         this.historyManager = historyManager;
-        populateStartPanel(qna, history);
+        populateStartPanel(promptAndResponsePanel, history);
         
     }
 
@@ -46,10 +46,10 @@ public class StartPanel extends AppPanels {
     /**
      * Populates the Start button panel with a clickable button.
      * 
-     * @param qna:      panel for questions and answers
+     * @param promptAndResponsePanel:      panel for questions and answers
      * @param history:  panel for the history
      */
-    public void populateStartPanel(PromptAndResponsePanel qna, HistoryPanel history) {
+    public void populateStartPanel(PromptAndResponsePanel promptAndResponsePanel, HistoryPanel history) {
 
         StartButton StartButton = new StartButton();    
         
@@ -71,9 +71,9 @@ public class StartPanel extends AppPanels {
 
                 // displays the question and answer
                 String[] response = assistant.respond();
-                qna.setPrompt(new Question(response[0]));
-                qna.setResponse(new Answer(response[1]));
-                history.revalidateHistory(qna);
+                promptAndResponsePanel.setPrompt(new Question(response[0]));
+                promptAndResponsePanel.setResponse(new Answer(response[1]));
+                history.revalidateHistory(promptAndResponsePanel);
                 StartButton.setEnabled(true);
                 revalidate();
             }

@@ -25,7 +25,7 @@ public class AppButtons extends JButton {
      * 
      * @param label: what the button will dispaly
      */
-    AppButtons(String label) {
+    protected AppButtons(String label) {
         super(label);
     }
 }

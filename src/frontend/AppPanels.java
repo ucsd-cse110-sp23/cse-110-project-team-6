@@ -15,6 +15,6 @@ public class AppPanels extends JPanel{
     protected final static Color LIGHT_GREY = new Color(100,100,100);
     protected final static Color GREEN = new Color(0,255,0);
     protected final static Color TEAL = new Color(0,126,126);
-    protected final MyFont myFont = new MyFont("src/fonts/OpenSans-Regular.ttf", 18);;
+    public final MyFont myFont = new MyFont("src/fonts/OpenSans-Regular.ttf", 18);;
     protected final String historyFilePath = "src/backend/history.json";
 }

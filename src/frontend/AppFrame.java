@@ -2,12 +2,9 @@ package frontend;
 
 import middleware.HistoryManager;
 import middleware.SayItAssistant;
-import middleware.WhisperRequest;
 
 import javax.swing.*;
 import java.awt.*;
-
-import java.io.File;
 
 /*
  * The AppFrame is the overall skeleton of the app, providing the structure and delegating function.
@@ -15,40 +12,22 @@ import java.io.File;
 public class AppFrame extends JFrame {
 
     // formatting
-    private final String HISTORY_FONT_FILE = "src/fonts/OpenSans-Regular.ttf";
     private final String ICON_FILE         = "src/icon.png";
     private final String APPFRAME_TITLE    = "SayIt Assistant";
-    private final float  FONT_SIZE         = 16f;
     private final int    APPFRAME_WIDTH    = 1280;
     private final int    APPFRAME_HEIGHT   = 720;
     
     // paneling
     private DisplayPanel displayPanel;
     private HistoryPanel historyPanel;
-    private SayItAssistant sayItAssistant;
-    private HistoryManager historyManager;
 
     /**
      * Constructor for AppFrame class which coordinates the GUI
      */
-    public AppFrame() {
-
-        // Get the relative path of HISTORY_FONT_FILE
-        File file = new File(HISTORY_FONT_FILE);
-        String font_file = file.getAbsolutePath();
-
+    public AppFrame(SayItAssistant sayItAssistant, HistoryManager historyManager) {
 
         setInformation();
-
-        // Initalizes the history manager and SayIt Assistant for Panels
-        sayItAssistant = new SayItAssistant(new WhisperRequest());
-        historyManager = new HistoryManager(sayItAssistant);
-
-        // Sets the font, overall display panel, and the history sidepanel
-        MyFont myFont = new MyFont (font_file, FONT_SIZE);
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        ge.registerFont(myFont.getFont());
-        setUpPanels();
+        setUpPanels(sayItAssistant, historyManager);
 
         // adds the history panel and display panel to the appframe
         this.add(historyPanel.getScrollPane(), BorderLayout.WEST);
@@ -73,9 +52,17 @@ public class AppFrame extends JFrame {
     /**
      * Sets up the panels for the appframe
      */
-    private void setUpPanels() {
-        historyPanel = new HistoryPanel(historyManager);
+    private void setUpPanels(SayItAssistant sayItAssistant, HistoryManager historyManager) {
+        historyPanel = new HistoryPanel();
         displayPanel = new DisplayPanel(sayItAssistant, historyPanel, historyManager);
         historyPanel.revalidateHistory(displayPanel.getPromptAndResponsePanel());
+    }
+
+    public HistoryPanel getHistoryPanel() {
+        return this.historyPanel;
+    }
+
+    public PromptAndResponsePanel getPromptAndResponsePanel() {
+        return displayPanel.getPromptAndResponsePanel();
     }
 }
