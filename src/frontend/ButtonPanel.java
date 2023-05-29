@@ -5,6 +5,7 @@ import middleware.SayItAssistant;
 
 import java.awt.*;
 
+@Deprecated
 /*
  * Panel that contains all of the main action buttons (clear, delete, new question).
  */

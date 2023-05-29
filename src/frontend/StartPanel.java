@@ -17,7 +17,7 @@ public class StartPanel extends AppPanels {
     private TargetDataLine targetDataLine;
     private VoiceRecorder recorder;
     private SayItAssistant assistant;
-
+    private HistoryManager historyManager;
     /**
      * Constructs the panel for Start button.
      * 
@@ -25,10 +25,11 @@ public class StartPanel extends AppPanels {
      * @param qna:          panel for questions and answers
      * @param history:      panel for the history
      */
-    public StartPanel(SayItAssistant assistant, QnAPanel qna, HistoryPanel history) {
+    public StartPanel(SayItAssistant assistant, QnAPanel qna, HistoryPanel history, HistoryManager historyManager) {
         this.setLayout(new GridLayout(0,1));
         this.assistant = assistant;
         this.recorder = new VoiceRecorder(targetDataLine);
+        this.historyManager = historyManager;
         populateStartPanel(qna, history);
         
     }

@@ -15,8 +15,8 @@ public class DisplayPanel extends AppPanels {
 
     // panels that are contained within the display panel
     QnAPanel qnaPanel;
-    ButtonPanel buttonPanel;
     HistoryPanel historyPanel;
+    StartPanel startPanel;
 
     /*
      * Creates and formats the display panel.
@@ -33,11 +33,11 @@ public class DisplayPanel extends AppPanels {
         GridBagConstraints displayFormat = new GridBagConstraints();    // this allows for finer control over formatting than GridLayout previously did
         this.qnaPanel = new QnAPanel();
         this.historyPanel = historyPanel;
-        this.buttonPanel = new ButtonPanel(sayItAssistant, qnaPanel, historyPanel, historyManager);
+        this.startPanel = new StartPanel(sayItAssistant, qnaPanel, historyPanel, historyManager);
 
         // adds the subpanels to the display
         addQnAPanel(qnaPanel, displayFormat);
-        addButtonPanel(buttonPanel, displayFormat);
+        addStartPanel(startPanel, displayFormat);
     }
 
     /*
@@ -62,15 +62,15 @@ public class DisplayPanel extends AppPanels {
      * @param buttonPanel:      panel to be added
      * @param displayFormat:    defines the formatting of the panel
      */
-    public void addButtonPanel(ButtonPanel buttonPanel, GridBagConstraints displayFormat) {
+    public void addStartPanel(StartPanel startPanel, GridBagConstraints displayFormat) {
 
         // button panel will fill up the display panel all the way horizontally and only 25% of the screen vertically
         displayFormat.fill = GridBagConstraints.BOTH;
         displayFormat.weightx = 1.0;
         displayFormat.weighty = 0.25;
         displayFormat.gridy = 1;    // button panel should be on top
-        buttonPanel.setMaximumSize(new Dimension(20,20));   // keeping the maximum size small ensures that it is exceeded, making the button and qna panels size ratio remain constant
-        add(buttonPanel, displayFormat);
+        startPanel.setMaximumSize(new Dimension(20,20));   // keeping the maximum size small ensures that it is exceeded, making the button and qna panels size ratio remain constant
+        add(startPanel, displayFormat);
     }
 
     /*
