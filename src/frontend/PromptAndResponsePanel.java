@@ -1,6 +1,7 @@
 package frontend;
 
 import middleware.IResponse;
+import middleware.StartButtonObserver;
 import middleware.HistoryButtonObserver;
 import middleware.IPrompt;
 
@@ -8,12 +9,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
-import org.junit.platform.engine.support.discovery.SelectorResolver.Resolution;
-
 /**
  * This panel contains space for a prompt and response to be displayed.
  */
-public class PromptAndResponsePanel extends AppPanels implements HistoryButtonObserver {
+public class PromptAndResponsePanel extends AppPanels implements HistoryButtonObserver, StartButtonObserver {
 
     PromptPanel promptPanel;    // panel for the prompt
     ResponsePanel responsePanel;        // panel for the response

@@ -1,8 +1,5 @@
 package frontend;
 
-import middleware.HistoryManager;
-import middleware.SayItAssistant;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -24,17 +21,9 @@ public class AppFrame extends JFrame {
     /**
      * Constructor for AppFrame class which coordinates the GUI
      */
-    public AppFrame(SayItAssistant sayItAssistant, HistoryManager historyManager) {
-
+    public AppFrame() {
         setInformation();
-        setUpPanels(sayItAssistant, historyManager);
-
-        // adds the history panel and display panel to the appframe
-        this.add(historyPanel.getScrollPane(), BorderLayout.WEST);
-        this.add(displayPanel, BorderLayout.CENTER);
-
-        revalidate();
-        
+        setUpPanels();
     }
 
     /**
@@ -52,17 +41,20 @@ public class AppFrame extends JFrame {
     /**
      * Sets up the panels for the appframe
      */
-    private void setUpPanels(SayItAssistant sayItAssistant, HistoryManager historyManager) {
+    private void setUpPanels() {
         historyPanel = new HistoryPanel();
-        displayPanel = new DisplayPanel(sayItAssistant, historyPanel, historyManager);
-        historyPanel.revalidateHistory(displayPanel.getPromptAndResponsePanel());
+        displayPanel = new DisplayPanel();
+
+        // adds the history panel and display panel to the appframe
+        this.add(historyPanel.getScrollPane(), BorderLayout.WEST);
+        this.add(displayPanel, BorderLayout.CENTER);
     }
 
     public HistoryPanel getHistoryPanel() {
         return this.historyPanel;
     }
 
-    public PromptAndResponsePanel getPromptAndResponsePanel() {
-        return displayPanel.getPromptAndResponsePanel();
+    public DisplayPanel getDisplayPanel() {
+        return this.displayPanel;
     }
 }

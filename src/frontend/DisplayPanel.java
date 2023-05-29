@@ -1,7 +1,6 @@
 package frontend;
 
-import middleware.HistoryManager;
-import middleware.SayItAssistant;
+import middleware.StartButton;
 
 import java.awt.*;
 
@@ -10,30 +9,22 @@ import java.awt.*;
  * format of these panels standardized.
  */
 public class DisplayPanel extends AppPanels {
-    
-    private SayItAssistant sayItAssistant;
 
     // panels that are contained within the display panel
     PromptAndResponsePanel promptAndResponsePanel;
-    HistoryPanel historyPanel;
     StartPanel startPanel;
 
     /*
      * Creates and formats the display panel.
-     * 
-     * @param sayItAssistant:   assists with API calls
-     * @param historyPanel:     panel for the history
-     * @param historyManager:   manages the history
      */
-    public DisplayPanel(SayItAssistant sayItAssistant, HistoryPanel historyPanel, HistoryManager historyManager) {
+    public DisplayPanel() {
 
         // formats the panel
-        this.sayItAssistant = sayItAssistant;
         this.setLayout(new GridBagLayout());
         GridBagConstraints displayFormat = new GridBagConstraints();    // this allows for finer control over formatting than GridLayout previously did
+        
         this.promptAndResponsePanel = new PromptAndResponsePanel();
-        this.historyPanel = historyPanel;
-        this.startPanel = new StartPanel(sayItAssistant, promptAndResponsePanel, historyPanel, historyManager);
+        this.startPanel = new StartPanel();
 
         // adds the subpanels to the display
         addPromptAndResponsePanel(promptAndResponsePanel, displayFormat);
@@ -82,4 +73,7 @@ public class DisplayPanel extends AppPanels {
         return this.promptAndResponsePanel;
     }
     
+    public void addStartButton(StartButton startButton) {
+        startPanel.addStartButton(startButton);
+    }
 }

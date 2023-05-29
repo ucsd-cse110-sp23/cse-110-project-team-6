@@ -1,37 +1,18 @@
 package frontend;
 
-import middleware.*;
-
-import javax.swing.*;
-import javax.sound.sampled.TargetDataLine;
-
+import middleware.StartButton;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 /**
  * Class which contains the button for asking prompts.
  */
 public class StartPanel extends AppPanels {
 
-    private TargetDataLine targetDataLine;
-    private VoiceRecorder recorder;
-    private SayItAssistant assistant;
-    private HistoryManager historyManager;
     /**
      * Constructs the panel for Start button.
-     * 
-     * @param assistant:    assists with API calls
-     * @param promptAndResponsePanel:          panel for questions and answers
-     * @param history:      panel for the history
      */
-    public StartPanel(SayItAssistant assistant, PromptAndResponsePanel promptAndResponsePanel, HistoryPanel history, HistoryManager historyManager) {
+    public StartPanel() {
         this.setLayout(new GridLayout(0,1));
-        this.assistant = assistant;
-        this.recorder = new VoiceRecorder(targetDataLine);
-        this.historyManager = historyManager;
-        populateStartPanel(promptAndResponsePanel, history);
-        
     }
 
     /**
@@ -43,66 +24,5 @@ public class StartPanel extends AppPanels {
         this.add(StartButton);
     }
 
-    /**
-     * Populates the Start button panel with a clickable button.
-     * 
-     * @param promptAndResponsePanel:      panel for questions and answers
-     * @param history:  panel for the history
-     */
-    public void populateStartPanel(PromptAndResponsePanel promptAndResponsePanel, HistoryPanel history) {
-
-        StartButton StartButton = new StartButton();    
-        
-        StartButton.addMouseListener(new MouseAdapter() {
-
-            // when pressed, voice recording will commence
-            @Override
-            public void mousePressed(MouseEvent e) {
-                StartButton.setEnabled(false);
-                revalidate();
-                recorder.startRecording();
-            }
-
-            // once released, voice recording will stop and the question / answer will be displayed
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-                recorder.stopRecording();
-
-                // displays the question and answer
-                String[] response = assistant.respond();
-                promptAndResponsePanel.setPrompt(new Question(response[0]));
-                promptAndResponsePanel.setResponse(new Answer(response[1]));
-                history.revalidateHistory(promptAndResponsePanel);
-                StartButton.setEnabled(true);
-                revalidate();
-            }
-        });
-            
-        add(StartButton); // adds the new question button to the question panel
-    }
-
 }
 
-/*
- * The new question button allows the user to record and submit questions.
- */
-class StartButton extends AppButtons {
-
-    // formatting for the new question button
-    private final int StartButtonWidth = 1200;
-    private final int StartButtonHeight = 50;
-    private final static String StartButtonLabel = "Start";
-
-    /*
-     * Creates and formats the new question button.
-     */
-    public StartButton() {
-        super(StartButtonLabel);
-        this.setBackground(GREEN);
-        this.setForeground(BLACK);
-        setHorizontalAlignment(SwingConstants.CENTER);
-        setPreferredSize(new Dimension(StartButtonWidth, StartButtonHeight));
-    }
-
-}
