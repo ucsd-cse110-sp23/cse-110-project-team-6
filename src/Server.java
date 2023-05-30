@@ -16,7 +16,7 @@ public class Server {
         //write empty json file if it doesn't exist
         if (!Files.exists(Paths.get("data.json"))){
             FileWriter f = new FileWriter("data.json");
-            f.write("{}");
+            f.write("{\"a\":{\"password\":\"1\",\"history\":{}}}");
             f.close();
         }
         server.createContext("/question", new HandleQuestion());

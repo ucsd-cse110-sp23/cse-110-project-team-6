@@ -28,6 +28,6 @@ jobs:
 
       - name: Start Server
         run: |
-          java -cp .:/lib/:bin Server &
+          java -cp .:./lib/*:bin Server &
           sleep 5 &&
           java -jar lib/junit-platform-console-standalone-1.9.3.jar -cp lib/json-20230227.jar:bin --scan-class-path
