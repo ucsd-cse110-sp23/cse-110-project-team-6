@@ -45,7 +45,7 @@ public class ResponsePanel extends AppPanels{
      */
     private void setFormatting() {
         this.setLayout(new GridLayout(1, 1));
-        response.setBackground(LIGHT_GREY);
+        response.setBackground(PLUM);
         response.setForeground(WHITE);
         response.setLineWrap(true);
         response.setWrapStyleWord(true);

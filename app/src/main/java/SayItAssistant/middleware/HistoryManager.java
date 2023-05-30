@@ -160,7 +160,7 @@ public class HistoryManager implements Subject, Observer {
         }
     }
 
-    private static final String HISTORY_DIR = System.getProperty("user.dir") + "/bin/backend";
+    private static final String HISTORY_DIR = System.getProperty("user.dir");
     private static final String HISTORY_PATH = HISTORY_DIR + "/history.json";
     private JSON_IO jsonIO;
     private SayItAssistant assistantSubject;

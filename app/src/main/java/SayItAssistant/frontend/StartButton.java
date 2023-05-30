@@ -38,9 +38,11 @@ public class StartButton extends AppButtons implements Subject {
      */
     public StartButton(SayItAssistant assistant) {
         super(StartButtonLabel);
+        // Set the font for the button
+        this.setFont(this.myFont.getBoldFont());
         this.recorder = new VoiceRecorder(targetDataLine);
-        this.setBackground(GREEN);
-        this.setForeground(BLACK);
+        this.setBackground(CREAM);
+        this.setForeground(NIGHT);
         this.observers = new ArrayList<Observer>();
         setHorizontalAlignment(SwingConstants.CENTER);
         setPreferredSize(new Dimension(StartButtonWidth, StartButtonHeight));
@@ -51,6 +53,7 @@ public class StartButton extends AppButtons implements Subject {
             public void mousePressed(MouseEvent e) {
                 setEnabled(false);
                 setText(RecordingLabel);
+                setBackground(BEIGE);
                 revalidate();
                 recorder.startRecording();
             }
@@ -60,6 +63,7 @@ public class StartButton extends AppButtons implements Subject {
             public void mouseReleased(MouseEvent e) {
 
                 recorder.stopRecording();
+                setBackground(CREAM);
                 setText(StartButtonLabel);
 
                 // Get the prompt and response from the assistant

@@ -2,7 +2,6 @@ package SayItAssistant.MilestoneOneStoryTest;
 
 import org.junit.jupiter.api.*;
 
-//import frontend.deleteSelectedQuestion;
 import SayItAssistant.middleware.Answer;
 import SayItAssistant.middleware.HistoryManager;
 import SayItAssistant.middleware.MockWhisperRequest;
@@ -10,8 +9,6 @@ import SayItAssistant.middleware.Question;
 import SayItAssistant.middleware.SayItAssistant;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FourthStoryTest {
     private static final int NOT_SELECTED = -1;
     private static final String EXPECT_HISTORY_PATH = 
-        System.getProperty("user.dir") + "/bin/backend/history.json";
+        System.getProperty("user.dir") + "/history.json";
 
     private static final Question QUESTION1 = new Question("What is your name?");
     private static final Question QUESTION2 = new Question("What is your quest?");
@@ -33,8 +30,6 @@ public class FourthStoryTest {
     private static final Answer ANSWER2 = new Answer("My quest is to find the Holy Grail.");
     private static final Answer ANSWER3 = new Answer("My favorite color is blue.");
     private static final Answer ANSWER4 = new Answer("Bubble tea is a drink.");
-
-    private static final int NullPointerException = 0;
 
     private static SayItAssistant assistant;
     private static HistoryManager historyManager;

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class FirstStoryTest {
     
     private static final String EXPECT_HISTORY_PATH = 
-        System.getProperty("user.dir") + "/bin/backend/history.json";
+        System.getProperty("user.dir") + "/history.json";
     private static final int MAX_WINDOW_QUESTION_SIZE = 10;
     
     private static HistoryManager historyManager;

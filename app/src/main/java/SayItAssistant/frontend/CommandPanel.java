@@ -27,13 +27,16 @@ public class CommandPanel extends AppPanels {
      */
     private void setFormatting() {
         this.setLayout(new GridLayout(0,1));
-        command.setBackground(WHITE);
-        command.setForeground(BLACK);
+        command.setBackground(NIGHT);
+        command.setForeground(CREAM);
         command.setAlignmentX(BOTTOM_ALIGNMENT);
         command.setAlignmentY(BOTTOM_ALIGNMENT);
+        
+        command.setFont(this.myFont.getBoldFont());
         command.setText("Welcome to SayIt Assistant");
+        command.setEditable(false);
+
         command.setLineWrap(true);
         command.setWrapStyleWord(true);
     }
-
 }

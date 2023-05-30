@@ -2,6 +2,8 @@ package SayItAssistant.frontend;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.InputStream;
+import java.net.URL;
 
 /*
  * The AppFrame is the overall skeleton of the app, providing the structure and delegating function.
@@ -9,7 +11,7 @@ import java.awt.*;
 public class AppFrame extends JFrame {
 
     // formatting
-    private final String ICON_FILE         = "src/icon.png";
+    private final String ICON_FILE         = "images/icon.png";
     private final String APPFRAME_TITLE    = "SayIt Assistant";
     private final int    APPFRAME_WIDTH    = 1280;
     private final int    APPFRAME_HEIGHT   = 720;
@@ -33,7 +35,13 @@ public class AppFrame extends JFrame {
         this.setTitle(APPFRAME_TITLE);
         this.setSize(APPFRAME_WIDTH, APPFRAME_HEIGHT);
         this.setLayout(new BorderLayout());
-        this.setIconImage(new ImageIcon(ICON_FILE).getImage());
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL input = classLoader.getResource(ICON_FILE);
+
+        // sets the icon for the appframe
+        this.setIconImage(new ImageIcon(input).getImage());
+
+        //this.setIconImage(new ImageIcon(input).getImage());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
     }

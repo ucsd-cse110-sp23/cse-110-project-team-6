@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class HistoryManagerTests {
 
     private static final String EXPECT_HISTORY_PATH = 
-        System.getProperty("user.dir") + "/bin/backend/history.json";
+        System.getProperty("user.dir") + "/history.json";
 
     private static final Question QUESTION1 = new Question("Question. What is your name?");
     private static final Question QUESTION2 = new Question("Question. What is your quest?");

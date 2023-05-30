@@ -33,7 +33,7 @@ public class HistoryButton extends AppButtons implements Subject {
         this.id = id;
         this.observers = new ArrayList<Observer>();
         this.setBackground(BLACK);
-        this.setForeground(LIGHT_GREY);
+        this.setForeground(WHITE);
         setHorizontalAlignment(SwingConstants.LEFT);
         setAlignmentX(Component.LEFT_ALIGNMENT);
         setPreferredSize(new Dimension(buttonWidth, buttonHeight));

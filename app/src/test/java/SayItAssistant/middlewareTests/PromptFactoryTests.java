@@ -8,8 +8,8 @@ import SayItAssistant.middleware.*;
 
 public class PromptFactoryTests {
     PromptFactory pf = new PromptFactory();
-    private String QUESTION_PROMPT = "Question.  What is the capital of France?";
-    private String DELETE_PROMPT = "Delete prompt";
+    private String QUESTION_PROMPT = "Question. What is the capital of France?";
+    private String DELETE_PROMPT   = "Delete prompt";
     private final String CLEAR_ALL_PROMPT   = "Clear all";
     private final String SETUP_EMAIL_PROMPT  = "Setup email";
     private final String CREATE_EMAIL_PROMPT = "Create email";

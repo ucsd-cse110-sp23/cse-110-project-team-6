@@ -55,7 +55,7 @@ public class PromptPanel extends AppPanels{
      */
     private void setFormatting() {
         this.setLayout(new GridLayout(1, 1));
-        prompt.setBackground(GREY);
+        prompt.setBackground(DARK_PLUM);
         prompt.setForeground(WHITE);
         prompt.setAlignmentX(BOTTOM_ALIGNMENT);
         prompt.setAlignmentY(BOTTOM_ALIGNMENT);

@@ -1,10 +1,6 @@
 package SayItAssistant.frontend;
 
 import java.awt.*;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class MyFont {
 
@@ -16,19 +12,12 @@ public class MyFont {
      * @param fontFile: the file to load the font from
      * @param fontSize: the size that the font should be
      */
-    public MyFont (String fontFile, float fontSize) {
+    public MyFont (String fontName, float fontSize) {
 
         // makes sure that font format is acceptable
-        try {
-            InputStream inStream = new BufferedInputStream(new FileInputStream(fontFile));
-
-            this.myFont = Font.createFont(Font.TRUETYPE_FONT, inStream);
-            this.myFont = this.myFont.deriveFont(fontSize);
-        } catch (FontFormatException | IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // sets the size of the font
+        this.myFont = new Font(fontName, Font.PLAIN, 12);
+        // Sets the size of the font
+        this.myFont = this.myFont.deriveFont(fontSize);
    } 
 
    /*
@@ -38,6 +27,10 @@ public class MyFont {
     */
    public Font getFont() {
         return this.myFont;
+   }
+
+   public Font getBoldFont() {
+        return this.myFont.deriveFont(Font.BOLD);
    }
 
 }
