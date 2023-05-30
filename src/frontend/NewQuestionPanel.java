@@ -99,7 +99,7 @@ class NewQuestionButton extends AppButtons {
     public NewQuestionButton() {
         super(newQuestionLabel);
         this.setBackground(GREEN);
-        this.setForeground(WHITE);
+        this.setForeground(BLACK);
         setHorizontalAlignment(SwingConstants.CENTER);
         setPreferredSize(new Dimension(newQuestionButtonWidth, newQuestionButtonHeight));
     }

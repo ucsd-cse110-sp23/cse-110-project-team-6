@@ -36,7 +36,6 @@ public class AppFrame extends JFrame {
     // paneling
     private DisplayPanel displayPanel;
     private HistoryPanel historyPanel;
-    private NewQuestionPanel newQuestionPanel;
     private SayItAssistant sayItAssistant;
     private HistoryManager historyManager;
     private boolean loggedIn = false;
@@ -44,7 +43,11 @@ public class AppFrame extends JFrame {
      * Constructor for AppFrame class which coordinates the GUI
      */
     public AppFrame() {
-        MyFont myFont = new MyFont(new File(HISTORY_FONT_FILE), FONT_SIZE);
+        // Get the relative path of HISTORY_FONT_FILE
+        File file = new File(HISTORY_FONT_FILE);
+        String font_file = file.getAbsolutePath();
+        // Sets the font, overall display panel, and the history sidepanel
+        MyFont myFont = new MyFont (font_file, FONT_SIZE);
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         ge.registerFont(myFont.getFont());
         setInformation();
