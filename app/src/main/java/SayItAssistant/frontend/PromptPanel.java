@@ -20,14 +20,7 @@ public class PromptPanel extends AppPanels{
      * Initializes and formats the panel for the prompt.
      */
     public PromptPanel() {
-        this.setLayout(new GridLayout(1, 1));
-        prompt.setBackground(GREY);
-        prompt.setForeground(WHITE);
-        prompt.setAlignmentX(BOTTOM_ALIGNMENT);
-        prompt.setAlignmentY(BOTTOM_ALIGNMENT);
-        prompt.setText("Welcome to SayIt Assistant");
-        prompt.setLineWrap(true);
-        prompt.setWrapStyleWord(true);
+        this.setFormatting();
         add(prompt);
     }
 
@@ -55,6 +48,19 @@ public class PromptPanel extends AppPanels{
      */
     public int getCurrentPromptNumber(){
         return currentPromptNumber; 
+    }
+
+    /*
+     * Defines the formatting for the prompt panel.
+     */
+    private void setFormatting() {
+        this.setLayout(new GridLayout(1, 1));
+        prompt.setBackground(GREY);
+        prompt.setForeground(WHITE);
+        prompt.setAlignmentX(BOTTOM_ALIGNMENT);
+        prompt.setAlignmentY(BOTTOM_ALIGNMENT);
+        prompt.setLineWrap(true);
+        prompt.setWrapStyleWord(true);
     }
 
 }

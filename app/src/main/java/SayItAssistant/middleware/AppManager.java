@@ -43,8 +43,8 @@ public class AppManager implements Observer {
      */
     public void run() {
         System.out.println("App is now running");
-        populateHistoryPanel();
-        populateStartPanel();
+        populateHistoryPanel(); // fills the history panel with buttons for all of the prompts in the history
+        populateStartPanel();   // fills the start panel with the start button and its logic
         System.out.println("Everything has been populated");
     }
 

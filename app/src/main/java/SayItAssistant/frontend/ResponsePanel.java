@@ -18,12 +18,8 @@ public class ResponsePanel extends AppPanels{
      * Initializes and formats the panel for the response.
      */
     public ResponsePanel() {
-        this.setLayout(new GridLayout(1, 1));
-        response.setBackground(LIGHT_GREY);
-        response.setForeground(WHITE);
-        response.setLineWrap(true);
-        response.setWrapStyleWord(true);
-        add(response);
+        this.setFormatting();   // formats panel and text area
+        add(response);          // adds text area to the panel
     }
 
     /*
@@ -42,5 +38,16 @@ public class ResponsePanel extends AppPanels{
      */
     public JScrollPane getResponseScrollPane() {
         return this.responseScrollPane;
+    }
+
+    /*
+     * Defines the formatting for the response panel.
+     */
+    private void setFormatting() {
+        this.setLayout(new GridLayout(1, 1));
+        response.setBackground(LIGHT_GREY);
+        response.setForeground(WHITE);
+        response.setLineWrap(true);
+        response.setWrapStyleWord(true);
     }
 }

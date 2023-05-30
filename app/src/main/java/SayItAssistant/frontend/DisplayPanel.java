@@ -3,7 +3,7 @@ package SayItAssistant.frontend;
 import java.awt.*;
 
 /*
- * This panel holds the question, answer, and button panels.  It's primary function is to keep the overall 
+ * This panel holds the prompt, response, and start panels.  It's primary function is to keep the overall 
  * format of these panels standardized.
  */
 public class DisplayPanel extends AppPanels {
@@ -11,6 +11,7 @@ public class DisplayPanel extends AppPanels {
     // panels that are contained within the display panel
     PromptAndResponsePanel promptAndResponsePanel;
     StartPanel startPanel;
+    CommandPanel commandPanel;
 
     /*
      * Creates and formats the display panel.
@@ -23,10 +24,12 @@ public class DisplayPanel extends AppPanels {
         
         this.promptAndResponsePanel = new PromptAndResponsePanel();
         this.startPanel = new StartPanel();
+        this.commandPanel = new CommandPanel();
 
         // adds the subpanels to the display
         addPromptAndResponsePanel(promptAndResponsePanel, displayFormat);
         addStartPanel(startPanel, displayFormat);
+        addCommandPanel(commandPanel, displayFormat);
     }
 
     /*
@@ -37,11 +40,11 @@ public class DisplayPanel extends AppPanels {
      */
     public void addPromptAndResponsePanel(PromptAndResponsePanel promptAndResponsePanel, GridBagConstraints displayFormat) {
 
-        // prompt and response panel will fill up the display panel all the way horizontally and only 75% of the screen vertically
+        // prompt and response panel will fill up the display panel all the way horizontally and only 70% of the screen vertically
         displayFormat.fill = GridBagConstraints.BOTH;
         displayFormat.weightx = 1.0;
-        displayFormat.weighty = 0.75;
-        displayFormat.gridy = 0;
+        displayFormat.weighty = 0.70;
+        displayFormat.gridy = 1;    // prompt / response panel is in the middle
         add(promptAndResponsePanel, displayFormat);
     }
 
@@ -53,13 +56,23 @@ public class DisplayPanel extends AppPanels {
      */
     public void addStartPanel(StartPanel startPanel, GridBagConstraints displayFormat) {
 
-        // button panel will fill up the display panel all the way horizontally and only 25% of the screen vertically
+        // button panel will fill up the display panel all the way horizontally and only 20% of the screen vertically
         displayFormat.fill = GridBagConstraints.BOTH;
         displayFormat.weightx = 1.0;
-        displayFormat.weighty = 0.25;
-        displayFormat.gridy = 1;    // button panel should be on top
+        displayFormat.weighty = 0.20;
+        displayFormat.gridy = 2;   // start panel is on the bottom
         startPanel.setMaximumSize(new Dimension(20,20));   // keeping the maximum size small ensures that it is exceeded, making the button and prompt and response panels size ratio remain constant
         add(startPanel, displayFormat);
+    }
+
+    public void addCommandPanel(CommandPanel commandPanel, GridBagConstraints displayFormat) {
+        // button panel will fill up the display panel all the way horizontally and only 20% of the screen vertically
+        displayFormat.fill = GridBagConstraints.BOTH;
+        displayFormat.weightx = 1.0;
+        displayFormat.weighty = 0.10;
+        displayFormat.gridy = 0;    // command panel should be on top
+        startPanel.setMaximumSize(new Dimension(20,20));   // keeping the maximum size small ensures that it is exceeded, making the button and prompt and response panels size ratio remain constant
+        add(commandPanel, displayFormat);
     }
 
     /*
@@ -71,7 +84,18 @@ public class DisplayPanel extends AppPanels {
         return this.promptAndResponsePanel;
     }
     
+    /*
+     * Adds the start button to the start panel.
+     */
     public void addStartButton(StartButton startButton) {
         startPanel.addStartButton(startButton);
+    }
+
+    /*
+     * Sets the current command that is being looked at.
+     */
+    public void setCommand(String command) {
+        this.commandPanel.setCommand(command);
+        revalidate();
     }
 }

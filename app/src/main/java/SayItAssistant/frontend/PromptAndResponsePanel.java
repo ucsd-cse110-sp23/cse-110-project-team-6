@@ -22,14 +22,7 @@ public class PromptAndResponsePanel extends AppPanels implements Observer {
      */
     public PromptAndResponsePanel() {
       
-        // formats the panel
-        this.setLayout(new GridLayout(2,1));
-        this.setBackground(GREY);
-        this.setPreferredSize(new Dimension(30,30));
-        this.promptPanel = new PromptPanel();
-        this.responsePanel = new ResponsePanel();
-        this.setFont(this.myFont.getFont());
-        this.setForeground(BLACK); 
+        this.setFormatting(); // gets the panel formatting setup
 
         // adds the prompt and response panels to the display
         addPromptPanel(promptPanel);
@@ -64,6 +57,19 @@ public class PromptAndResponsePanel extends AppPanels implements Observer {
         isSet = true; //confirm the display is set
     }
 
+    /*
+     * Defines the formatting for the prompt / response panel.
+     */
+    private void setFormatting() {
+        // formats the panel
+        this.setLayout(new GridLayout(2,1));
+        this.setBackground(GREY);
+        this.setPreferredSize(new Dimension(30,30));
+        this.promptPanel = new PromptPanel();
+        this.responsePanel = new ResponsePanel();
+        this.setFont(this.myFont.getFont());
+        this.setForeground(BLACK); 
+    }
     /*
      * Allows for the response text to be directly set.
      * 

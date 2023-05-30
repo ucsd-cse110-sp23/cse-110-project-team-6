@@ -22,8 +22,8 @@ public class AppFrame extends JFrame {
      * Constructor for AppFrame class which coordinates the GUI
      */
     public AppFrame() {
-        setInformation();
-        setUpPanels();
+        setInformation();   // sets the overall app frame's behavior and style
+        setUpPanels();      // adds the other parts of the UI to the frame
     }
 
     /**
@@ -42,18 +42,24 @@ public class AppFrame extends JFrame {
      * Sets up the panels for the appframe
      */
     private void setUpPanels() {
-        historyPanel = new HistoryPanel();
-        displayPanel = new DisplayPanel();
+        historyPanel = new HistoryPanel();  // side panel for history
+        displayPanel = new DisplayPanel();  // panel to hold prompts, responses, and start button
 
         // adds the history panel and display panel to the appframe
         this.add(historyPanel.getScrollPane(), BorderLayout.WEST);
         this.add(displayPanel, BorderLayout.CENTER);
     }
 
+    /*
+     * Retrieves a reference to the history panel.
+     */
     public HistoryPanel getHistoryPanel() {
         return this.historyPanel;
     }
 
+    /*
+     * Retrieves a reference to the display panel.
+     */
     public DisplayPanel getDisplayPanel() {
         return this.displayPanel;
     }

@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /*
- * Buttons created within the app use this for formatting.
+ * Panels created within the app use this for formatting.
  */
 public class AppPanels extends JPanel{
     protected final static Color BLACK = new Color(24, 25, 26);
