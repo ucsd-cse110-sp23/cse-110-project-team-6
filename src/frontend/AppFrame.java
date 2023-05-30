@@ -121,6 +121,12 @@ public class AppFrame extends JFrame {
         historyPanel.revalidateHistory(displayPanel.getQnAPanel());
     }
 
+    /**
+     * Checks if username and password are valid
+     * @param userName
+     * @param userPassword
+     * @return true if the user is valid, false otherwise
+     */
     private boolean checkValid(String userName, String userPassword) throws IOException, InterruptedException{
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -128,13 +134,15 @@ public class AppFrame extends JFrame {
         .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String body = response.body();
-        if(body.equals("Incorrect")){
-            return false;
-        }else{
-            return true;
-        }
+        return !body.equals("Incorrect");
     }
 
+    /**
+     * Checks if username and password are valid for signup
+     * @param userName
+     * @param userPassword
+     * @return true if the sign-up is successful, false otherwise
+     */
     private boolean signUp(String userName, String userPassword) throws IOException, InterruptedException{
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()

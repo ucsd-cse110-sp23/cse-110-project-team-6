@@ -12,6 +12,7 @@ import java.util.Map;
 import org.json.JSONObject;
 
 
+//Handles all requests to /question
 public class HandleQuestion implements HttpHandler {
 
     private static final String DATA = "data.json";
@@ -30,6 +31,8 @@ public class HandleQuestion implements HttpHandler {
         os.write(response.getBytes());
         os.close();
     }
+
+    //Converts InputStream to String
     private static String IStoStr(InputStream is) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
@@ -61,6 +64,7 @@ public class HandleQuestion implements HttpHandler {
         Map<String,String> params = parseQueryParams(question);
         String content = new String(Files.readAllBytes(Paths.get(DATA)));
         JSONObject json = new JSONObject(content);
+        //handle cases where user is new
         if(params.containsKey("new")){
             if(!json.has(params.get("u"))){
                 JSONObject userData = new JSONObject();
@@ -75,7 +79,7 @@ public class HandleQuestion implements HttpHandler {
                 return "Incorrect";
             }
         }
-        if(json.getJSONObject(params.get("u")) != null){
+        if(json.has(params.get("u"))){
             String password = json.getJSONObject(params.get("u")).getString("password");
             if(password.equals(params.get("p"))){
                 return json.getJSONObject(params.get("u")).getJSONObject("history").toString();
@@ -84,6 +88,7 @@ public class HandleQuestion implements HttpHandler {
         return "Incorrect";
     }
 
+    //getting query parameters from the url into a Map
     private static Map<String, String> parseQueryParams(String query) throws UnsupportedEncodingException {
         Map<String, String> queryParams = new HashMap<>();
 
