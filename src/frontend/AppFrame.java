@@ -13,6 +13,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -67,6 +68,23 @@ public class AppFrame extends JFrame {
             } 
             
         });
+        loginWindow.signUpButton.addActionListener(e -> {
+            try {
+                String username = loginWindow.getData()[0];
+                String password = loginWindow.getData()[1];
+                loggedIn = this.signUp(username,password);
+                if(loggedIn){
+                    this.remove(loginWindow);
+                    setupQuestion(username, password);
+                    revalidate();
+                }
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            } 
+            
+        });
         revalidate();
     }
 
@@ -107,6 +125,20 @@ public class AppFrame extends JFrame {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create(String.format("http://localhost:1337/question?u=%s&p=%s", URLEncoder.encode(userName,"UTF-8"), URLEncoder.encode(userPassword,"UTF-8"))))
+        .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        String body = response.body();
+        if(body.equals("Incorrect")){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    private boolean signUp(String userName, String userPassword) throws IOException, InterruptedException{
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create(String.format("http://localhost:1337/question?u=%s&p=%s&new=true", URLEncoder.encode(userName,"UTF-8"), URLEncoder.encode(userPassword,"UTF-8"))))
         .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String body = response.body();

@@ -5,6 +5,7 @@ import javax.swing.*;
 public class LoginWindow extends AppPanels {
     JLabel usernameLabel;
     JLabel passwordLabel;
+    public JButton signUpButton;
     JButton loginButton;
     JTextField usernameField;
     JPasswordField passwordField;
@@ -12,19 +13,21 @@ public class LoginWindow extends AppPanels {
     public LoginWindow(){
 
         this.add(usernameLabel = new JLabel("Username: "));
-
         usernameLabel.setText("Username:");
         this.add(usernameField = new JTextField(20));
         this.add(passwordLabel = new JLabel("Password: "));
         passwordLabel.setText("Password:");
         this.add(passwordField = new JPasswordField(20));
         this.add(loginButton = new JButton("Login"));
+        this.add(signUpButton = new JButton("Sign Up"));
         loginButton.setText("Login");
         usernameLabel.setFont(myFont.getFont());
         passwordLabel.setFont(myFont.getFont());
         loginButton.setFont(myFont.getFont());
         usernameField.setFont(myFont.getFont());
         passwordField.setFont(myFont.getFont());
+        signUpButton.setFont(myFont.getFont());
+     
     }
 
     public AbstractButton getButton(){
@@ -34,5 +37,5 @@ public class LoginWindow extends AppPanels {
     public String[] getData(){
         return new String[]{usernameField.getText(), String.valueOf(passwordField.getPassword())};
     }
-    
+
 }

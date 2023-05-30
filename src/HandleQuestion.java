@@ -61,10 +61,26 @@ public class HandleQuestion implements HttpHandler {
         Map<String,String> params = parseQueryParams(question);
         String content = new String(Files.readAllBytes(Paths.get(DATA)));
         JSONObject json = new JSONObject(content);
-        String password = json.getJSONObject(params.get("u")).getString("password");
-        if(password.equals(params.get("p"))){
-           return json.getJSONObject(params.get("u")).getJSONObject("history").toString();
+        if(params.containsKey("new")){
+            if(!json.has(params.get("u"))){
+                JSONObject userData = new JSONObject();
+                userData.put("password", params.get("p"));
+                userData.put("history",new JSONObject());
+                json.put(params.get("u"), userData);
+                FileWriter file = new FileWriter(DATA);
+                file.write(json.toString());
+                file.close();
+                return "True";
+            }else{
+                return "Incorrect";
+            }
         }
+        if(json.getJSONObject(params.get("u")) != null){
+            String password = json.getJSONObject(params.get("u")).getString("password");
+            if(password.equals(params.get("p"))){
+                return json.getJSONObject(params.get("u")).getJSONObject("history").toString();
+            }
+        }   
         return "Incorrect";
     }
 
