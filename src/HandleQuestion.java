@@ -12,10 +12,16 @@ import java.util.Map;
 import org.json.JSONObject;
 
 
-//Handles all requests to /question
+//HTTPHandler for /question
 public class HandleQuestion implements HttpHandler {
 
     private static final String DATA = "data.json";
+
+    /**
+     * handles requests to /question
+     * @param exchange the exchange containing the request from the
+     *                 client and used to send the response
+     */
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String response = "Request Received";
@@ -26,6 +32,8 @@ public class HandleQuestion implements HttpHandler {
         else if(method.equals("GET")) {
             response = handleGet(exchange);
         }
+
+        //send response
         exchange.sendResponseHeaders(200, response.length());
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
@@ -41,6 +49,12 @@ public class HandleQuestion implements HttpHandler {
             sb.append(line);
         return sb.toString();
     }
+
+    /**
+     * If the username and pwd match, the history is updated
+     * @param exchange http exchange containing the request
+     * @return String of the response(not used)
+     */
     private String handlePut(HttpExchange exchange) throws IOException {
         String question = exchange.getRequestURI().getQuery();
         String body = IStoStr(exchange.getRequestBody());
@@ -59,6 +73,15 @@ public class HandleQuestion implements HttpHandler {
         return "Incorrect";    
     }
 
+    /**
+     * Handles GET requests
+     * If the username and pwd match, the history is returned
+     * If user does not exist and new is true, the user is added
+     * If wrong password or user does not exist, "Incorrect" is returned
+     *
+     * @param exchange http exchange containing the request
+     * @return String of the response
+     */
     private String handleGet(HttpExchange exchange) throws IOException {
         String question = exchange.getRequestURI().getQuery();
         Map<String,String> params = parseQueryParams(question);

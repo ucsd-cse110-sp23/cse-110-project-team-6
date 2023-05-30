@@ -225,10 +225,8 @@ public class HistoryManager implements Subject, Observer {
         }
 
         /**
-         * Open JSON file and read in the history of questions and answers as JSONObject
-         * Creates the directory and file for history if they do not exist
-         *
-         * @param HISTORY_PATH path to the JSON file containing the history of questions and answers
+         * Opens the JSON file containing the history of questions and answers
+         * The JSON is retrieved from the server and written locally
          */
         private JSONObject openJSON() throws IOException, InterruptedException {
             HttpClient client = HttpClient.newHttpClient();
@@ -314,7 +312,7 @@ public class HistoryManager implements Subject, Observer {
         }
 
         /**
-         * Writes the history of questions and answers to a JSON file
+         * Writes the JSON history to file and updates the server
          */
         public void write() {
             try {

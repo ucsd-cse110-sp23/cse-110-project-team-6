@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -64,12 +65,13 @@ public class AppFrame extends JFrame {
                     setupQuestion(username, password);
                     revalidate();
                 }
-            } catch (IOException e1) {
+            } catch (ConnectException ce){
+                JOptionPane.showMessageDialog(null, "Server could not be reached");
+            }
+            catch (IOException | InterruptedException e1 ) {
                 e1.printStackTrace();
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            } 
-            
+            }
+
         });
         loginWindow.signUpButton.addActionListener(e -> {
             try {
@@ -81,12 +83,13 @@ public class AppFrame extends JFrame {
                     setupQuestion(username, password);
                     revalidate();
                 }
-            } catch (IOException e1) {
+            } catch (ConnectException ce){
+                JOptionPane.showMessageDialog(null, "Server could not be reached");
+            }
+            catch (IOException | InterruptedException e1) {
                 e1.printStackTrace();
-            } catch (InterruptedException e1) {
-                e1.printStackTrace();
-            } 
-            
+            }
+
         });
         revalidate();
     }
