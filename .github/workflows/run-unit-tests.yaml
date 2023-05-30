@@ -1,4 +1,4 @@
-name: SayIt Continous Integration
+name: SayIt Continuous Integration
 
 on: [push]
 
