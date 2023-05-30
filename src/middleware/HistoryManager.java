@@ -23,7 +23,7 @@ import java.util.LinkedHashMap;
 public class HistoryManager implements Subject, Observer {
 
     private static final String HISTORY_DIR = System.getProperty("user.dir") + "/bin/backend";
-    private static final String HISTORY_PATH = HISTORY_DIR + "/history.json";
+    private static final String HISTORY_PATH = "history.json";
     private JSON_IO jsonIO;
     private SayItAssistant assistantSubject;
     private LinkedHashMap<Integer, QuestionAnswerPair> history;
@@ -318,7 +318,7 @@ public class HistoryManager implements Subject, Observer {
          */
         public void write() {
             try {
-                Files.write(Paths.get("history.json"),
+                Files.write(Paths.get(HISTORY_PATH),
                         storedJSON.toString().getBytes());
                 HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()

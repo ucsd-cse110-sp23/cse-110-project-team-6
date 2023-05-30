@@ -54,8 +54,8 @@ public class FourthStoryTest {
     @BeforeEach
     public void setUp() {
         assistant = new SayItAssistant(new MockWhisperRequest());
-        historyManager = new HistoryManager(assistant);
-
+        historyManager = new HistoryManager(assistant,"a","1");
+        historyManager.clearAll();
         allQuestions = new ArrayList<Question>();
         allQuestions.add(QUESTION1);
         allQuestions.add(QUESTION2);

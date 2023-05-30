@@ -30,6 +30,7 @@ public class FirstStoryTest {
     @BeforeEach
     public void setUp() {
         openSayItAssistant();
+        historyManager.clearAll();
     }
 
     /**
@@ -40,6 +41,7 @@ public class FirstStoryTest {
         sayItAssistant = null;
         historyManager = null;
         File file = new File(EXPECT_HISTORY_PATH);
+        //noinspection ResultOfMethodCallIgnored
         file.delete();
     }
 
@@ -49,7 +51,7 @@ public class FirstStoryTest {
     private void openSayItAssistant() {
         mockWhisperRequest = new MockWhisperRequest();
         sayItAssistant = new SayItAssistant(mockWhisperRequest);
-        historyManager = new HistoryManager(sayItAssistant);
+        historyManager = new HistoryManager(sayItAssistant, "a","1");
     }
 
     /**
@@ -58,7 +60,7 @@ public class FirstStoryTest {
     private void askQuestion(String question) {
         mockWhisperRequest.testString = question;
         sayItAssistant = new SayItAssistant(mockWhisperRequest);
-        historyManager = new HistoryManager(sayItAssistant);
+        historyManager = new HistoryManager(sayItAssistant, "a", "1");
         sayItAssistant.respond();
     }
 
@@ -74,9 +76,9 @@ public class FirstStoryTest {
     public void testScenario1() {
         // Mock Instance of opening SayIt Assistant for the first time
         openSayItAssistant();
-
+        historyManager.clearAll();
         // Check that history is empty (mimics looking at an empty history)
-        assertTrue(historyManager.getHistorySize() == 0);
+        assertEquals(0, historyManager.getHistorySize());
 
         // Verify that looking questions returns nothing
         assertEquals(historyManager.getQuestions(), new ArrayList<Question>());
@@ -105,7 +107,7 @@ public class FirstStoryTest {
         askQuestion(question);
 
         // Verify that the question was added to the history
-        assertTrue(historyManager.getHistorySize() == 1);
+        assertEquals(1, historyManager.getHistorySize());
 
         
         // Verify that the question was added to the history
@@ -147,7 +149,7 @@ public class FirstStoryTest {
         askQuestion(lastQuestion);
 
         // Verify that the questions were added to the history
-        assertTrue(historyManager.getHistorySize() == MAX_WINDOW_QUESTION_SIZE + 1);
+        assertEquals(MAX_WINDOW_QUESTION_SIZE + 1, historyManager.getHistorySize());
 
         // Verify that the questions were added to the history
         String receivedFirstQuestion = historyManager.getQuestions().get(0).toString();
@@ -177,7 +179,7 @@ public class FirstStoryTest {
         askQuestion(question);
 
         // Verify that the question was added to the history
-        assertTrue(historyManager.getHistorySize() == 1);
+        assertEquals(1, historyManager.getHistorySize());
 
         // Verify that the question was added to the history
         String receivedQuestion = historyManager.getQuestions().get(0).toString();
@@ -187,7 +189,7 @@ public class FirstStoryTest {
         historyManager.delete(0);
 
         // Verify that the question was deleted from the history
-        assertTrue(historyManager.getHistorySize() == 0);
+        assertEquals(0, historyManager.getHistorySize());
 
         // Verify that looking questions returns nothing
         assertEquals(historyManager.getQuestions(), new ArrayList<Question>());
@@ -237,13 +239,13 @@ public class FirstStoryTest {
         askQuestion(lastQuestion);
 
         // Verify that the questions were added to the history
-        assertTrue(historyManager.getHistorySize() == MAX_WINDOW_QUESTION_SIZE + 1);
+        assertEquals(MAX_WINDOW_QUESTION_SIZE + 1, historyManager.getHistorySize());
 
         // Delete the third question
         historyManager.delete(2);
 
         // Verify that the question was deleted from the history
-        assertTrue(historyManager.getHistorySize() == MAX_WINDOW_QUESTION_SIZE);
+        assertEquals(MAX_WINDOW_QUESTION_SIZE, historyManager.getHistorySize());
 
         // Verify that the thirdQuestion was deleted from the history
         for (int i = 0; i < MAX_WINDOW_QUESTION_SIZE; i++) {
@@ -277,7 +279,7 @@ public class FirstStoryTest {
         askQuestion(lastQuestion);
 
         // Verify that the questions were added to the history
-        assertTrue(historyManager.getHistorySize() == 2);
+        assertEquals(2, historyManager.getHistorySize());
 
         // Verify that the questions were added to the history
         String receivedFirstQuestion = historyManager.getQuestions().get(0).toString();
@@ -294,7 +296,7 @@ public class FirstStoryTest {
         openSayItAssistant();
 
         // Verify that the questions were added to the history
-        assertTrue(historyManager.getHistorySize() == 2);
+        assertEquals(2, historyManager.getHistorySize());
 
         // Verify that the questions were added to the history
         receivedFirstQuestion = historyManager.getQuestions().get(0).toString();

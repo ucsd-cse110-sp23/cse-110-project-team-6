@@ -15,7 +15,8 @@ public class FifthStoryTest {
         Given: there are no questions SayIt Assistant’s history
         When: History Helen wants to click the clear all button
         Then: Nothing will happen.*/
-        HistoryManager newHistoryManager = new HistoryManager(new SayItAssistant(new WhisperRequest()));
+        HistoryManager newHistoryManager = new HistoryManager(new SayItAssistant(new WhisperRequest()),"a","1");
+        newHistoryManager.clearAll();
         Assertions.assertEquals(newHistoryManager.getQuestions(), new ArrayList<>());
         newHistoryManager.clearAll();
         Assertions.assertEquals(newHistoryManager.getQuestions(), new ArrayList<>());

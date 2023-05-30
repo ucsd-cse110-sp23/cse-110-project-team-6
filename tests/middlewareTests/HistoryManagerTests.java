@@ -9,6 +9,7 @@ import middleware.Question;
 import middleware.SayItAssistant;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -19,8 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class HistoryManagerTests {
 
-    private static final String EXPECT_HISTORY_PATH = 
-        System.getProperty("user.dir") + "/bin/backend/history.json";
+    private static final String EXPECT_HISTORY_PATH = "history.json";
 
     private static final Question QUESTION1 = new Question("What is your name?");
     private static final Question QUESTION2 = new Question("What is your quest?");
@@ -62,8 +62,8 @@ public class HistoryManagerTests {
     @BeforeEach
     public void setUp() {
         assistant = new SayItAssistant(new MockWhisperRequest());
-        historyManager = new HistoryManager(assistant);
-
+        historyManager = new HistoryManager(assistant,"a","1");
+        historyManager.clearAll();
         allQuestions = new ArrayList<Question>();
         allQuestions.add(QUESTION1);
         allQuestions.add(QUESTION2);
@@ -91,12 +91,13 @@ public class HistoryManagerTests {
      * Tests that the history manager and JSON file is created and empty
      */
     @Test
-    public void testCreateHistoryManager() {
-        assertTrue(historyManager instanceof HistoryManager);
+    public void testCreateHistoryManager() throws IOException {
+        assertNotNull(historyManager);
         // Verify the JSON file is created
         assertTrue(Files.exists(Path.of(EXPECT_HISTORY_PATH)));
         File jsonFile = new File(EXPECT_HISTORY_PATH);
-        assertTrue(jsonFile.length() == 0);
+        String contents = Files.readString(Path.of(EXPECT_HISTORY_PATH));
+        assertEquals("{}", contents);
         // Verify that the history manager is empty
         assertEquals(0, historyManager.getQuestions().size());
     }
@@ -194,7 +195,7 @@ public class HistoryManagerTests {
         assertNull(historyManager);
 
         // Create a new history manager
-        HistoryManager newHistoryManager = new HistoryManager(assistant);
+        HistoryManager newHistoryManager = new HistoryManager(assistant,"a","1");
         assertNotEquals(newHistoryManager, historyManager);
         assertEquals(allQASize, newHistoryManager.getQuestions().size());
         
@@ -218,7 +219,7 @@ public class HistoryManagerTests {
         assertNull(newHistoryManager);
 
         // Create another new history manager
-        HistoryManager anotherHistoryManager = new HistoryManager(assistant);
+        HistoryManager anotherHistoryManager = new HistoryManager(assistant,"a","1");
         assertNotEquals(anotherHistoryManager, newHistoryManager);
         assertEquals(allQASize, anotherHistoryManager.getQuestions().size());
 
@@ -279,7 +280,7 @@ public class HistoryManagerTests {
         assertNull(historyManager);
 
         // Open a new history manager and check question no longer exists
-        HistoryManager newHistoryManager = new HistoryManager(assistant);
+        HistoryManager newHistoryManager = new HistoryManager(assistant,"a","1");
         assertEquals(origSize - 1, newHistoryManager.getHistorySize());
         assertEquals(origSize - 1, newHistoryManager.getQuestions().size());
 
@@ -313,7 +314,8 @@ public class HistoryManagerTests {
 
         // Reads in contents of the JSON file
         try { fullFile = Files.readString(Path.of(EXPECT_HISTORY_PATH)); } 
-        catch (Exception e) { assertTrue(false); }
+        catch (Exception e) {
+            fail(); }
 
         int origSize = allQuestions.size();
         historyManager.delete(removedIndex);
@@ -335,13 +337,14 @@ public class HistoryManagerTests {
 
         // Makes sure that that the last question and answer is no longer in the history
         try { 
-            historyManager.getAnswer(origSize); 
-            assertTrue(false); 
+            historyManager.getAnswer(origSize);
+            fail();
         } catch (Exception e) { assertTrue(true); }
 
         // Reads in contents of the JSON file
         try { changedFile = Files.readString(Path.of(EXPECT_HISTORY_PATH)); } 
-        catch (Exception e) { assertTrue(false); }
+        catch (Exception e) {
+            fail(); }
 
         assertNotEquals(changedFile, fullFile);
 
@@ -350,7 +353,7 @@ public class HistoryManagerTests {
         assertNull(historyManager);
 
         // Open a new history manager and check question no longer exists
-        HistoryManager newHistoryManager = new HistoryManager(assistant);
+        HistoryManager newHistoryManager = new HistoryManager(assistant,"a","1");
         assertEquals(origSize - 1, newHistoryManager.getHistorySize());
         assertEquals(origSize - 1, newHistoryManager.getQuestions().size());
 
@@ -367,8 +370,8 @@ public class HistoryManagerTests {
 
         // Makes sure that that the last question and answer is no longer in the history
         try { 
-            newHistoryManager.getAnswer(origSize); 
-            assertTrue(false); 
+            newHistoryManager.getAnswer(origSize);
+            fail();
         } catch (Exception e) { assertTrue(true); }
     }
 
@@ -406,7 +409,7 @@ public class HistoryManagerTests {
         assertNull(historyManager);
 
         // Open a new history manager and check question no longer exists
-        HistoryManager newHistoryManager = new HistoryManager(assistant);
+        HistoryManager newHistoryManager = new HistoryManager(assistant,"a","1");
         assertEquals(0, newHistoryManager.getHistorySize());
         assertEquals(0, newHistoryManager.getQuestions().size());
 
