@@ -2,6 +2,7 @@ package SayItAssistant.middlewareTests;
 
 import org.junit.jupiter.api.*;
 
+
 import SayItAssistant.Server;
 import SayItAssistant.middleware.Answer;
 import SayItAssistant.middleware.HistoryManager;
@@ -11,6 +12,7 @@ import SayItAssistant.middleware.SayItAssistant;
 
 import java.io.File;
 import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,7 +29,6 @@ public class HistoryManagerTests {
     private static final String EXPECT_DATA_PATH =
         System.getProperty("user.dir") + "/data.json";
 
-    
     private static final String TEST_USER = "test";
     private static final String TEST_PASSWORD = "password";
     private static final String EMPTY_JSON    = "{}";

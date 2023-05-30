@@ -21,12 +21,13 @@ public class FourthStoryTest {
     private static final int NOT_SELECTED = -1;
     private static final String EXPECT_HISTORY_PATH = 
         System.getProperty("user.dir") + "/history.json";
-    
+  
     private static final String EXPECT_DATA_PATH =
         System.getProperty("user.dir") + "/data.json";
 
     private static final String TEST_USER     = "test";
     private static final String TEST_PASSWORD = "password";
+
 
     private static final Question QUESTION1 = new Question("What is your name?");
     private static final Question QUESTION2 = new Question("What is your quest?");

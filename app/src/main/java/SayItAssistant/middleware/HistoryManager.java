@@ -168,7 +168,6 @@ public class HistoryManager implements Subject, Observer {
             delete(i);
         }
     }
-
         /**
      * Nested class of HistoryManager responsible for reading and writing
      * the history of prompts and responses to a JSON file
@@ -360,6 +359,4 @@ public class HistoryManager implements Subject, Observer {
             }
         }
     }
-
-
 }

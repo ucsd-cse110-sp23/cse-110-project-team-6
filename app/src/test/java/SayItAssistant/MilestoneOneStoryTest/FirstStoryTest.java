@@ -19,7 +19,6 @@ public class FirstStoryTest {
     
     private static final String EXPECT_HISTORY_PATH = 
         System.getProperty("user.dir") + "/history.json";
-
     private static final String EXPECT_DATA_PATH =
         System.getProperty("user.dir") + "/data.json";
     
@@ -42,7 +41,6 @@ public class FirstStoryTest {
         } catch (Exception e) {
             assertTrue(false);
         }
-
         openSayItAssistant();
     }
 

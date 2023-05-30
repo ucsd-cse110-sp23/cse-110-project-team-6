@@ -19,7 +19,7 @@ public class FifthStoryTest {
 
     private static final String TEST_USER = "test";
     private static final String TEST_PASSWORD = "password";
-
+  
     @AfterEach
     public void tearDown() {
         File file = new File(EXPECT_HISTORY_PATH);
