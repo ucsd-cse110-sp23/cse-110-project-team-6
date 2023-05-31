@@ -35,6 +35,13 @@ public class PromptPanel extends AppPanels{
     }
 
     /*
+     * Returns the current prompt being displayed.
+     */
+    public String getPrompt() {
+        return this.prompt.getText();
+    }
+    
+    /*
      * Returns the prompt area with the scrollbar.
      * 
      * @return JScrollPane: the prompt pane with scrollbar
