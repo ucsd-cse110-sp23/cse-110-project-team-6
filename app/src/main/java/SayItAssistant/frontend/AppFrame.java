@@ -2,7 +2,6 @@ package SayItAssistant.frontend;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.InputStream;
 import java.net.URL;
 
 /*
@@ -19,13 +18,13 @@ public class AppFrame extends JFrame {
     // paneling
     private DisplayPanel displayPanel;
     private HistoryPanel historyPanel;
-
+    private LoginWindow  loginWindow;
     /**
      * Constructor for AppFrame class which coordinates the GUI
      */
     public AppFrame() {
         setInformation();   // sets the overall app frame's behavior and style
-        setUpPanels();      // adds the other parts of the UI to the frame
+        setUpLogin();       // sets up the login window
     }
 
     /**
@@ -47,9 +46,17 @@ public class AppFrame extends JFrame {
     }
 
     /**
+     * Sets up login
+     */
+    private void setUpLogin() {
+        this.loginWindow = new LoginWindow();
+        this.add(loginWindow);
+    }
+
+    /**
      * Sets up the panels for the appframe
      */
-    private void setUpPanels() {
+    public void setUpPanels() {
         historyPanel = new HistoryPanel();  // side panel for history
         displayPanel = new DisplayPanel();  // panel to hold prompts, responses, and start button
 
@@ -70,5 +77,20 @@ public class AppFrame extends JFrame {
      */
     public DisplayPanel getDisplayPanel() {
         return this.displayPanel;
+    }
+
+    /**
+     * Retrieves a reference to the login window.
+     */
+    public LoginWindow getLoginWindow() {
+        return this.loginWindow;
+    }
+
+    /**
+     * Closes the login window.
+     */
+    public void closeLoginWindow() {
+        this.loginWindow.setVisible(false);
+        this.remove(loginWindow);
     }
 }

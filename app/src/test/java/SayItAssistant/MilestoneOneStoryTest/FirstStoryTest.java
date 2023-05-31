@@ -3,6 +3,7 @@ package SayItAssistant.MilestoneOneStoryTest;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import SayItAssistant.Server;
 import SayItAssistant.middleware.*;
 
 import java.io.File;
@@ -18,8 +19,14 @@ public class FirstStoryTest {
     
     private static final String EXPECT_HISTORY_PATH = 
         System.getProperty("user.dir") + "/history.json";
+    private static final String EXPECT_DATA_PATH =
+        System.getProperty("user.dir") + "/data.json";
+    
     private static final int MAX_WINDOW_QUESTION_SIZE = 10;
     
+
+    private static final String TEST_USER     = "test";
+    private static final String TEST_PASSWORD = "password";
     private static HistoryManager historyManager;
     private static SayItAssistant sayItAssistant;
     private static MockWhisperRequest mockWhisperRequest;
@@ -29,6 +36,11 @@ public class FirstStoryTest {
      */
     @BeforeEach
     public void setUp() {
+        try {
+            Server.startServer();
+        } catch (Exception e) {
+            assertTrue(false);
+        }
         openSayItAssistant();
     }
 
@@ -41,6 +53,9 @@ public class FirstStoryTest {
         historyManager = null;
         File file = new File(EXPECT_HISTORY_PATH);
         file.delete();
+        file = new File(EXPECT_DATA_PATH);
+        file.delete();
+        Server.stopServer();
     }
 
     /**
@@ -49,7 +64,7 @@ public class FirstStoryTest {
     private void openSayItAssistant() {
         mockWhisperRequest = new MockWhisperRequest();
         sayItAssistant = new SayItAssistant(mockWhisperRequest);
-        historyManager = new HistoryManager(sayItAssistant);
+        historyManager = new HistoryManager(sayItAssistant, TEST_USER, TEST_PASSWORD);
     }
 
     /**
@@ -58,7 +73,7 @@ public class FirstStoryTest {
     private void askQuestion(String question) {
         mockWhisperRequest.testString = question;
         sayItAssistant = new SayItAssistant(mockWhisperRequest);
-        historyManager = new HistoryManager(sayItAssistant);
+        historyManager = new HistoryManager(sayItAssistant, TEST_USER, TEST_PASSWORD);
         sayItAssistant.respond();
     }
 

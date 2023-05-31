@@ -2,6 +2,7 @@ package SayItAssistant.MilestoneOneStoryTest;
 
 import org.junit.jupiter.api.*;
 
+import SayItAssistant.Server;
 import SayItAssistant.middleware.Answer;
 import SayItAssistant.middleware.HistoryManager;
 import SayItAssistant.middleware.MockWhisperRequest;
@@ -20,6 +21,13 @@ public class FourthStoryTest {
     private static final int NOT_SELECTED = -1;
     private static final String EXPECT_HISTORY_PATH = 
         System.getProperty("user.dir") + "/history.json";
+  
+    private static final String EXPECT_DATA_PATH =
+        System.getProperty("user.dir") + "/data.json";
+
+    private static final String TEST_USER     = "test";
+    private static final String TEST_PASSWORD = "password";
+
 
     private static final Question QUESTION1 = new Question("What is your name?");
     private static final Question QUESTION2 = new Question("What is your quest?");
@@ -48,8 +56,13 @@ public class FourthStoryTest {
 
     @BeforeEach
     public void setUp() {
-        assistant = new SayItAssistant(new MockWhisperRequest());
-        historyManager = new HistoryManager(assistant);
+        try {
+            Server.startServer();
+        } catch (Exception e) {
+            System.out.println("Server already started");
+        }
+        assistant      = new SayItAssistant(new MockWhisperRequest());
+        historyManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
 
         allQuestions = new ArrayList<Question>();
         allQuestions.add(QUESTION1);
@@ -68,6 +81,9 @@ public class FourthStoryTest {
     public void tearDown() {
         File file = new File(EXPECT_HISTORY_PATH);
         file.delete();
+        file = new File(EXPECT_DATA_PATH);
+        file.delete();
+        Server.stopServer();
     }
 
     /**

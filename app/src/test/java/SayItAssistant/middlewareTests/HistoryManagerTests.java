@@ -2,6 +2,8 @@ package SayItAssistant.middlewareTests;
 
 import org.junit.jupiter.api.*;
 
+
+import SayItAssistant.Server;
 import SayItAssistant.middleware.Answer;
 import SayItAssistant.middleware.HistoryManager;
 import SayItAssistant.middleware.MockWhisperRequest;
@@ -9,6 +11,8 @@ import SayItAssistant.middleware.Question;
 import SayItAssistant.middleware.SayItAssistant;
 
 import java.io.File;
+import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -21,6 +25,13 @@ public class HistoryManagerTests {
 
     private static final String EXPECT_HISTORY_PATH = 
         System.getProperty("user.dir") + "/history.json";
+
+    private static final String EXPECT_DATA_PATH =
+        System.getProperty("user.dir") + "/data.json";
+
+    private static final String TEST_USER = "test";
+    private static final String TEST_PASSWORD = "password";
+    private static final String EMPTY_JSON    = "{}";
 
     private static final Question QUESTION1 = new Question("Question. What is your name?");
     private static final Question QUESTION2 = new Question("Question. What is your quest?");
@@ -61,8 +72,14 @@ public class HistoryManagerTests {
 
     @BeforeEach
     public void setUp() {
-        assistant = new SayItAssistant(new MockWhisperRequest());
-        historyManager = new HistoryManager(assistant);
+        try {
+            Server.startServer();
+        } catch (IOException e) {
+            assertTrue(false);
+        }
+
+        assistant      = new SayItAssistant(new MockWhisperRequest());
+        historyManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
 
         allPrompts = new ArrayList<Question>();
         allPrompts.add(QUESTION1);
@@ -85,6 +102,9 @@ public class HistoryManagerTests {
     public void tearDown() {
         File file = new File(EXPECT_HISTORY_PATH);
         file.delete();
+        file = new File(EXPECT_DATA_PATH);
+        file.delete();
+        Server.stopServer();
     }
 
     /**
@@ -92,11 +112,16 @@ public class HistoryManagerTests {
      */
     @Test
     public void testCreateHistoryManager() {
+        System.out.println("Path of expected history file: " + EXPECT_HISTORY_PATH);
+
         assertTrue(historyManager instanceof HistoryManager);
         // Verify the JSON file is created
         assertTrue(Files.exists(Path.of(EXPECT_HISTORY_PATH)));
         File jsonFile = new File(EXPECT_HISTORY_PATH);
-        assertTrue(jsonFile.length() == 0);
+
+        System.out.println("File length: " + jsonFile.length());
+
+        assertTrue(jsonFile.length() == EMPTY_JSON.length());
         // Verify that the history manager is empty
         assertEquals(0, historyManager.getPrompts().size());
     }
@@ -194,7 +219,7 @@ public class HistoryManagerTests {
         assertNull(historyManager);
 
         // Create a new history manager
-        HistoryManager newHistoryManager = new HistoryManager(assistant);
+        HistoryManager newHistoryManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
         assertNotEquals(newHistoryManager, historyManager);
         assertEquals(allQASize, newHistoryManager.getPrompts().size());
         
@@ -218,7 +243,7 @@ public class HistoryManagerTests {
         assertNull(newHistoryManager);
 
         // Create another new history manager
-        HistoryManager anotherHistoryManager = new HistoryManager(assistant);
+        HistoryManager anotherHistoryManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
         assertNotEquals(anotherHistoryManager, newHistoryManager);
         assertEquals(allQASize, anotherHistoryManager.getPrompts().size());
 
@@ -279,7 +304,7 @@ public class HistoryManagerTests {
         assertNull(historyManager);
 
         // Open a new history manager and check question no longer exists
-        HistoryManager newHistoryManager = new HistoryManager(assistant);
+        HistoryManager newHistoryManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
         assertEquals(origSize - 1, newHistoryManager.getHistorySize());
         assertEquals(origSize - 1, newHistoryManager.getPrompts().size());
 
@@ -350,7 +375,7 @@ public class HistoryManagerTests {
         assertNull(historyManager);
 
         // Open a new history manager and check question no longer exists
-        HistoryManager newHistoryManager = new HistoryManager(assistant);
+        HistoryManager newHistoryManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
         assertEquals(origSize - 1, newHistoryManager.getHistorySize());
         assertEquals(origSize - 1, newHistoryManager.getPrompts().size());
 
@@ -406,7 +431,7 @@ public class HistoryManagerTests {
         assertNull(historyManager);
 
         // Open a new history manager and check question no longer exists
-        HistoryManager newHistoryManager = new HistoryManager(assistant);
+        HistoryManager newHistoryManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
         assertEquals(0, newHistoryManager.getHistorySize());
         assertEquals(0, newHistoryManager.getPrompts().size());
 

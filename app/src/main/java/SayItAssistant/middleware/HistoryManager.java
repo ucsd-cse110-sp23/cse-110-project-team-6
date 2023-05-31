@@ -1,164 +1,30 @@
 package SayItAssistant.middleware;
 
-import java.lang.reflect.MalformedParametersException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.MalformedParametersException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import java.nio.file.*;
-
 import java.io.*;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Class responsible for grabbing history of prompts and responses
  * from the JSON and storing it within the History class.
  */
 public class HistoryManager implements Subject, Observer {
-
-    /**
-     * Nested class of HistoryManager responsible for reading and writing
-     * the history of prompts and responses to a JSON file
-     */
-    private class JSON_IO implements Observer {
-        private Subject historySubject;
-        private JSONObject storedJSON;
-        
-        /**
-         * Constructor for JSON_IO class which initializes the relevant fields for the class and
-         * History Manager
-         * 
-         * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
-         */
-        private JSON_IO() {
-            try {
-                HistoryManager.this.prompts = new ArrayList<IPrompt>();
-                historySubject = HistoryManager.this;
-                historySubject.registerObserver(this);
-                storedJSON = openJSON();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        /**
-         * Open JSON file and read in the history of prompts and responses as JSONObject
-         * Creates the directory and file for history if they do not exist
-         * 
-         * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
-         */
-        private JSONObject openJSON() {
-            try {
-                Files.createDirectories(Paths.get(HISTORY_DIR));
-                File storedHistory = new File(HISTORY_PATH);
-                if (storedHistory.createNewFile() || storedHistory.length() == 0) {
-                    return new JSONObject();
-                } else {
-                    String rawJSON  = new String(Files.readAllBytes(Paths.get(HISTORY_PATH)));
-                    return new JSONObject(rawJSON);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        /**
-         * Updates the JSON file with the most recent prompt and response
-         * 
-         * @require args[0] instanceof PromptResponsePair
-         * @param args Object... args containing the history of prompts and responses
-         */
-        @Override
-        public void update(IPrompt newPrompt, IResponse newResponse) {
-            storedJSON = new JSONObject();
-            for (int i = 0; i < history.size(); i++) {
-                PromptResponsePair qaPair = history.get(i);
-                add(qaPair.getPrompt(), qaPair.getResponse());
-            }
-            write();
-        }
-
-        /**
-         * Reads in the history of prompts and responses from the JSON file
-         * @return LinkedHashMap<Integer, PromptResponsePair> history of prompts and responses
-         */
-        public LinkedHashMap<Integer, PromptResponsePair> readHistory() {
-            LinkedHashMap<Integer, PromptResponsePair> history 
-                = new LinkedHashMap<Integer, PromptResponsePair>();
-
-            JSONArray storedQA = storedJSON.names();
-            
-            if (storedQA == null) {
-                return history;
-            }
-
-            // Iterate through the JSON and split it into prompts and responses
-            for (int idx = 0; idx < storedQA.length(); idx++) {
-                JSONObject commandPromptResponse = storedJSON.getJSONObject(Integer.toString(idx));
-
-                IPrompt promptObj = null;
-                IResponse responseObj = null;
-
-                String command = commandPromptResponse.getString("Command");
-
-                switch (command) {
-                    case "Question":
-                        promptObj = new Question(commandPromptResponse.getString("Prompt"));
-                        responseObj = new Answer(commandPromptResponse.getString("Response"));
-                        break;
-                }
-
-                // Tracks prompts in order for HistoryManager
-                HistoryManager.this.prompts.add(promptObj);
-                PromptResponsePair qaPair = new PromptResponsePair(promptObj, responseObj);
-
-                history.put(idx, qaPair);
-            }
-
-            return history;
-        }
-
-        /**
-         * Updates the stored JSON with the most recent prompt and response
-         * @require newPrompt != null && newResponse != null &&
-         *          newPrompt instanceof Prompt && newResponse instanceof Response
-         * @param newPrompt Prompt object containing the prompt asked
-         * @param newResponse Response object containing the response to the prompt asked
-         */
-        public void add(IPrompt newPrompt, IResponse newResponse) {
-            int idx = storedJSON.length();
-
-            JSONObject commandPromptResponse = new JSONObject();
-
-            // Look at the type of the prompt to figure out the command associated 
-            if (newPrompt instanceof Question) {
-                commandPromptResponse.put("Command", "Question");
-            } else {
-                commandPromptResponse.put("Command", "None");
-            }
-
-            commandPromptResponse.put("Prompt", newPrompt.toString());
-            commandPromptResponse.put("Response", newResponse.toString());
-
-            storedJSON.put(Integer.toString(idx), commandPromptResponse);
-        }
-
-        /**
-         * Writes the history of prompts and responses to a JSON file
-         */
-        public void write() {
-            try {
-                Files.write(Paths.get(HISTORY_PATH), 
-                            storedJSON.toString().getBytes());
-                
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
+    
+    private final String HOST = "http://localhost:1337/";
+    private final String ENDPOINT = "question";
+    private final String USER_PARAM = "?user=";
+    private final String PASS_PARAM = "&pass=";
 
     private static final String HISTORY_DIR = System.getProperty("user.dir");
     private static final String HISTORY_PATH = HISTORY_DIR + "/history.json";
@@ -172,10 +38,11 @@ public class HistoryManager implements Subject, Observer {
      * Constructor for HistoryManager class
      * @param HISTORY_PATH path to the JSON file containing the history of
      */
-    public HistoryManager(SayItAssistant assistantSubject) {
+    public HistoryManager(SayItAssistant assistantSubject, String username, String password) {
+        System.out.println("Path of history file: " + HISTORY_PATH);
         observers = new ArrayList<Observer>();
-        jsonIO    = new JSON_IO();
-        history   = jsonIO.readHistory();
+        jsonIO    = new JSON_IO(username,password);
+        history = jsonIO.readHistory();
         this.assistantSubject = assistantSubject;
         this.assistantSubject.registerObserver(this);
     }
@@ -299,6 +166,197 @@ public class HistoryManager implements Subject, Observer {
         // Delete backwards to avoid index out of bounds
         for (int i = history.size() - 1; i >= 0; i--) {
             delete(i);
+        }
+    }
+        /**
+     * Nested class of HistoryManager responsible for reading and writing
+     * the history of prompts and responses to a JSON file
+     */
+    private class JSON_IO implements Observer {
+        private Subject historySubject;
+        private JSONObject storedJSON;
+        private String username,password;
+        /**
+         * Constructor for JSON_IO class which initializes the relevant fields for the class and
+         * History Manager
+         * 
+         * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
+         */
+        private JSON_IO(String username,String password) {
+            try {
+                HistoryManager.this.prompts = new ArrayList<IPrompt>();
+                historySubject = HistoryManager.this;
+                historySubject.registerObserver(this);
+                this.username = username;
+                this.password = password;
+                storedJSON = openJSON();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        /**
+         * Open JSON file and read in the history of prompts and responses as JSONObject
+         * Creates the directory and file for history if they do not exist
+         * 
+         * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
+         */
+        private JSONObject openJSON() throws IOException, InterruptedException {
+
+            // Getting history from user account from server
+            URL url = new URL(HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            BufferedReader in = new BufferedReader(
+                new InputStreamReader(conn.getInputStream()));
+            String serverResponse = in.readLine();
+            in.close();
+
+            // If the file does not exist, create it
+            if (serverResponse == null) {
+                try (FileWriter f = new FileWriter(HISTORY_PATH)) {
+                    f.write("{}");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+                return new JSONObject("{}");
+            }
+
+            // Debugging purposes to see what the server response is
+            //System.out.println(serverResponse);
+
+            // Writes history locally to file
+            JSONObject json = new JSONObject(serverResponse);
+            try (FileWriter f = new FileWriter(HISTORY_PATH)) {
+                f.write(json.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+            return json;
+        }
+
+        /**
+         * Updates the JSON file with the most recent prompt and response
+         * 
+         * @require args[0] instanceof PromptResponsePair
+         * @param args Object... args containing the history of prompts and responses
+         */
+        @Override
+        public void update(IPrompt newPrompt, IResponse newResponse) {
+            storedJSON = new JSONObject();
+            for (int i = 0; i < history.size(); i++) {
+                PromptResponsePair qaPair = history.get(i);
+                add(qaPair.getPrompt(), qaPair.getResponse());
+            }
+            write();
+        }
+
+        /**
+         * Reads in the history of prompts and responses from the JSON file
+         * @return LinkedHashMap<Integer, PromptResponsePair> history of prompts and responses
+         */
+        public LinkedHashMap<Integer, PromptResponsePair> readHistory() {
+            LinkedHashMap<Integer, PromptResponsePair> history 
+                = new LinkedHashMap<Integer, PromptResponsePair>();
+
+            if (storedJSON == null) {
+                return history;
+            }
+
+            JSONArray storedQA = storedJSON.names();
+            
+            if (storedQA == null) {
+                return history;
+            }
+
+            // Iterate through the JSON and split it into prompts and responses
+            for (int idx = 0; idx < storedQA.length(); idx++) {
+                JSONObject commandPromptResponse = storedJSON.getJSONObject(Integer.toString(idx));
+
+                IPrompt promptObj = null;
+                IResponse responseObj = null;
+
+                String command = commandPromptResponse.getString("Command");
+
+                switch (command) {
+                    case "Question":
+                        promptObj = new Question(commandPromptResponse.getString("Prompt"));
+                        responseObj = new Answer(commandPromptResponse.getString("Response"));
+                        break;
+                }
+
+                // Tracks prompts in order for HistoryManager
+                HistoryManager.this.prompts.add(promptObj);
+                PromptResponsePair qaPair = new PromptResponsePair(promptObj, responseObj);
+
+                history.put(idx, qaPair);
+            }
+
+            return history;
+        }
+
+        /**
+         * Updates the stored JSON with the most recent prompt and response
+         * @require newPrompt != null && newResponse != null &&
+         *          newPrompt instanceof Prompt && newResponse instanceof Response
+         * @param newPrompt Prompt object containing the prompt asked
+         * @param newResponse Response object containing the response to the prompt asked
+         */
+        public void add(IPrompt newPrompt, IResponse newResponse) {
+            int idx = storedJSON.length();
+
+            JSONObject commandPromptResponse = new JSONObject();
+
+            // Look at the type of the prompt to figure out the command associated 
+            if (newPrompt instanceof Question) {
+                commandPromptResponse.put("Command", "Question");
+            } else {
+                commandPromptResponse.put("Command", "None");
+            }
+
+            commandPromptResponse.put("Prompt", newPrompt.toString());
+            commandPromptResponse.put("Response", newResponse.toString());
+
+            storedJSON.put(Integer.toString(idx), commandPromptResponse);
+        }
+
+        /**
+         * Writes the history of prompts and responses to a JSON file
+         */
+        public void write() {
+
+            // Writes the JSON to the local file
+            try {
+                Files.write(Paths.get(HISTORY_PATH), storedJSON.toString().getBytes());
+
+                // Writes the JSON to the server
+                URL url = new URL(HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password);
+
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+                conn.setRequestMethod("PUT");
+                conn.setDoOutput(true);
+
+                OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());
+
+                // Write the JSON to the server via PUT request
+
+                out.write(storedJSON.toString());
+                out.flush();
+                out.close();
+
+                BufferedReader in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()));
+                String serverResponse = in.readLine();
+                in.close();
+
+                System.out.println(serverResponse);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
