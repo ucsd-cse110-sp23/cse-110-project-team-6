@@ -1,6 +1,7 @@
 package SayItAssistant.middleware;
 import java.util.ArrayList;
 
+import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 
 import java.io.BufferedReader;
@@ -34,6 +35,8 @@ public class AppManager implements Observer {
     private final String USER_PARAM = "?user=";
     private final String PASS_PARAM = "&pass=";
 
+    private TargetDataLine targetDataLine; 
+    private VoiceRecorder  recorder; 
     private AppFrame       appFrame;
     private HistoryPanel   historyPanel;
     private DisplayPanel   displayPanel;
@@ -44,20 +47,24 @@ public class AppManager implements Observer {
     private String         currUsername;
     private String         currPassword;
 
+
     /*
      * Sets up the empty AppFrame and inner panels
      */
     public AppManager() {
+        this.recorder     = new VoiceRecorder(targetDataLine);
         this.loggedIn     = false;
         this.appFrame     = new AppFrame();
         this.loginWindow  = appFrame.getLoginWindow();
         loginScreen(loggedIn);
     }
 
-    /*
+     /*
      * Fills in all the history information and gets the logic started.
      */
     public void run() {
+        appFrame.setUpPanels();
+        appFrame.revalidate();
         this.historyPanel = appFrame.getHistoryPanel();
         this.displayPanel = appFrame.getDisplayPanel();
         this.sayItAssistant = new SayItAssistant(new MockWhisperRequest());
@@ -68,36 +75,28 @@ public class AppManager implements Observer {
         System.out.println("Everything has been populated");
     }
 
-    /**
+     /**
      * Runs the logic of logging in
      */
     public void loginScreen(boolean logStatus) {
-        if (logStatus) {
-            appFrame.setUpPanels();
-            appFrame.revalidate();
-            run();
-        }
+        if (logStatus) { run(); }
 
         AbstractButton loginWindowButton = loginWindow.getLoginButton();
+        AbstractButton signUpButton      = loginWindow.getSignupButton();
 
         // Sets up listeners for activity on the login window
         loginWindowButton.addActionListener(e -> {
-            
-            String username = loginWindow.getData()[0];
-            String password = loginWindow.getData()[1];
 
-            boolean verifiedLogin = checkValid(username, password);
+                String username = loginWindow.getData()[0];
+                String password = loginWindow.getData()[1];
 
-            if (verifiedLogin) {
-                loggedIn = true;
-                appFrame.closeLoginWindow();
-                appFrame.setUpPanels();
-                appFrame.revalidate();
-                run();
+                loggedIn = checkValid(username, password);
+
+                if (loggedIn) {
+                    appFrame.closeLoginWindow();
+                    run();
             }
         });
-
-        AbstractButton signUpButton = loginWindow.getSignupButton();
 
         // Sets up listeners for signup button
         signUpButton.addActionListener(e -> {
@@ -105,19 +104,17 @@ public class AppManager implements Observer {
             String username = loginWindow.getData()[0];
             String password = loginWindow.getData()[1];
 
-            boolean verifiedSignup = signUp(username, password);
+            loggedIn = signUp(username, password);
 
-            if (verifiedSignup) {
-                loggedIn = true;
+            if (loggedIn) {
                 appFrame.closeLoginWindow();
-                appFrame.setUpPanels();
-                appFrame.revalidate();
                 run();
             }
         });
         
         return;
     }
+
 
     /**
      * Checks if the username and password are valid
