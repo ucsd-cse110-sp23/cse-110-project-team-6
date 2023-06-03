@@ -55,6 +55,7 @@ def questions():
             return 'Taken'
 
 
+
 def write():
     t = open('data.json', 'w')
     t.write(json.dumps(data, indent=4))

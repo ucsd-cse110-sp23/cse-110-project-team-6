@@ -88,6 +88,7 @@ public class AppManager implements Observer {
                 appFrame.closeLoginWindow();
                 appFrame.setUpPanels();
                 appFrame.revalidate();
+                new EmailSetup(username,password);
                 run();
             }
         });

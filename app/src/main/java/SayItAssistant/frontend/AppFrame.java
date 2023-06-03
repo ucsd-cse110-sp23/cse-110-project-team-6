@@ -19,10 +19,12 @@ public class AppFrame extends JFrame {
     private DisplayPanel displayPanel;
     private HistoryPanel historyPanel;
     private LoginWindow  loginWindow;
+
     /**
      * Constructor for AppFrame class which coordinates the GUI
      */
     public AppFrame() {
+        
         setInformation();   // sets the overall app frame's behavior and style
         setUpLogin();       // sets up the login window
     }
