@@ -1,26 +1,21 @@
 package SayItAssistant.middleware;
-import java.util.ArrayList;
-
-import javax.swing.*;
-
-import java.io.BufferedReader;
-// Java IO imports
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-
-// Java net imports
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import SayItAssistant.frontend.*;
 
+import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+
 /**
- * Class which manages the logic of the UI of the app. 
- * 
+ * Class which manages the logic of the UI of the app.
+ * <p>
  * Coordinates the various frames and panels of the app.
- * 
+ *
  * @field appFrame: the main frame of the app
  * @field historyPanel: the panel which displays the history of questions
  * @field displayPanel: the panel which displays the question and answer
@@ -28,29 +23,29 @@ import SayItAssistant.frontend.*;
  * @field sayItAssistant: the assistant which handles the logic of the app
  */
 public class AppManager implements Observer {
-    
-    private final String  HOST = "http://localhost:1337/";
-    private final String  ENDPOINT = "question";
+
+    private final String HOST = "https://hlnm.pythonanywhere.com/";
+    private final String ENDPOINT = "question";
     private final String USER_PARAM = "?user=";
     private final String PASS_PARAM = "&pass=";
 
-    private AppFrame       appFrame;
-    private HistoryPanel   historyPanel;
-    private DisplayPanel   displayPanel;
-    private LoginWindow    loginWindow;
+    private final AppFrame appFrame;
+    private final LoginWindow loginWindow;
+    private HistoryPanel historyPanel;
+    private DisplayPanel displayPanel;
     private HistoryManager historyManager;
     private SayItAssistant sayItAssistant;
-    private boolean        loggedIn;
-    private String         currUsername;
-    private String         currPassword;
+    private boolean loggedIn;
+    private String currUsername;
+    private String currPassword;
 
     /*
      * Sets up the empty AppFrame and inner panels
      */
     public AppManager() {
-        this.loggedIn     = false;
-        this.appFrame     = new AppFrame();
-        this.loginWindow  = appFrame.getLoginWindow();
+        this.loggedIn = false;
+        this.appFrame = new AppFrame();
+        this.loginWindow = appFrame.getLoginWindow();
         loginScreen(loggedIn);
     }
 
@@ -82,7 +77,7 @@ public class AppManager implements Observer {
 
         // Sets up listeners for activity on the login window
         loginWindowButton.addActionListener(e -> {
-            
+
             String username = loginWindow.getData()[0];
             String password = loginWindow.getData()[1];
 
@@ -115,12 +110,12 @@ public class AppManager implements Observer {
                 run();
             }
         });
-        
-        return;
+
     }
 
     /**
      * Checks if the username and password are valid
+     *
      * @param username Username to check
      * @param password Password associated to username
      * @return True if valid, false otherwise
@@ -130,8 +125,8 @@ public class AppManager implements Observer {
     private boolean checkValid(String username, String password) {
 
         try {
-            URL url = 
-            new URL(HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password);
+            URL url =
+                    new URL(HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("GET");
@@ -149,7 +144,7 @@ public class AppManager implements Observer {
                 currPassword = password;
                 return true;
             }
-            
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return false;
@@ -165,6 +160,7 @@ public class AppManager implements Observer {
 
     /**
      * Checks if username and password are valid for signup
+     *
      * @param username Username to check
      * @param password Password associated to username
      * @return True if valid, false otherwise
@@ -180,8 +176,8 @@ public class AppManager implements Observer {
         }
 
         try {
-            URL url = 
-            new URL(HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password);
+            URL url =
+                    new URL(HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("POST");
@@ -200,7 +196,7 @@ public class AppManager implements Observer {
                 currPassword = password;
                 return true;
             }
-            
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return false;
@@ -215,7 +211,7 @@ public class AppManager implements Observer {
     }
 
     /*
-     * Creates buttons for each prompt in the history 
+     * Creates buttons for each prompt in the history
      * and then puts the buttons in the history panel.
      */
     public void populateHistoryPanel() {
@@ -240,10 +236,10 @@ public class AppManager implements Observer {
             historyButton.setFont(historyPanel.myFont.getFont());
 
             historyButton.registerObserver(displayPanel.getPromptAndResponsePanel());
-            
+
             // updates the question and answer panels when clicked
             historyButton.addActionListener(e -> {
-                historyButton.notifyObservers(); 
+                historyButton.notifyObservers();
             });
 
             historyPanel.addHistoryButton(historyButton); // add the button to the display
