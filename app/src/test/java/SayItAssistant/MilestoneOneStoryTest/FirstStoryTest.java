@@ -119,8 +119,9 @@ public class FirstStoryTest {
         // Get the name of the folder where this is ran within
         String currentDirectory = System.getProperty("user.dir");
         System.out.println(currentDirectory);
-        String question = "Question. Who was Louis Braille?";
-        askQuestion(question);
+        String command = "Question. Who was Louis Braille?";
+        String question = "Who was Louis Braille?";
+        askQuestion(command);
 
         // Verify that the question was added to the history
         assertTrue(historyManager.getHistorySize() == 1);
@@ -129,7 +130,7 @@ public class FirstStoryTest {
         // Verify that the question was added to the history
         String receivedQuestion = historyManager.getPrompts().get(0).toString();
 
-        assertEquals(receivedQuestion, question);
+        assertEquals(question, receivedQuestion);
 
         // Verify that the answer to the question is correct
         assertEquals(historyManager.getResponse(0).toString(), "This is the response to the prompt");
@@ -150,36 +151,39 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario3() {
-        String firstQuestion = "Question. Who was Louis Braille?";
-        String genericQuestion = "Question. Why is Louis Braille?";
-        String lastQuestion = "Question. What was utilized before Braille?";
+        String firstCommand = "Question. Who was Louis Braille?";
+        String firstQuestion = "Who was Louis Braille?";
+        String genericCommand = "Question. Why is Louis Braille?";
+        String genericQuestion = "Why is Louis Braille?";
+        String lastCommand = "Question. What was utilized before Braille?";
+        String lastQuestion = "What was utilized before Braille?";
 
         // Ask first question
-        askQuestion(firstQuestion);
+        askQuestion(firstCommand);
 
         // Ask generic questions
         for (int i = 1; i < MAX_WINDOW_QUESTION_SIZE; i++) {
-            askQuestion(genericQuestion);
+            askQuestion(genericCommand);
         }
 
         // Ask last question
-        askQuestion(lastQuestion);
+        askQuestion(lastCommand);
 
         // Verify that the questions were added to the history
         assertTrue(historyManager.getHistorySize() == MAX_WINDOW_QUESTION_SIZE + 1);
 
         // Verify that the questions were added to the history
         String receivedFirstQuestion = historyManager.getPrompts().get(0).toString();
-        assertEquals(receivedFirstQuestion, firstQuestion);
+        assertEquals(firstQuestion, receivedFirstQuestion);
 
         String receivedGenericQuestion; 
         for (int i = 1; i < MAX_WINDOW_QUESTION_SIZE; i++) {
             receivedGenericQuestion = historyManager.getPrompts().get(i).toString();
-            assertEquals(receivedGenericQuestion, genericQuestion);
+            assertEquals(genericQuestion, receivedGenericQuestion);
         }
 
         String receivedLastQuestion = historyManager.getPrompts().get(10).toString();
-        assertEquals(receivedLastQuestion, lastQuestion);
+        assertEquals(lastQuestion, receivedLastQuestion);
     }
 
     /**
@@ -192,15 +196,16 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario4() {
-        String question = "Question. Who was Louis Braille?";
-        askQuestion(question);
+        String command = "Question. Who was Louis Braille?";
+        String question = "Who was Louis Braille?";
+        askQuestion(command);
 
         // Verify that the question was added to the history
         assertTrue(historyManager.getHistorySize() == 1);
 
         // Verify that the question was added to the history
         String receivedQuestion = historyManager.getPrompts().get(0).toString();
-        assertEquals(receivedQuestion, question);
+        assertEquals(question, receivedQuestion);
 
         // Delete the question
         historyManager.delete(0);
@@ -235,25 +240,27 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario5() {
-        String thirdQuestion = "Question. Who was Louis Braille?";
-        String genericQuestion = "Question. Why is Louis Braille?";
-        String lastQuestion = "Question. What was utilized before Braille?";
+        String thirdCommand = "Question. Who was Louis Braille?";
+        String thirdQuestion = "Who was Louis Braille?";
+        String genericCommand = "Question. Why is Louis Braille?";
+        String lastCommand = "Question. What was utilized before Braille?";
+        String lastQuestion = "What was utilized before Braille?";
 
         // Ask first through second question
         for (int i = 0; i < 2; i++) {
-            askQuestion(genericQuestion);
+            askQuestion(genericCommand);
         }
 
         // Ask third question
-        askQuestion(thirdQuestion);
+        askQuestion(thirdCommand);
 
         // Ask the fourth through ninth question
         for (int i = 3; i < MAX_WINDOW_QUESTION_SIZE; i++) {
-            askQuestion(genericQuestion);
+            askQuestion(genericCommand);
         }
 
         // Ask last question
-        askQuestion(lastQuestion);
+        askQuestion(lastCommand);
 
         // Verify that the questions were added to the history
         assertTrue(historyManager.getHistorySize() == MAX_WINDOW_QUESTION_SIZE + 1);
@@ -271,7 +278,7 @@ public class FirstStoryTest {
 
         // Verify that the last question was moved up to the 9th question
         String receivedLastQuestion = historyManager.getPrompts().get(9).toString();
-        assertEquals(receivedLastQuestion, lastQuestion);
+        assertEquals(lastQuestion, receivedLastQuestion);
     }
 
     /**
@@ -286,24 +293,26 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario6() {
-        String firstQuestion = "Question. Who was Louis Braille?";
-        String lastQuestion = "Question. What was utilized before Braille?";
+        String firstCommand = "Question. Who was Louis Braille?";
+        String firstQuestion = "Who was Louis Braille?";
+        String lastCommand = "Question. What was utilized before Braille?";
+        String lastQuestion = "What was utilized before Braille?";
 
         // Ask first question
-        askQuestion(firstQuestion);
+        askQuestion(firstCommand);
 
         // Ask last question
-        askQuestion(lastQuestion);
+        askQuestion(lastCommand);
 
         // Verify that the questions were added to the history
         assertTrue(historyManager.getHistorySize() == 2);
 
         // Verify that the questions were added to the history
         String receivedFirstQuestion = historyManager.getPrompts().get(0).toString();
-        assertEquals(receivedFirstQuestion, firstQuestion);
+        assertEquals(firstQuestion, receivedFirstQuestion);
 
         String receivedLastQuestion = historyManager.getPrompts().get(1).toString();
-        assertEquals(receivedLastQuestion, lastQuestion);
+        assertEquals(lastQuestion, receivedLastQuestion);
 
         // Close SayIt Assistant
         sayItAssistant = null;
@@ -317,9 +326,9 @@ public class FirstStoryTest {
 
         // Verify that the questions were added to the history
         receivedFirstQuestion = historyManager.getPrompts().get(0).toString();
-        assertEquals(receivedFirstQuestion, firstQuestion);
+        assertEquals(firstQuestion, receivedFirstQuestion);
 
         receivedLastQuestion = historyManager.getPrompts().get(1).toString();
-        assertEquals(receivedLastQuestion, lastQuestion);
+        assertEquals(lastQuestion, receivedLastQuestion);
     }
 }
