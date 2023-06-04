@@ -1,7 +1,6 @@
 package SayItAssistant.MilestoneTwoStoryTest;
 
 import org.junit.jupiter.api.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -28,7 +27,6 @@ public class EleventhStoryTest {
     public void BDD1() {
         PromptFactory pf = new PromptFactory();
         PromptPanel pp = new PromptPanel();
-
         // creates a question prompt and displays it in the prompt panel
         IPrompt prompt1 = pf.createPrompt(PROMPT1);
         pp.setPrompt(prompt1);
