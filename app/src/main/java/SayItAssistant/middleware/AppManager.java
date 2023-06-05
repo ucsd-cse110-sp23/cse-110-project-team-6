@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -88,7 +89,7 @@ public class AppManager implements Observer {
                 appFrame.closeLoginWindow();
                 appFrame.setUpPanels();
                 appFrame.revalidate();
-                new EmailSetup(username,password);
+                new EmailSetup(username, password);
                 run();
             }
         });
@@ -149,7 +150,7 @@ public class AppManager implements Observer {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return false;
-        } catch (IOException e) {
+        } catch (ConnectException e) {
             JOptionPane.showMessageDialog(null, "Server is not running");
             e.printStackTrace();
             return false;
@@ -201,7 +202,7 @@ public class AppManager implements Observer {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return false;
-        } catch (IOException e) {
+        } catch (ConnectException e) {
             JOptionPane.showMessageDialog(null, "Server is not running");
             e.printStackTrace();
             return false;

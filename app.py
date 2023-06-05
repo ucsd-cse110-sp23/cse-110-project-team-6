@@ -52,11 +52,13 @@ def questions():
                 return 'True'
             else:
                 return 'Taken'
-        if request.args.get(USER) in data:
+        elif request.args.get(USER) in data:
             if request.args.get(PASSWORD) == data[request.args.get(USER)]['password']:
                 return json.dumps(data[request.args.get(USER)]['history'])
             else:
                 return 'Incorrect'
+        else:
+            return 'Incorrect'
     elif request.method == 'PUT' or request.method == 'DELETE':
         if request.args.get(USER) in data:
             if request.args.get(PASSWORD) == data[request.args.get(USER)]['password']:
