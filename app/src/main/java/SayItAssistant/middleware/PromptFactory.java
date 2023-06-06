@@ -33,8 +33,8 @@ public class PromptFactory {
         }
 
         else if (cleanInput.equals(CLEAR_ALL_PROMPTS)) {
-            System.out.println("Creating clear-all prompt");
-            prompt = new ClearAllPrompt();
+           System.out.println("Creating clear-all prompt");
+           prompt = new ClearAllPrompt();
         }
 
         else if (cleanInput.equals(SETUP_EMAIL_PROMPT)) {

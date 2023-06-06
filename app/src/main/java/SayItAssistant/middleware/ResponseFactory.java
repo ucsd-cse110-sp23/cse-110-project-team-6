@@ -31,6 +31,13 @@ public class ResponseFactory {
             }
             AppManager.setRecentPromptNumber(-1);
         }
+
+        else if (prompt instanceof ClearAllPrompt) {
+            System.out.println("Clearing all...");
+            history.clearAll();
+            AppManager.setRecentPromptNumber(-1);
+        }
+
         else if (prompt == null) {
 
         }
