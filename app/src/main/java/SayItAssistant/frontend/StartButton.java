@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 
+import SayItAssistant.middleware.AppManager;
 import SayItAssistant.middleware.IPrompt;
 import SayItAssistant.middleware.IResponse;
 import SayItAssistant.middleware.Observer;
@@ -74,6 +75,7 @@ public class StartButton extends AppButtons implements Subject {
 
                 notifyObservers();
                 setEnabled(true);
+                if (prompt.isStorable()) AppManager.setRecentPromptNumber(prompt.getPromptNumber());
                 revalidate();
             }
         });

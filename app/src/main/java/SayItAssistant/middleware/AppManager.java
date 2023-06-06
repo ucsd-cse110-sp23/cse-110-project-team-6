@@ -38,12 +38,13 @@ public class AppManager implements Observer {
     private HistoryPanel   historyPanel;
     private DisplayPanel   displayPanel;
     private LoginWindow    loginWindow;
+    private CommandPanel   commandPanel;
     private HistoryManager historyManager;
     private SayItAssistant sayItAssistant;
     private boolean        loggedIn;
     private String         currUsername;
     private String         currPassword;
-
+    private static int     recentPromptNumber;
     /*
      * Sets up the empty AppFrame and inner panels
      */
@@ -60,8 +61,10 @@ public class AppManager implements Observer {
     public void run() {
         this.historyPanel = appFrame.getHistoryPanel();
         this.displayPanel = appFrame.getDisplayPanel();
-        this.sayItAssistant = new SayItAssistant(new MockWhisperRequest());
+        this.sayItAssistant = new SayItAssistant(new WhisperRequest()/*new MockWhisperRequest()*/);
         this.historyManager = new HistoryManager(this.sayItAssistant, currUsername, currPassword);
+        this.sayItAssistant.setHistoryManager(historyManager);
+        historyManager.registerObserver(this);
         System.out.println("App is now running");
         populateHistoryPanel(); // fills the history panel with buttons for all of the prompts in the history
         populateStartPanel();   // fills the start panel with the start button and its logic
@@ -219,16 +222,17 @@ public class AppManager implements Observer {
      * and then puts the buttons in the history panel.
      */
     public void populateHistoryPanel() {
-
+        System.out.println("Removing all");
         historyPanel.removeAll();
-
-        ArrayList<IPrompt> questions = historyManager.getPrompts();
+        historyPanel.revalidate();
+        appFrame.revalidate();
+        ArrayList<IPrompt> prompts = historyManager.getPrompts();
 
         // Creates button to get the previous prompt and response for each question
-        for (int i = 0; i < questions.size(); i++) {
-
+        for (int i = 0; i < prompts.size(); i++) {
+            System.out.println ("Creating button " + i);
             // Sets prompt associated with button
-            IPrompt prompt = questions.get(i);
+            IPrompt prompt = prompts.get(i);
 
             // Set the question with its index from the history
             prompt.setPromptNumber(i);
@@ -239,16 +243,19 @@ public class AppManager implements Observer {
             HistoryButton historyButton = new HistoryButton(i, prompt, response);
             historyButton.setFont(historyPanel.myFont.getFont());
 
-            historyButton.registerObserver(displayPanel.getPromptAndResponsePanel());
-            
+            historyButton.registerObserver(displayPanel);
             // updates the question and answer panels when clicked
             historyButton.addActionListener(e -> {
                 historyButton.notifyObservers(); 
+                AppManager.setRecentPromptNumber(prompt.getPromptNumber());
             });
 
             historyPanel.addHistoryButton(historyButton); // add the button to the display
         }
 
+        setRecentPromptNumber(-1);
+
+        historyPanel.revalidate();
         appFrame.revalidate();
         System.out.println("History populated");
 
@@ -264,7 +271,7 @@ public class AppManager implements Observer {
         // If the order changes, the new prompt will not be displayed and the
         // user will instead have to click on it in the history panel to see it.
         startButton.registerObserver(this);
-        startButton.registerObserver(displayPanel.getPromptAndResponsePanel());
+        startButton.registerObserver(displayPanel);
         displayPanel.addStartButton(startButton);
 
         appFrame.revalidate();
@@ -276,6 +283,19 @@ public class AppManager implements Observer {
      */
     @Override
     public void update(IPrompt prompt, IResponse response) {
+        if ((prompt != null) && (prompt.isStorable())) {
+            recentPromptNumber = prompt.getPromptNumber();
+        }
         populateHistoryPanel();
     }
+
+    public static int getRecentPromptNumber() {
+        return recentPromptNumber;
+    }
+
+    public static void setRecentPromptNumber(int newPromptNumber) {
+        System.out.println("New prompt #: " + newPromptNumber);
+        recentPromptNumber = newPromptNumber;
+    }
+
 }

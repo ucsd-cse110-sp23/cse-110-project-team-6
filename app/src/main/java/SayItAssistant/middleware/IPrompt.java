@@ -5,4 +5,6 @@ public interface IPrompt {
     public String toString();
     public void setPromptNumber(int promptNumber);
     public int getPromptNumber();
+    public String getMessage();
+    public boolean isStorable();
 }

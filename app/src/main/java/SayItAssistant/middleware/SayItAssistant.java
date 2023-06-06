@@ -16,8 +16,10 @@ public class SayItAssistant implements Subject {
     private IAPIRequest chatRequest, whisperRequest;
     private ArrayList<Observer> observers;
     private PromptFactory promptFactory;
+    private ResponseFactory responseFactory;
     private IPrompt   prompt;
     private IResponse response;
+    private HistoryManager history;
 
     /**
      * Constructor for SayItAssistant class
@@ -33,13 +35,18 @@ public class SayItAssistant implements Subject {
         this.promptFactory = new PromptFactory();
     }
 
+    public void setHistoryManager(HistoryManager history) {
+        this.history = history;
+        this.responseFactory = new ResponseFactory(history, whisperRequest);
+
+    }
+
     /**
      * Gets the prompt from the API request class
      * @return
      */
-    private IPrompt getPromptandCommand() {
-        IPrompt newPrompt = promptFactory.createPrompt(whisperRequest.callAPI());
-        return newPrompt;
+    private IPrompt getPrompt() {
+        return promptFactory.createPrompt(whisperRequest.callAPI());
     }
 
     /**
@@ -47,13 +54,14 @@ public class SayItAssistant implements Subject {
      * @param question
      * @return
      */
-    private String getResponse(IPrompt prompt) {
+    private IResponse getResponse(IPrompt prompt) {
         // Checks if we are utilizing a MockAPIRequest or a ChatGPTRequest based on whisperRequest
-        chatRequest = (whisperRequest instanceof MockWhisperRequest) ? 
+       /*chatRequest = (whisperRequest instanceof MockWhisperRequest) ? 
             new MockChatGPTRequest(prompt) : new ChatGPTRequest(prompt);
         
         String response = chatRequest.callAPI();
-        return response;
+        return new Answer(response);*/
+        return responseFactory.createResponse(prompt);
     }
 
     /**
@@ -66,18 +74,20 @@ public class SayItAssistant implements Subject {
      */
     public PromptResponsePair respond() {
         PromptResponsePair promptResponse;
-        prompt = getPromptandCommand();
+        prompt = getPrompt();
 
-        if(prompt instanceof Question) {
-            response        = new Answer(getResponse(prompt));
-            promptResponse  = new PromptResponsePair(prompt, response);
+        if (prompt != null) {
+            response = getResponse(prompt);
+            promptResponse = new PromptResponsePair(prompt, response);
             notifyObservers();
-        } else {
+        }
+
+        else {
             Question warning       = new Question(NO_COMMAND_WARN);
             Answer   warning_reply = new Answer(NO_COMMAND_RESPONSE);
             promptResponse = new PromptResponsePair(warning, warning_reply);
         }
-        
+
         return promptResponse;
     }
 

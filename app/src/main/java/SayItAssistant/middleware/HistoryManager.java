@@ -131,7 +131,8 @@ public class HistoryManager implements Subject, Observer {
      */
     @Override
     public void update(IPrompt newPrompt, IResponse newResponse) {
-        add(newPrompt, newResponse);
+        if (newPrompt.isStorable()) 
+            add(newPrompt, newResponse);
     }
 
     /**

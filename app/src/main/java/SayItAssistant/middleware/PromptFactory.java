@@ -16,6 +16,7 @@ public class PromptFactory {
 
         IPrompt prompt = null;
         String cleanInput = input.replaceAll(PUNCTUATION, "").toLowerCase();
+        System.out.println("CLEAN INPUT: " + cleanInput);
         
         if (cleanInput.startsWith(QUESTION_PROMPT, 0) && !(cleanInput.equals(QUESTION_PROMPT))) {
             System.out.println("Creating question prompt");
@@ -27,12 +28,13 @@ public class PromptFactory {
         }
 
         else if (cleanInput.equals(DELETE_PROMPT)) {
-            // prompt = new DeletePrompt();
-            // prompt_command_pair = new Object[] {prompt, DELETE_PROMPT};
+            System.out.println("Creating delete prompt");
+            prompt = new DeletePrompt();
         }
 
         else if (cleanInput.equals(CLEAR_ALL_PROMPTS)) {
-            // prompt = new ClearAllPrompt();
+            System.out.println("Creating clear-all prompt");
+            prompt = new ClearAllPrompt();
         }
 
         else if (cleanInput.equals(SETUP_EMAIL_PROMPT)) {
