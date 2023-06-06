@@ -7,4 +7,5 @@ public interface IPrompt {
     public int getPromptNumber();
     public String getMessage();
     public boolean isStorable();
+    public boolean updatesDisplay();
 }

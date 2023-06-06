@@ -71,11 +71,16 @@ public class StartButton extends AppButtons implements Subject {
                 PromptResponsePair promptResponse = assistant.respond();
 
                 prompt   = promptResponse.getPrompt();
-                response = promptResponse.getResponse();
 
-                notifyObservers();
+                if (prompt.updatesDisplay()) {
+                    response = promptResponse.getResponse();
+                    if (prompt.isStorable()) 
+                        AppManager.setRecentPromptNumber(prompt.getPromptNumber());
+                    notifyObservers();
+
+                }
+
                 setEnabled(true);
-                if (prompt.isStorable()) AppManager.setRecentPromptNumber(prompt.getPromptNumber());
                 revalidate();
             }
         });

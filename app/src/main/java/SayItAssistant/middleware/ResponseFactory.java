@@ -1,6 +1,7 @@
 package SayItAssistant.middleware;
 
 import SayItAssistant.App;
+import SayItAssistant.frontend.EmailSetup;
 
 public class ResponseFactory {
 
@@ -36,6 +37,11 @@ public class ResponseFactory {
             System.out.println("Clearing all...");
             history.clearAll();
             AppManager.setRecentPromptNumber(-1);
+        }
+
+        else if (prompt instanceof SetUpEmailPrompt) {
+            System.out.println("Setting up email...");
+            new EmailSetup(AppManager.getUsername(), AppManager.getPassword());
         }
 
         else if (prompt == null) {

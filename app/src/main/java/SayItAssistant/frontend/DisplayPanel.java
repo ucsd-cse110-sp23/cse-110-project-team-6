@@ -16,6 +16,8 @@ public class DisplayPanel extends AppPanels implements Observer{
     PromptAndResponsePanel promptAndResponsePanel;
     StartPanel startPanel;
     CommandPanel commandPanel;
+    private final String WELCOME = "Welcome to SayIt Assistant";
+    private final String NO_COMMAND_WARN = "No command found";
 
     /*
      * Creates and formats the display panel.
@@ -115,6 +117,10 @@ public class DisplayPanel extends AppPanels implements Observer{
     public void update(IPrompt prompt, IResponse response) {
         promptAndResponsePanel.setPrompt(prompt);
         promptAndResponsePanel.setResponse(response);
-        commandPanel.setCommand(prompt.getMessage());
+        if (prompt.toString() == NO_COMMAND_WARN) {
+            commandPanel.setCommand(WELCOME);
+        }
+        else 
+            commandPanel.setCommand(prompt.getMessage());
     }
 }

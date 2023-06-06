@@ -20,28 +20,28 @@ import java.io.*;
  * from the JSON and storing it within the History class.
  */
 public class HistoryManager implements Subject, Observer {
-    
-    private final String HOST = "http://localhost:1337/";
-    private final String ENDPOINT = "question";
-    private final String USER_PARAM = "?user=";
-    private final String PASS_PARAM = "&pass=";
 
     private static final String HISTORY_DIR = System.getProperty("user.dir");
     private static final String HISTORY_PATH = HISTORY_DIR + "/history.json";
-    private JSON_IO jsonIO;
-    private SayItAssistant assistantSubject;
+    private final String HOST = "https://hlnm.pythonanywhere.com/";
+    private final String ENDPOINT = "question";
+    private final String USER_PARAM = "?user=";
+    private final String PASS_PARAM = "&pass=";
+    private final JSON_IO jsonIO;
+    private final SayItAssistant assistantSubject;
+    private final ArrayList<Observer> observers;
     private LinkedHashMap<Integer, PromptResponsePair> history;
     private ArrayList<IPrompt> prompts;
-    private ArrayList<Observer> observers;
-    
+
     /**
      * Constructor for HistoryManager class
+     *
      * @param HISTORY_PATH path to the JSON file containing the history of
      */
     public HistoryManager(SayItAssistant assistantSubject, String username, String password) {
         System.out.println("Path of history file: " + HISTORY_PATH);
         observers = new ArrayList<Observer>();
-        jsonIO    = new JSON_IO(username,password);
+        jsonIO = new JSON_IO(username, password);
         history = jsonIO.readHistory();
         this.assistantSubject = assistantSubject;
         this.assistantSubject.registerObserver(this);
@@ -49,9 +49,10 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Getter method for the response to a given prompt indicated by that prompt's number
-     * @require promptNum >= 0 && promptNum < history.size() && knowledge of promptNum
+     *
      * @param promptNum index of the prompt in the history of all prompts asked
      * @return Response object containing the response to the given prompt
+     * @require promptNum >= 0 && promptNum < history.size() && knowledge of promptNum
      */
     public IResponse getResponse(int promptNum) {
         return history.get(promptNum).getResponse();
@@ -59,6 +60,7 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Getter method for the list of all prompts asked
+     *
      * @return ArrayList<Prompt> list of all prompts asked
      */
     public ArrayList<IPrompt> getPrompts() {
@@ -67,6 +69,7 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Getter method for the number of prompts asked
+     *
      * @return int number of prompts asked
      */
     public int getHistorySize() {
@@ -94,13 +97,13 @@ public class HistoryManager implements Subject, Observer {
      */
     @Override
     public void notifyObservers() {
-        IPrompt   recentPrompt = null;
+        IPrompt recentPrompt = null;
         IResponse recentResponse = null;
         if (history.size() != 0) {
-            recentPrompt   = history.get(history.size() - 1).getPrompt();
-            recentResponse     = history.get(history.size() - 1).getResponse();
+            recentPrompt = history.get(history.size() - 1).getPrompt();
+            recentResponse = history.get(history.size() - 1).getResponse();
         }
-        
+
         for (Observer o : observers) {
             o.update(recentPrompt, recentResponse);
         }
@@ -108,10 +111,11 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Updates the history of prompts and responses with the most recent prompt and response
-     * @require newPrompt != null && newResponse != null && 
-     *          newPrompt instanceof Prompt && newResponse instanceof Response
-     * @param prompt Prompt object containing the prompt asked
+     *
+     * @param prompt   Prompt object containing the prompt asked
      * @param response Response object containing the response to the prompt asked
+     * @require newPrompt != null && newResponse != null &&
+     * newPrompt instanceof Prompt && newResponse instanceof Response
      */
     public void add(IPrompt newPrompt, IResponse newResponse) {
         if (newPrompt == null || newResponse == null) {
@@ -127,6 +131,7 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Updates the history of prompts and responses with the most recent prompt and response
+     *
      * @param promptNum
      */
     @Override
@@ -137,14 +142,17 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Deletes the prompt and response indicated by the prompt number
-     * @require promptNum >= 0 && promptNum < history.size() && knowledge of promptNum
+     *
      * @param prompt
+     * @require promptNum >= 0 && promptNum < history.size() && knowledge of promptNum
      */
     public void delete(int promptNum) {
         // Store responses to rebuild history
         ArrayList<IResponse> responses = new ArrayList<IResponse>();
-        for (Integer i : history.keySet()) { responses.add(history.get(i).getResponse()); }
-        
+        for (Integer i : history.keySet()) {
+            responses.add(history.get(i).getResponse());
+        }
+
         history.remove(promptNum);
         prompts.remove(promptNum);
         responses.remove(promptNum);
@@ -159,31 +167,36 @@ public class HistoryManager implements Subject, Observer {
 
     /**
      * Clears all prompts and responses from the history
+     *
      * @param prompt
      */
     public void clearAll() {
-        if (history.size() == 0) { return; }
-        
+        if (history.size() == 0) {
+            return;
+        }
+
         // Delete backwards to avoid index out of bounds
         for (int i = history.size() - 1; i >= 0; i--) {
             delete(i);
         }
     }
-        /**
+
+    /**
      * Nested class of HistoryManager responsible for reading and writing
      * the history of prompts and responses to a JSON file
      */
     private class JSON_IO implements Observer {
         private Subject historySubject;
         private JSONObject storedJSON;
-        private String username,password;
+        private String username, password;
+
         /**
          * Constructor for JSON_IO class which initializes the relevant fields for the class and
          * History Manager
-         * 
+         *
          * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
          */
-        private JSON_IO(String username,String password) {
+        private JSON_IO(String username, String password) {
             try {
                 HistoryManager.this.prompts = new ArrayList<IPrompt>();
                 historySubject = HistoryManager.this;
@@ -199,7 +212,7 @@ public class HistoryManager implements Subject, Observer {
         /**
          * Open JSON file and read in the history of prompts and responses as JSONObject
          * Creates the directory and file for history if they do not exist
-         * 
+         *
          * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
          */
         private JSONObject openJSON() throws IOException, InterruptedException {
@@ -209,7 +222,7 @@ public class HistoryManager implements Subject, Observer {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             BufferedReader in = new BufferedReader(
-                new InputStreamReader(conn.getInputStream()));
+                    new InputStreamReader(conn.getInputStream()));
             String serverResponse = in.readLine();
             in.close();
 
@@ -240,9 +253,9 @@ public class HistoryManager implements Subject, Observer {
 
         /**
          * Updates the JSON file with the most recent prompt and response
-         * 
-         * @require args[0] instanceof PromptResponsePair
+         *
          * @param args Object... args containing the history of prompts and responses
+         * @require args[0] instanceof PromptResponsePair
          */
         @Override
         public void update(IPrompt newPrompt, IResponse newResponse) {
@@ -256,18 +269,19 @@ public class HistoryManager implements Subject, Observer {
 
         /**
          * Reads in the history of prompts and responses from the JSON file
+         *
          * @return LinkedHashMap<Integer, PromptResponsePair> history of prompts and responses
          */
         public LinkedHashMap<Integer, PromptResponsePair> readHistory() {
-            LinkedHashMap<Integer, PromptResponsePair> history 
-                = new LinkedHashMap<Integer, PromptResponsePair>();
+            LinkedHashMap<Integer, PromptResponsePair> history
+                    = new LinkedHashMap<Integer, PromptResponsePair>();
 
             if (storedJSON == null) {
                 return history;
             }
 
             JSONArray storedQA = storedJSON.names();
-            
+
             if (storedQA == null) {
                 return history;
             }
@@ -281,11 +295,9 @@ public class HistoryManager implements Subject, Observer {
 
                 String command = commandPromptResponse.getString("Command");
 
-                switch (command) {
-                    case "Question":
-                        promptObj = new Question(commandPromptResponse.getString("Prompt"));
-                        responseObj = new Answer(commandPromptResponse.getString("Response"));
-                        break;
+                if (command.equals("Question")) {
+                    promptObj = new Question(commandPromptResponse.getString("Prompt"));
+                    responseObj = new Answer(commandPromptResponse.getString("Response"));
                 }
 
                 // Tracks prompts in order for HistoryManager
@@ -300,10 +312,11 @@ public class HistoryManager implements Subject, Observer {
 
         /**
          * Updates the stored JSON with the most recent prompt and response
-         * @require newPrompt != null && newResponse != null &&
-         *          newPrompt instanceof Prompt && newResponse instanceof Response
-         * @param newPrompt Prompt object containing the prompt asked
+         *
+         * @param newPrompt   Prompt object containing the prompt asked
          * @param newResponse Response object containing the response to the prompt asked
+         * @require newPrompt != null && newResponse != null &&
+         * newPrompt instanceof Prompt && newResponse instanceof Response
          */
         public void add(IPrompt newPrompt, IResponse newResponse) {
             int idx = storedJSON.length();
@@ -349,7 +362,7 @@ public class HistoryManager implements Subject, Observer {
                 out.close();
 
                 BufferedReader in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
+                        new InputStreamReader(conn.getInputStream()));
                 String serverResponse = in.readLine();
                 in.close();
 

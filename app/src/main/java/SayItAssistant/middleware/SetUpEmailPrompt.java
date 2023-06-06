@@ -1,16 +1,16 @@
 package SayItAssistant.middleware;
 
-public class ClearAllPrompt implements IPrompt {
+public class SetUpEmailPrompt implements IPrompt{
     private int promptNumber;
     private boolean STORABLE = false;
-    private boolean UPDATES_DISPLAY = true;
-    private String MESSAGE = "Welcome to SayIt Assistant";
+    private boolean UPDATES_DISPLAY = false;
+    private String MESSAGE = "";
 
-    public ClearAllPrompt createPrompt(String prompt) {
-        return new ClearAllPrompt();
+    public SetUpEmailPrompt createPrompt(String prompt) {
+        return new SetUpEmailPrompt();
     }
 
-    public ClearAllPrompt() {
+    public SetUpEmailPrompt() {
 
     }
 

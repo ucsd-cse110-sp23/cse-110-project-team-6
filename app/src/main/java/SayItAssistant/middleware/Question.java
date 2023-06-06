@@ -8,6 +8,7 @@ public class Question implements IPrompt{
     private String question;    // question from user
     private int questionNumber; //number of the question in the database
     private boolean STORABLE = true;
+    private boolean UPDATES_DISPLAY = true;
     private String MESSAGE = "Question";
 
     public IPrompt createPrompt(String prompt){
@@ -59,5 +60,9 @@ public class Question implements IPrompt{
 
     public boolean isStorable() {
         return STORABLE;
+    }
+    
+    public boolean updatesDisplay() {
+        return UPDATES_DISPLAY;
     }
 }

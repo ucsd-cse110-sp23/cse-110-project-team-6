@@ -2,6 +2,8 @@ package SayItAssistant.middleware;
 
 import java.util.ArrayList;
 
+import SayItAssistant.frontend.EmailSetup;
+
 /**
  * This class is responsible for delegating user inputs to the appropriate API
  * request class and returning the response from the API request to the

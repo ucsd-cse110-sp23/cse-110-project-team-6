@@ -7,7 +7,8 @@ public class PromptFactory {
     private final String QUESTION_PROMPT     = "question";
     private final String DELETE_PROMPT        = "delete prompt";
     private final String CLEAR_ALL_PROMPTS   = "clear all";
-    private final String SETUP_EMAIL_PROMPT  = "setup email";
+    private final String SETUP_EMAIL_PROMPT  = "set up email";
+    private final String SETUP_EMAIL_PROMPT_ALT = "setup email";
     private final String CREATE_EMAIL_PROMPT = "create email";
     private final String SEND_EMAIL_PROMPT   = "send email";
     private final String PUNCTUATION = "[^\\p{L}\\p{Z}]";   //RegEx to cover all punctuation in a String
@@ -37,8 +38,9 @@ public class PromptFactory {
            prompt = new ClearAllPrompt();
         }
 
-        else if (cleanInput.equals(SETUP_EMAIL_PROMPT)) {
-            // prompt = new setUpEmailPrompt();
+        else if (cleanInput.equals(SETUP_EMAIL_PROMPT) || cleanInput.equals(SETUP_EMAIL_PROMPT_ALT)) {
+            System.out.println("Creating setup-email prompt");
+            prompt = new SetUpEmailPrompt();
         }
 
         else if (cleanInput.startsWith(CREATE_EMAIL_PROMPT) && !(cleanInput.equals(CREATE_EMAIL_PROMPT))) {
