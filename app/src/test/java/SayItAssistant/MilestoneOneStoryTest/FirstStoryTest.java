@@ -76,6 +76,7 @@ public class FirstStoryTest {
         mockWhisperRequest.testString = question;
         sayItAssistant = new SayItAssistant(mockWhisperRequest);
         historyManager = new HistoryManager(sayItAssistant, TEST_USER, TEST_PASSWORD);
+        sayItAssistant.setHistoryManager(historyManager);
         sayItAssistant.respond();
     }
 
