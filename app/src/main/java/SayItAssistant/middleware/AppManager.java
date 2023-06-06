@@ -1,5 +1,25 @@
 package SayItAssistant.middleware;
 
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
+import javax.swing.*;
+
+import java.io.BufferedReader;
+// Java IO imports
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+
+// Java net imports
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Base64;
+import java.util.List;
+
 import SayItAssistant.frontend.*;
 
 import javax.swing.*;
@@ -45,10 +65,9 @@ public class AppManager implements Observer {
      * Sets up the empty AppFrame and inner panels
      */
     public AppManager() {
-        this.loggedIn = false;
         this.appFrame = new AppFrame();
         this.loginWindow = appFrame.getLoginWindow();
-        loginScreen(loggedIn);
+        loginScreen();
     }
 
     /*
@@ -67,11 +86,53 @@ public class AppManager implements Observer {
         System.out.println("Everything has been populated");
     }
 
+
+    /**
+     * Saves the login information to a file
+     */
+    public void saveLogin() {
+        if (loginWindow.getRememberMe()) {
+            //base64 encode
+            String encodedUsername = Base64.getEncoder().encodeToString(currUsername.getBytes());
+            String encodedPassword = Base64.getEncoder().encodeToString(currPassword.getBytes());
+            //save to file
+            try {
+                FileWriter fw = new FileWriter("login.txt");
+                fw.write(encodedUsername + "\n");
+                fw.write(encodedPassword + "\n");
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Retrieves the login information from the file
+     */
+    public List<String> retrieveLogin() {
+        List<String> loginInfo = new ArrayList<>();
+        //read from file login.txt
+        try {
+            loginInfo = Files.readAllLines(Paths.get("login.txt"));
+            //base64 decode
+            for (int i = 0; i < loginInfo.size(); i++) {
+                loginInfo.set(i, new String(Base64.getDecoder().decode(loginInfo.get(i))));
+            }
+        } catch (IOException e) {
+            System.out.println("No login file found");
+        }
+        return loginInfo;
+    }
+
     /**
      * Runs the logic of logging in
      */
-    public void loginScreen(boolean logStatus) {
-        if (logStatus) {
+    public void loginScreen() {
+        List<String> loginInfo = retrieveLogin();
+
+        if (!loginInfo.isEmpty() && checkValid(loginInfo.get(0), loginInfo.get(1))) {
+            appFrame.closeLoginWindow();
             appFrame.setUpPanels();
             appFrame.revalidate();
             run();
@@ -88,6 +149,7 @@ public class AppManager implements Observer {
             boolean verifiedLogin = checkValid(username, password);
 
             if (verifiedLogin) {
+                saveLogin();
                 loggedIn = true;
                 appFrame.closeLoginWindow();
                 appFrame.setUpPanels();
@@ -103,15 +165,22 @@ public class AppManager implements Observer {
 
             String username = loginWindow.getData()[0];
             String password = loginWindow.getData()[1];
+            if (signUp(username, password, true)) {
+                String verification = JOptionPane.showInputDialog("Please re-enter your password");
+                if (!password.equals(verification)) {
+                    JOptionPane.showMessageDialog(null, "Passwords do not match");
+                    return;
+                }
+                boolean verifiedSignup = signUp(username, password, false);
 
-            boolean verifiedSignup = signUp(username, password);
-
-            if (verifiedSignup) {
-                loggedIn = true;
-                appFrame.closeLoginWindow();
-                appFrame.setUpPanels();
-                appFrame.revalidate();
-                run();
+                if (verifiedSignup) {
+                    saveLogin();
+                    loggedIn = true;
+                    appFrame.closeLoginWindow();
+                    appFrame.setUpPanels();
+                    appFrame.revalidate();
+                    run();
+                }
             }
         });
 
@@ -171,10 +240,10 @@ public class AppManager implements Observer {
      * @throws IOException
      * @throws InterruptedException
      */
-    private boolean signUp(String username, String password) {
+    private boolean signUp(String username, String password, boolean checkTaken) {
 
         // Validate that username and password are not empty strings
-        if (username.equals("") || password.equals("")) {
+        if (username.equals("") || (password.equals("") && !checkTaken)) {
             JOptionPane.showMessageDialog(null, "Username and password cannot be empty");
             return false;
         }
@@ -196,8 +265,10 @@ public class AppManager implements Observer {
                 JOptionPane.showMessageDialog(null, "Username already exists");
                 return false;
             } else {
-                currUsername = username;
-                currPassword = password;
+                if (!checkTaken) {
+                    currUsername = username;
+                    currPassword = password;
+                }
                 return true;
             }
 
