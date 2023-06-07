@@ -29,9 +29,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install Flask
-      
-      - name: Run the Python Server
-        run: python app.py
+
+      - name: Run the Python Server (in the background)
+        run: python app.py &
 
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1

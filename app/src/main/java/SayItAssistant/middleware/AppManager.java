@@ -54,7 +54,8 @@ import java.util.ArrayList;
  */
 public class AppManager implements Observer {
 
-    private final String HOST = "https://hlnm.pythonanywhere.com/";
+    private final String HOST = "http://127.0.0.1:5000/";
+    //private final String HOST = "https://hlnm.pythonanywhere.com/";
     private final String ENDPOINT = "question";
     private final String USER_PARAM = "?user=";
     private final String PASS_PARAM = "&pass=";

@@ -75,7 +75,7 @@ def questions():
                 write()
                 return 'True'
             else:
-                return 'Peepee'
+                return 'Taken'
         elif request.args.get(USER) in data:
             if request.args.get(PASSWORD) == data[request.args.get(USER)]['password']:
                 return json.dumps(data[request.args.get(USER)]['history'])
