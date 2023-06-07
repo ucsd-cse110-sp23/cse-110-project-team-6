@@ -32,9 +32,14 @@ public class PromptFactory {
         } else if (cleanInput.startsWith(CREATE_EMAIL_PROMPT)) {
             try {
                 List<String> lines = Files.readAllLines(Paths.get("name.txt"));
-                String name = lines.get(0);
-                //give the name to ChatGPT
-                Question q = new Question(String.format("%s Add %s as the sender's name after the closing phrase", input, name));
+                Question q;
+                try {
+                    String name = lines.get(0);
+                    q = new Question(String.format("%s Add %s as the sender's name after the closing phrase", input, name));
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.println("no display name set");
+                    q = new Question(input);
+                }
                 q.setMESSAGE("Create Email");
                 prompt = q;
             } catch (IOException e) {
