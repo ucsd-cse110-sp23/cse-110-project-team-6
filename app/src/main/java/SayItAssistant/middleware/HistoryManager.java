@@ -32,6 +32,16 @@ public class HistoryManager implements Subject, Observer {
     private final ArrayList<Observer> observers;
     private LinkedHashMap<Integer, PromptResponsePair> history;
     private ArrayList<IPrompt> prompts;
+    private String username;
+    private String password;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 
     /**
      * Constructor for HistoryManager class
@@ -39,6 +49,8 @@ public class HistoryManager implements Subject, Observer {
      * @param HISTORY_PATH path to the JSON file containing the history of
      */
     public HistoryManager(SayItAssistant assistantSubject, String username, String password) {
+        this.username = username;
+        this.password = password;
         System.out.println("Path of history file: " + HISTORY_PATH);
         observers = new ArrayList<Observer>();
         jsonIO = new JSON_IO(username, password);
@@ -296,7 +308,11 @@ public class HistoryManager implements Subject, Observer {
                 String command = commandPromptResponse.getString("Command");
 
                 if (command.equals("Question")) {
-                    promptObj = new Question(commandPromptResponse.getString("Prompt"));
+                    Question q = new Question(commandPromptResponse.getString("Prompt"));
+                    if(q.toString().toLowerCase().startsWith("create email")){
+                        q.setMESSAGE("Create Email");
+                    }
+                    promptObj = q;
                     responseObj = new Answer(commandPromptResponse.getString("Response"));
                 }
 

@@ -20,6 +20,8 @@ import javax.swing.UIManager;
 
 import org.json.JSONObject;
 
+import SayItAssistant.middleware.AppManager;
+
 public class EmailSetup{
 
 
@@ -117,6 +119,7 @@ public class EmailSetup{
                 .thenApply(HttpResponse::body)
                 .thenAccept(System.out::println)
                 .join();
+            AppManager.updateName(username, pwd);
         }
     }
 
