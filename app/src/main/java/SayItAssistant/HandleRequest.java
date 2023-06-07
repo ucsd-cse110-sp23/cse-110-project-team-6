@@ -98,7 +98,7 @@ public class HandleRequest implements HttpHandler {
             file.close();
             return "Created";
         } else { // Username already taken
-            return "Peepee";
+            return "Taken";
         }
     }
 
@@ -129,7 +129,7 @@ public class HandleRequest implements HttpHandler {
             return "Placed";
         }
 
-        return "Peepee";
+        return "Taken";
     }
 
     /**
@@ -161,7 +161,7 @@ public class HandleRequest implements HttpHandler {
                 file.close();
                 return "True";
             } else { // Username already taken
-                return "Peepee";
+                return "Taken";
             }
         }
 
