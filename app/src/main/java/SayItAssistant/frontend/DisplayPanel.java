@@ -2,16 +2,22 @@ package SayItAssistant.frontend;
 
 import java.awt.*;
 
+import SayItAssistant.middleware.IPrompt;
+import SayItAssistant.middleware.IResponse;
+import SayItAssistant.middleware.Observer;
+
 /*
  * This panel holds the prompt, response, and start panels.  It's primary function is to keep the overall 
  * format of these panels standardized.
  */
-public class DisplayPanel extends AppPanels {
+public class DisplayPanel extends AppPanels implements Observer{
 
     // panels that are contained within the display panel
     PromptAndResponsePanel promptAndResponsePanel;
     StartPanel startPanel;
     CommandPanel commandPanel;
+    private final String WELCOME = "Welcome to SayIt Assistant";
+    private final String NO_COMMAND_WARN = "No command found";
 
     /*
      * Creates and formats the display panel.
@@ -83,6 +89,10 @@ public class DisplayPanel extends AppPanels {
     public PromptAndResponsePanel getPromptAndResponsePanel() {
         return this.promptAndResponsePanel;
     }
+
+    public CommandPanel getCommandPanel() {
+        return this.commandPanel;
+    }
     
     /*
      * Adds the start button to the start panel.
@@ -97,5 +107,20 @@ public class DisplayPanel extends AppPanels {
     public void setCommand(String command) {
         this.commandPanel.setCommand(command);
         revalidate();
+    }
+
+    public int getCurrentPromptNumber() {
+        return promptAndResponsePanel.getCurrentPromptNumber();
+    }
+
+    @Override
+    public void update(IPrompt prompt, IResponse response) {
+        promptAndResponsePanel.setPrompt(prompt);
+        promptAndResponsePanel.setResponse(response);
+        if (prompt.toString() == NO_COMMAND_WARN) {
+            commandPanel.setCommand(WELCOME);
+        }
+        else 
+            commandPanel.setCommand(prompt.getMessage());
     }
 }

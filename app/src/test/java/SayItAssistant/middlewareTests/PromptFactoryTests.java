@@ -33,7 +33,7 @@ public class PromptFactoryTests {
     public void testDeletePrompt() {
         IPrompt p = pf.createPrompt(DELETE_PROMPT);
 
-        assertTrue (p == null);
+        assertTrue (p instanceof DeletePrompt);
     }
 
     /*
@@ -43,7 +43,7 @@ public class PromptFactoryTests {
     public void testClearAllPrompt() {
         IPrompt p = pf.createPrompt(CLEAR_ALL_PROMPT);
 
-        assertTrue (p == null);
+        assertTrue (p instanceof ClearAllPrompt);
     }
 
     /*
@@ -53,7 +53,7 @@ public class PromptFactoryTests {
     public void testSetUpEmailPrompt() {
         IPrompt p = pf.createPrompt(SETUP_EMAIL_PROMPT);
 
-        assertTrue (p == null);
+        assertTrue (p instanceof SetUpEmailPrompt);
     }
 
     /*

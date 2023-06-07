@@ -28,7 +28,10 @@ public class ResponsePanel extends AppPanels{
      * @param response: The response to be displayed
      */
     public void setResponse(IResponse response) {
-        this.response.setText(response.toString());
+        if (response == null) 
+            this.response.setText("");
+        else 
+            this.response.setText(response.toString());
     }
 
     /*

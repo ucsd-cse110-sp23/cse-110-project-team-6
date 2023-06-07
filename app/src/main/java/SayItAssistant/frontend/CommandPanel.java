@@ -8,6 +8,8 @@ import javax.swing.*;
  */
 public class CommandPanel extends AppPanels {
 
+    // @TODO: Make this an observer (or some similar behavior) to update the command text
+
     private JTextArea command = new JTextArea();   // area for the command to be displayed with text
 
     /**

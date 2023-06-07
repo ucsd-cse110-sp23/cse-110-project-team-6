@@ -1,14 +1,13 @@
 package SayItAssistant.middleware;
 
-import SayItAssistant.App;
 import SayItAssistant.frontend.EmailSetup;
 
-public class ResponseFactory {
+public class ResponseCoordinator {
 
     IAPIRequest whisperRequest;
     HistoryManager history;
 
-    public ResponseFactory (HistoryManager history, IAPIRequest whisperRequest) {
+    public ResponseCoordinator (HistoryManager history, IAPIRequest whisperRequest) {
         this.history = history;
         this.whisperRequest = whisperRequest;
     }

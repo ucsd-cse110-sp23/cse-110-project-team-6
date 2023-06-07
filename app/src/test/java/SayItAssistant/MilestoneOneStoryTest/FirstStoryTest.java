@@ -1,6 +1,7 @@
 package SayItAssistant.MilestoneOneStoryTest;
 
 import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import SayItAssistant.Server;
@@ -11,21 +12,21 @@ import java.util.ArrayList;
 
 /**
  * Story test for verficiation that asked questions are stored within the history
- * 
+ * <p>
  * For sake of testing, UI elements will not be factored in. Any UI elements which may have been
  * specified will be ommitted from description of the tests as (...) or brief context description.
  */
 public class FirstStoryTest {
-    
-    private static final String EXPECT_HISTORY_PATH = 
-        System.getProperty("user.dir") + "/history.json";
-    private static final String EXPECT_DATA_PATH =
-        System.getProperty("user.dir") + "/data.json";
-    
-    private static final int MAX_WINDOW_QUESTION_SIZE = 10;
-    
 
-    private static final String TEST_USER     = "test";
+    private static final String EXPECT_HISTORY_PATH =
+            System.getProperty("user.dir") + "/history.json";
+    private static final String EXPECT_DATA_PATH =
+            System.getProperty("user.dir") + "/data.json";
+
+    private static final int MAX_WINDOW_QUESTION_SIZE = 10;
+
+
+    private static final String TEST_USER = "test";
     private static final String TEST_PASSWORD = "password";
     private static HistoryManager historyManager;
     private static SayItAssistant sayItAssistant;
@@ -39,9 +40,10 @@ public class FirstStoryTest {
         try {
             Server.startServer();
         } catch (Exception e) {
-            assertTrue(false);
+            fail();
         }
         openSayItAssistant();
+        historyManager.clearAll();
     }
 
     /**
@@ -74,12 +76,13 @@ public class FirstStoryTest {
         mockWhisperRequest.testString = question;
         sayItAssistant = new SayItAssistant(mockWhisperRequest);
         historyManager = new HistoryManager(sayItAssistant, TEST_USER, TEST_PASSWORD);
+        sayItAssistant.setHistoryManager(historyManager);
         sayItAssistant.respond();
     }
 
     /**
      * SayIt Assistant has no questions asked.
-     * 
+     * <p>
      * Given: History Helen has SayIt Assitant opened
      * And: Helen has not asked any questions
      * When: History Helen looks at the history
@@ -91,7 +94,7 @@ public class FirstStoryTest {
         openSayItAssistant();
 
         // Check that history is empty (mimics looking at an empty history)
-        assertTrue(historyManager.getHistorySize() == 0);
+        assertEquals(0, historyManager.getHistorySize());
 
         // Verify that looking questions returns nothing
         assertEquals(historyManager.getPrompts(), new ArrayList<Question>());
@@ -107,29 +110,30 @@ public class FirstStoryTest {
 
     /**
      * New Question has been asked to SayIt Assistant.
-     * 
+     * <p>
      * Given: History Helen has finished asking the question "Who was Louis Braille?"
      * When: History Helen looks at the history
      * Then: The question prompt "Who was Louis Braille?" appears at the top of the History (Panel)
      * When: History Helen clicks on the question prompt "Who was Louis Braille?"
      * Then: SayIt Assistant will display the full response to the question "Who was Louis Braille?"
      */
-    @Test 
+    @Test
     public void testScenario2() {
         // Get the name of the folder where this is ran within
         String currentDirectory = System.getProperty("user.dir");
         System.out.println(currentDirectory);
-        String question = "Question. Who was Louis Braille?";
-        askQuestion(question);
+        String command = "Question. Who was Louis Braille?";
+        String question = "Who was Louis Braille?";
+        askQuestion(command);
 
         // Verify that the question was added to the history
-        assertTrue(historyManager.getHistorySize() == 1);
+        assertEquals(1, historyManager.getHistorySize());
 
-        
+
         // Verify that the question was added to the history
         String receivedQuestion = historyManager.getPrompts().get(0).toString();
 
-        assertEquals(receivedQuestion, question);
+        assertEquals(question, receivedQuestion);
 
         // Verify that the answer to the question is correct
         assertEquals(historyManager.getResponse(0).toString(), "This is the response to the prompt");
@@ -137,7 +141,7 @@ public class FirstStoryTest {
 
     /**
      * Multiple Questions have been asked to SayIt Assistant (exceeding Display Window)
-     * 
+     * <p>
      * Given: History Helen finishes asking the question "What was utilized before Braille?"
      * And: There have been 10 questions asked (which exceed the display window)
      * When: History Helen looks at the history
@@ -150,41 +154,44 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario3() {
-        String firstQuestion = "Question. Who was Louis Braille?";
-        String genericQuestion = "Question. Why is Louis Braille?";
-        String lastQuestion = "Question. What was utilized before Braille?";
+        String firstCommand = "Question. Who was Louis Braille?";
+        String firstQuestion = "Who was Louis Braille?";
+        String genericCommand = "Question. Why is Louis Braille?";
+        String genericQuestion = "Why is Louis Braille?";
+        String lastCommand = "Question. What was utilized before Braille?";
+        String lastQuestion = "What was utilized before Braille?";
 
         // Ask first question
-        askQuestion(firstQuestion);
+        askQuestion(firstCommand);
 
         // Ask generic questions
         for (int i = 1; i < MAX_WINDOW_QUESTION_SIZE; i++) {
-            askQuestion(genericQuestion);
+            askQuestion(genericCommand);
         }
 
         // Ask last question
-        askQuestion(lastQuestion);
+        askQuestion(lastCommand);
 
         // Verify that the questions were added to the history
-        assertTrue(historyManager.getHistorySize() == MAX_WINDOW_QUESTION_SIZE + 1);
+        assertEquals(MAX_WINDOW_QUESTION_SIZE + 1, historyManager.getHistorySize());
 
         // Verify that the questions were added to the history
         String receivedFirstQuestion = historyManager.getPrompts().get(0).toString();
-        assertEquals(receivedFirstQuestion, firstQuestion);
+        assertEquals(firstQuestion, receivedFirstQuestion);
 
-        String receivedGenericQuestion; 
+        String receivedGenericQuestion;
         for (int i = 1; i < MAX_WINDOW_QUESTION_SIZE; i++) {
             receivedGenericQuestion = historyManager.getPrompts().get(i).toString();
-            assertEquals(receivedGenericQuestion, genericQuestion);
+            assertEquals(genericQuestion, receivedGenericQuestion);
         }
 
         String receivedLastQuestion = historyManager.getPrompts().get(10).toString();
-        assertEquals(receivedLastQuestion, lastQuestion);
+        assertEquals(lastQuestion, receivedLastQuestion);
     }
 
     /**
      * Question within history has been deleted.
-     * 
+     * <p>
      * Given: The question "Who was Louis Braille?" has been asked
      * And: History Helen has selected the question "Who was Louis Braille?"
      * When: History Helen clicks on the delete button
@@ -192,21 +199,22 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario4() {
-        String question = "Question. Who was Louis Braille?";
-        askQuestion(question);
+        String command = "Question. Who was Louis Braille?";
+        String question = "Who was Louis Braille?";
+        askQuestion(command);
 
         // Verify that the question was added to the history
-        assertTrue(historyManager.getHistorySize() == 1);
+        assertEquals(1, historyManager.getHistorySize());
 
         // Verify that the question was added to the history
         String receivedQuestion = historyManager.getPrompts().get(0).toString();
-        assertEquals(receivedQuestion, question);
+        assertEquals(question, receivedQuestion);
 
         // Delete the question
         historyManager.delete(0);
 
         // Verify that the question was deleted from the history
-        assertTrue(historyManager.getHistorySize() == 0);
+        assertEquals(0, historyManager.getHistorySize());
 
         // Verify that looking questions returns nothing
         assertEquals(historyManager.getPrompts(), new ArrayList<Question>());
@@ -222,7 +230,7 @@ public class FirstStoryTest {
 
     /**
      * Question within history has been deleted (while current history exceeds display window).
-     * 
+     * <p>
      * Given: The History Panel is full by 10 questions
      * And: The question "Who was Louis Braille?" was the 3rd question asked
      * And: The question "What was used before Braille?" was the last question asked [11th]
@@ -235,34 +243,36 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario5() {
-        String thirdQuestion = "Question. Who was Louis Braille?";
-        String genericQuestion = "Question. Why is Louis Braille?";
-        String lastQuestion = "Question. What was utilized before Braille?";
+        String thirdCommand = "Question. Who was Louis Braille?";
+        String thirdQuestion = "Who was Louis Braille?";
+        String genericCommand = "Question. Why is Louis Braille?";
+        String lastCommand = "Question. What was utilized before Braille?";
+        String lastQuestion = "What was utilized before Braille?";
 
         // Ask first through second question
         for (int i = 0; i < 2; i++) {
-            askQuestion(genericQuestion);
+            askQuestion(genericCommand);
         }
 
         // Ask third question
-        askQuestion(thirdQuestion);
+        askQuestion(thirdCommand);
 
         // Ask the fourth through ninth question
         for (int i = 3; i < MAX_WINDOW_QUESTION_SIZE; i++) {
-            askQuestion(genericQuestion);
+            askQuestion(genericCommand);
         }
 
         // Ask last question
-        askQuestion(lastQuestion);
+        askQuestion(lastCommand);
 
         // Verify that the questions were added to the history
-        assertTrue(historyManager.getHistorySize() == MAX_WINDOW_QUESTION_SIZE + 1);
+        assertEquals(MAX_WINDOW_QUESTION_SIZE + 1, historyManager.getHistorySize());
 
         // Delete the third question
         historyManager.delete(2);
 
         // Verify that the question was deleted from the history
-        assertTrue(historyManager.getHistorySize() == MAX_WINDOW_QUESTION_SIZE);
+        assertEquals(MAX_WINDOW_QUESTION_SIZE, historyManager.getHistorySize());
 
         // Verify that the thirdQuestion was deleted from the history
         for (int i = 0; i < MAX_WINDOW_QUESTION_SIZE; i++) {
@@ -271,12 +281,12 @@ public class FirstStoryTest {
 
         // Verify that the last question was moved up to the 9th question
         String receivedLastQuestion = historyManager.getPrompts().get(9).toString();
-        assertEquals(receivedLastQuestion, lastQuestion);
+        assertEquals(lastQuestion, receivedLastQuestion);
     }
 
     /**
      * Reopening SayIt Assistant after using it to ask questions.
-     * 
+     * <p>
      * Given: History Helen has finished asking the question "Who was Louis Braille?"
      * And: History Helen has finished asking the question "What was utilized before Braille?"
      * When: History Helen closes SayIt Assistant
@@ -286,24 +296,26 @@ public class FirstStoryTest {
      */
     @Test
     public void testScenario6() {
-        String firstQuestion = "Question. Who was Louis Braille?";
-        String lastQuestion = "Question. What was utilized before Braille?";
+        String firstCommand = "Question. Who was Louis Braille?";
+        String firstQuestion = "Who was Louis Braille?";
+        String lastCommand = "Question. What was utilized before Braille?";
+        String lastQuestion = "What was utilized before Braille?";
 
         // Ask first question
-        askQuestion(firstQuestion);
+        askQuestion(firstCommand);
 
         // Ask last question
-        askQuestion(lastQuestion);
+        askQuestion(lastCommand);
 
         // Verify that the questions were added to the history
-        assertTrue(historyManager.getHistorySize() == 2);
+        assertEquals(2, historyManager.getHistorySize());
 
         // Verify that the questions were added to the history
         String receivedFirstQuestion = historyManager.getPrompts().get(0).toString();
-        assertEquals(receivedFirstQuestion, firstQuestion);
+        assertEquals(firstQuestion, receivedFirstQuestion);
 
         String receivedLastQuestion = historyManager.getPrompts().get(1).toString();
-        assertEquals(receivedLastQuestion, lastQuestion);
+        assertEquals(lastQuestion, receivedLastQuestion);
 
         // Close SayIt Assistant
         sayItAssistant = null;
@@ -313,13 +325,13 @@ public class FirstStoryTest {
         openSayItAssistant();
 
         // Verify that the questions were added to the history
-        assertTrue(historyManager.getHistorySize() == 2);
+        assertEquals(2, historyManager.getHistorySize());
 
         // Verify that the questions were added to the history
         receivedFirstQuestion = historyManager.getPrompts().get(0).toString();
-        assertEquals(receivedFirstQuestion, firstQuestion);
+        assertEquals(firstQuestion, receivedFirstQuestion);
 
         receivedLastQuestion = historyManager.getPrompts().get(1).toString();
-        assertEquals(receivedLastQuestion, lastQuestion);
+        assertEquals(lastQuestion, receivedLastQuestion);
     }
 }

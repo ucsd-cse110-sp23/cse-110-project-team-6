@@ -1,13 +1,19 @@
 package SayItAssistant.middleware;
 
+import SayItAssistant.frontend.CommandPanel;
+
+//import java.lang.ref.Cleaner.Cleanable;
+
 public class PromptFactory {
     
-    private final String QUESTION_PROMPT     = "question";
-    private final String DELTE_PROMPT        = "delete prompt";
-    private final String CLEAR_ALL_PROMPTS   = "clear all";
-    private final String SETUP_EMAIL_PROMPT  = "setup email";
-    private final String CREATE_EMAIL_PROMPT = "create email";
-    private final String SEND_EMAIL_PROMPT   = "send email";
+    private final String QUESTION_PROMPT        = "question";
+    private final String DELETE_PROMPT          = "delete prompt";
+    private final String CLEAR_ALL_PROMPTS      = "clear all";
+    private final String SETUP_EMAIL_PROMPT     = "set up email";
+    private final String SETUP_EMAIL_PROMPT_ALT = "setup email";
+    private final String CREATE_EMAIL_PROMPT    = "create email";
+    private final String SEND_EMAIL_PROMPT      = "send email";
+    private final String PUNCTUATION = "[^\\p{L}\\p{Z}]";   //RegEx to cover all punctuation in a String
 
     public IPrompt createPrompt(String input) {
 
@@ -20,7 +26,7 @@ public class PromptFactory {
             prompt = new Question(input);
         }
 
-        else if (inputLC.startsWith(DELTE_PROMPT, 0)) {
+        else if (inputLC.startsWith(DELETE_PROMPT, 0)) {
             // prompt = new DeletePrompt();
             // prompt_command_pair = new Object[] {prompt, DELETE_PROMPT};
         }

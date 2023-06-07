@@ -72,11 +72,13 @@ public class HistoryManagerTests {
 
     @BeforeEach
     public void setUp() {
+        /* 
         try {
             Server.startServer();
         } catch (IOException e) {
             assertTrue(false);
         }
+        */
 
         assistant      = new SayItAssistant(new MockWhisperRequest());
         historyManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
@@ -104,7 +106,7 @@ public class HistoryManagerTests {
         file.delete();
         file = new File(EXPECT_DATA_PATH);
         file.delete();
-        Server.stopServer();
+        //Server.stopServer();
     }
 
     /**

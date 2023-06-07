@@ -3,7 +3,6 @@
  */
 package SayItAssistant;
 
-import java.io.IOException;
 import javax.swing.UIManager;
 
 import SayItAssistant.middleware.*;
@@ -16,11 +15,6 @@ public class App {
             e.printStackTrace();
         }
 
-        try {
-            Server.startServer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         new AppManager();
     }
 }

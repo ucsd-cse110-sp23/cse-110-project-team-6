@@ -20,16 +20,17 @@ import java.io.*;
  * from the JSON and storing it within the History class.
  */
 public class HistoryManager implements Subject, Observer {
-    
-    private final String HOST = "http://localhost:1337/";
-    private final String ENDPOINT = "question";
-    private final String USER_PARAM = "?user=";
-    private final String PASS_PARAM = "&pass=";
 
     private static final String HISTORY_DIR = System.getProperty("user.dir");
     private static final String HISTORY_PATH = HISTORY_DIR + "/history.json";
-    private JSON_IO jsonIO;
-    private SayItAssistant assistantSubject;
+    //private final String HOST = "https://hlnm.pythonanywhere.com/";
+    private final String HOST = "http://127.0.0.1:5000/";
+    private final String ENDPOINT = "question";
+    private final String USER_PARAM = "?user=";
+    private final String PASS_PARAM = "&pass=";
+    private final SayItAssistant assistantSubject;
+
+    private static JSON_IO jsonIO;
     private LinkedHashMap<Integer, PromptResponsePair> history;
     private ArrayList<IPrompt> prompts;
     private ArrayList<Observer> observers;
@@ -38,12 +39,12 @@ public class HistoryManager implements Subject, Observer {
      * Constructor for HistoryManager class
      * @param HISTORY_PATH path to the JSON file containing the history of
      */
-    public HistoryManager(SayItAssistant assistantSubject, String username, String password) {
+    public HistoryManager(SayItAssistant assistant, String username, String password) {
         System.out.println("Path of history file: " + HISTORY_PATH);
         observers = new ArrayList<Observer>();
-        jsonIO    = new JSON_IO(username,password);
-        history = jsonIO.readHistory();
-        this.assistantSubject = assistantSubject;
+        jsonIO    = new JSON_IO(username, password);
+        history   = jsonIO.readHistory();
+        this.assistantSubject = assistant;
         this.assistantSubject.registerObserver(this);
     }
 
@@ -179,8 +180,9 @@ public class HistoryManager implements Subject, Observer {
         /**
          * Constructor for JSON_IO class which initializes the relevant fields for the class and
          * History Manager
-         * 
-         * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
+         *
+         * @param username username of the user
+         * @param password password of the user
          */
         private JSON_IO(String username,String password) {
             try {
@@ -198,13 +200,12 @@ public class HistoryManager implements Subject, Observer {
         /**
          * Open JSON file and read in the history of prompts and responses as JSONObject
          * Creates the directory and file for history if they do not exist
-         * 
-         * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
          */
         private JSONObject openJSON() throws IOException, InterruptedException {
 
             // Getting history from user account from server
             URL url = new URL(HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password);
+            System.out.println(url.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             BufferedReader in = new BufferedReader(

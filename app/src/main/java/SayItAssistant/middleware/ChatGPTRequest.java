@@ -13,7 +13,7 @@ import org.json.JSONObject;
 public class ChatGPTRequest implements IAPIRequest {
 
     private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
-    private static final String API_KEY = "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";
+    private static final String API_KEY = "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";
     private static final String MODEL = "text-davinci-003";
     private static final int    MAX_TOKENS = 100;
     private static final double TEMPERATURE = 1.0; // Percentage of randomness in response
@@ -68,7 +68,7 @@ public class ChatGPTRequest implements IAPIRequest {
         JSONObject json    = new JSONObject(response.body());
         JSONArray  choices = json.getJSONArray("choices");
         String     answer  = choices.getJSONObject(0).getString("text");
-
+        System.out.println("Returning answer");
         return answer;
     }
     

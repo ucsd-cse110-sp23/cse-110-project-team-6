@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 
+import SayItAssistant.middleware.AppManager;
 import SayItAssistant.middleware.IPrompt;
 import SayItAssistant.middleware.IResponse;
 import SayItAssistant.middleware.Observer;
@@ -70,9 +71,15 @@ public class StartButton extends AppButtons implements Subject {
                 PromptResponsePair promptResponse = assistant.respond();
 
                 prompt   = promptResponse.getPrompt();
-                response = promptResponse.getResponse();
 
-                notifyObservers();
+                if (prompt.updatesDisplay()) {
+                    response = promptResponse.getResponse();
+                    if (prompt.isStorable()) 
+                        AppManager.setRecentPromptNumber(prompt.getPromptNumber());
+                    notifyObservers();
+
+                }
+
                 setEnabled(true);
                 revalidate();
             }
