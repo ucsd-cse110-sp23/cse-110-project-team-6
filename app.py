@@ -18,6 +18,7 @@ data = {'test': {'password': 'password', 'history': {}, 'userinfo':deepcopy(empt
 if not os.path.exists('data.json'):
     f = open('data.json', 'w')
     f.write(json.dumps(data, indent=4))
+    f.close()
 else:
     f = open('data.json', 'r')
     data = json.loads(f.read())
@@ -42,7 +43,6 @@ def emails():
 
 @app.route('/question', methods=['GET', 'PUT', 'POST', 'DELETE'])
 def questions():
-    # I don't know why we even have DELETE if it does the same thing
     if request.method == 'GET':
         if 'new' in request.args:
             if request.args.get(USER) not in data:
@@ -86,17 +86,21 @@ def send():
             sender_email = uinfo["email_address"]
             receiver_email = request.args.get("destination")
             password = uinfo["email_password"]
+            res = 'init'
 
-            #msg = EmailMessage()
-            #msg.set_content(request.data)
-            #msg['From'] = sender_email
-            #msg['To'] = receiver_email
-
-            with smtplib.SMTP(smtp_server, port) as server:
+            try:
+                server = smtplib.SMTP(smtp_server,port, timeout = 3)
                 server.ehlo()
                 server.starttls()
                 server.login(sender_email, password)
                 server.sendmail(sender_email, receiver_email, request.data)
+                res = f"Email successfully sent to {receiver_email}!"
+            except Exception as e:
+                res = e
+            finally:
+                server.quit()
+            return res
+
 
 
 def write():
