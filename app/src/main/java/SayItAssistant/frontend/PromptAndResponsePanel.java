@@ -1,7 +1,6 @@
 package SayItAssistant.frontend;
 
 import SayItAssistant.middleware.IResponse;
-import SayItAssistant.middleware.Observer;
 import SayItAssistant.middleware.IPrompt;
 
 import java.awt.BorderLayout;
@@ -11,7 +10,7 @@ import java.awt.GridLayout;
 /**
  * This panel contains space for a prompt and response to be displayed.
  */
-public class PromptAndResponsePanel extends AppPanels implements Observer {
+public class PromptAndResponsePanel extends AppPanels {
 
     PromptPanel promptPanel;     // panel for the prompt
     ResponsePanel responsePanel; // panel for the response
@@ -57,6 +56,10 @@ public class PromptAndResponsePanel extends AppPanels implements Observer {
         isSet = true; //confirm the display is set
     }
 
+    public int getCurrentPromptNumber(){
+        return promptPanel.getCurrentPromptNumber(); 
+    }
+
     /*
      * Defines the formatting for the prompt / response panel.
      */
@@ -81,11 +84,5 @@ public class PromptAndResponsePanel extends AppPanels implements Observer {
     
     public boolean getStatus(){
         return this.isSet;
-    }
-
-    @Override
-    public void update(IPrompt prompt, IResponse response) {
-        setPrompt(prompt);
-        setResponse(response);
     }
 }

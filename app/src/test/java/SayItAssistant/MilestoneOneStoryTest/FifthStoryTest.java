@@ -4,7 +4,9 @@ import org.junit.jupiter.api.*;
 
 import SayItAssistant.Server;
 import SayItAssistant.middleware.*;
+
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,12 +16,12 @@ import java.io.IOException;
 
 public class FifthStoryTest {
 
-    private static final String EXPECT_HISTORY_PATH = 
-        System.getProperty("user.dir") + "/history.json";
+    private static final String EXPECT_HISTORY_PATH =
+            System.getProperty("user.dir") + "/history.json";
 
     private static final String TEST_USER = "test";
     private static final String TEST_PASSWORD = "password";
-  
+
     @AfterEach
     public void tearDown() {
         File file = new File(EXPECT_HISTORY_PATH);
@@ -37,12 +39,12 @@ public class FifthStoryTest {
         try {
             Server.startServer();
         } catch (IOException e) {
-            assertTrue(false);
+            fail();
         }
 
-        HistoryManager newHistoryManager = 
-            new HistoryManager(new SayItAssistant(new MockWhisperRequest()), TEST_USER, TEST_PASSWORD);
-
+        HistoryManager newHistoryManager =
+                new HistoryManager(new SayItAssistant(new MockWhisperRequest()), TEST_USER, TEST_PASSWORD);
+        newHistoryManager.clearAll();
         // Get the path of the class
         String path = System.getProperty("user.dir");
 

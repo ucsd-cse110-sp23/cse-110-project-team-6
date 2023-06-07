@@ -23,7 +23,7 @@ import org.json.JSONException;
 public class WhisperRequest implements IAPIRequest {
     private static final File AUDIO_FILE = new File("prompt.wav");
     private static final String API_ENDPOINT = "https://api.openai.com/v1/audio/transcriptions";
-    private static final String API_KEY = "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";
+    private static final String API_KEY = "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";
     private static final String MODEL = "whisper-1";
 
     /**

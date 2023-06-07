@@ -12,18 +12,18 @@ import java.util.concurrent.*;
 
 public class Server {
     private static final String DATA_FILE = System.getProperty("user.dir") + "/data.json";
-    private static final int PORT         = 1337;
-    private static final String HOST      = "localhost";
+    private static final int PORT = 1337;
+    private static final String HOST = "localhost";
     private static HttpServer server;
-    
+
     public static void startServer() throws IOException {
-        ThreadPoolExecutor threadPoolExecutor = 
-            (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
-        
+        ThreadPoolExecutor threadPoolExecutor =
+                (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+
         server = HttpServer.create(new InetSocketAddress(HOST, PORT), 0);
 
         // Write empty json file if it doesn't exist
-        if (!Files.exists(Paths.get(DATA_FILE)) ){
+        if (!Files.exists(Paths.get(DATA_FILE))) {
             JSONObject testUser = new JSONObject();
             JSONObject userInfo = new JSONObject();
             userInfo.put("password", "password");

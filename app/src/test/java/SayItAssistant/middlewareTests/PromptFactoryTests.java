@@ -1,5 +1,6 @@
 package SayItAssistant.middlewareTests;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.*;
@@ -33,7 +34,7 @@ public class PromptFactoryTests {
     public void testDeletePrompt() {
         IPrompt p = pf.createPrompt(DELETE_PROMPT);
 
-        assertTrue (p == null);
+        assertTrue (p instanceof DeletePrompt);
     }
 
     /*
@@ -43,7 +44,7 @@ public class PromptFactoryTests {
     public void testClearAllPrompt() {
         IPrompt p = pf.createPrompt(CLEAR_ALL_PROMPT);
 
-        assertTrue (p == null);
+        assertTrue (p instanceof ClearAllPrompt);
     }
 
     /*
@@ -53,7 +54,7 @@ public class PromptFactoryTests {
     public void testSetUpEmailPrompt() {
         IPrompt p = pf.createPrompt(SETUP_EMAIL_PROMPT);
 
-        assertTrue (p == null);
+        assertTrue (p instanceof SetUpEmailPrompt);
     }
 
     /*
@@ -63,7 +64,7 @@ public class PromptFactoryTests {
     public void testCreateEmailPrompt() {
         IPrompt p = pf.createPrompt(CREATE_EMAIL_PROMPT);
 
-        assertTrue (p == null);
+        assertNull(p);
     }
 
     /*
@@ -81,7 +82,6 @@ public class PromptFactoryTests {
     @Test
     public void testInvalidPrompt() {
         IPrompt p = pf.createPrompt(INVALID_PROMPT);
-
-        assertTrue (p == null);
+        assertNull(p);
     }
 }
