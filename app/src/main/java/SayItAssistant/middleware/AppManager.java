@@ -54,22 +54,22 @@ import java.util.ArrayList;
  */
 public class AppManager implements Observer {
 
+    private static String currUsername;
+    private static String currPassword;
+    private static int recentPromptNumber;
     private final String HOST = "https://hlnm.pythonanywhere.com/";
     private final String ENDPOINT = "question";
     private final String USER_PARAM = "?user=";
     private final String PASS_PARAM = "&pass=";
-
-    private AppFrame       appFrame;
-    private HistoryPanel   historyPanel;
-    private DisplayPanel   displayPanel;
-    private LoginWindow    loginWindow;
-    private CommandPanel   commandPanel;
+    private final AppFrame appFrame;
+    private final LoginWindow loginWindow;
+    private HistoryPanel historyPanel;
+    private DisplayPanel displayPanel;
+    private CommandPanel commandPanel;
     private HistoryManager historyManager;
     private SayItAssistant sayItAssistant;
-    private boolean        loggedIn;
-    private static String  currUsername;
-    private static String  currPassword;
-    private static int     recentPromptNumber;
+    private boolean loggedIn;
+
     /*
      * Sets up the empty AppFrame and inner panels
      */
@@ -77,6 +77,47 @@ public class AppManager implements Observer {
         this.appFrame = new AppFrame();
         this.loginWindow = appFrame.getLoginWindow();
         loginScreen();
+    }
+
+    public static void updateName(String username, String pwd) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
+                .build();
+
+        client.sendAsync(request, BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .thenAccept(responseBody -> {
+                    // Parse the JSON response
+                    JSONObject jsonResponse = new JSONObject(responseBody);
+                    String name = jsonResponse.getString("display_name");
+                    try {
+                        FileWriter fw = new FileWriter("name.txt");
+                        fw.write(name);
+                        fw.close();
+                    } catch (IOException e) {
+                        System.out.println("writing name error");
+                    }
+                })
+                .join();
+
+    }
+
+    public static int getRecentPromptNumber() {
+        return recentPromptNumber;
+    }
+
+    public static void setRecentPromptNumber(int newPromptNumber) {
+        //System.out.println("New prompt #: " + newPromptNumber);
+        recentPromptNumber = newPromptNumber;
+    }
+
+    public static String getUsername() {
+        return currUsername;
+    }
+
+    public static String getPassword() {
+        return currPassword;
     }
 
     /*
@@ -94,7 +135,6 @@ public class AppManager implements Observer {
         populateStartPanel();   // fills the start panel with the start button and its logic
         System.out.println("Everything has been populated");
     }
-
 
     /**
      * Saves the login information to a file
@@ -197,29 +237,6 @@ public class AppManager implements Observer {
 
     }
 
-    public static void updateName(String username, String pwd){
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
-            .build();
-
-        client.sendAsync(request, BodyHandlers.ofString())
-            .thenApply(HttpResponse::body)
-            .thenAccept(responseBody -> {
-                // Parse the JSON response
-                JSONObject jsonResponse = new JSONObject(responseBody);
-                String name = jsonResponse.getString("display_name");
-                try {
-                    FileWriter fw = new FileWriter("name.txt");
-                    fw.write(name);
-                    fw.close();
-                } catch (IOException e) {
-                    System.out.println("writing name error");
-                }
-            })
-            .join();
-            
-    }
     /**
      * Checks if the username and password are valid
      *
@@ -274,35 +291,42 @@ public class AppManager implements Observer {
      * @throws IOException
      * @throws InterruptedException
      */
-    private boolean signUp(String username, String password, boolean checkTaken) {
+    private boolean signUp(String username, String password, boolean checkOnly) {
 
         // Validate that username and password are not empty strings
-        if (username.equals("") || (password.equals("") && !checkTaken)) {
+        if (username.equals("") || (password.equals(""))) {
             JOptionPane.showMessageDialog(null, "Username and password cannot be empty");
             return false;
         }
 
         try {
+            //check if taken
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/question?user=%s", username)))
+                    .build();
+            String check = client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            System.out.println(check);
+            if (!check.equals("None")) {
+                JOptionPane.showMessageDialog(null, "Username already exists");
+                return false;
+            } else if (checkOnly) {
+                return true;
+            }
             URL url =
                     new URL(HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
             conn.setRequestMethod("POST");
-
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
             String serverResponse = in.readLine();
             in.close();
-
             System.out.println(serverResponse);
             if (serverResponse.equals("Taken")) {
                 JOptionPane.showMessageDialog(null, "Username already exists");
                 return false;
             } else {
-                if (!checkTaken) {
-                    currUsername = username;
-                    currPassword = password;
-                }
+                currUsername = username;
+                currPassword = password;
                 return true;
             }
 
@@ -348,7 +372,7 @@ public class AppManager implements Observer {
             historyButton.registerObserver(displayPanel);
             // updates the question and answer panels when clicked
             historyButton.addActionListener(e -> {
-                historyButton.notifyObservers(); 
+                historyButton.notifyObservers();
                 AppManager.setRecentPromptNumber(prompt.getPromptNumber());
             });
 
@@ -387,22 +411,5 @@ public class AppManager implements Observer {
             recentPromptNumber = prompt.getPromptNumber();
         }
         populateHistoryPanel();
-    }
-
-    public static int getRecentPromptNumber() {
-        return recentPromptNumber;
-    }
-
-    public static void setRecentPromptNumber(int newPromptNumber) {
-        //System.out.println("New prompt #: " + newPromptNumber);
-        recentPromptNumber = newPromptNumber;
-    }
-
-    public static String getUsername() {
-        return currUsername;
-    }
-
-    public static String getPassword() {
-        return currPassword;
     }
 }

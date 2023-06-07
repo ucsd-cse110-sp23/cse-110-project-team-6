@@ -58,7 +58,7 @@ def questions():
             else:
                 return 'Incorrect'
         else:
-            return 'Incorrect'
+            return 'None'
     elif request.method == 'PUT' or request.method == 'DELETE':
         if request.args.get(USER) in data:
             if request.args.get(PASSWORD) == data[request.args.get(USER)]['password']:
