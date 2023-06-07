@@ -130,10 +130,8 @@ public class AppManager implements Observer {
         this.historyManager = new HistoryManager(this.sayItAssistant, currUsername, currPassword);
         this.sayItAssistant.setHistoryManager(historyManager);
         historyManager.registerObserver(this);
-        System.out.println("App is now running");
         populateHistoryPanel(); // fills the history panel with buttons for all of the prompts in the history
         populateStartPanel();   // fills the start panel with the start button and its logic
-        System.out.println("Everything has been populated");
     }
 
     /**

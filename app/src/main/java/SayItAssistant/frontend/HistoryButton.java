@@ -9,24 +9,25 @@ import SayItAssistant.middleware.Observer;
 import SayItAssistant.middleware.Subject;
 
 import java.awt.*;
+
 /*
  * The history button displays the full question and answer associated with it when pressed.
  */
 public class HistoryButton extends AppButtons implements Subject {
-    
-    private ArrayList<Observer> observers;
-    private IPrompt prompt;
-    private IResponse response;
+
+    private final ArrayList<Observer> observers;
+    private final IPrompt prompt;
+    private final IResponse response;
 
     /*
      * Creates the history button.
-     * 
+     *
      * @param id:           the question number
      * @param displayText:  the text to be displayed
      */
     public HistoryButton(int id, IPrompt displayText, IResponse newResponse) {
         super(displayText.toString() + " ".repeat(100));
-        prompt   = displayText;
+        prompt = displayText;
         response = newResponse;
         this.buttonWidth = 200;
         this.buttonHeight = 50;
@@ -51,10 +52,9 @@ public class HistoryButton extends AppButtons implements Subject {
 
     @Override
     public void notifyObservers() {
-        System.out.println("History Button is notifying observers");
         for (Observer o : observers) {
             o.update(prompt, response);
         }
     }
-    
+
 }

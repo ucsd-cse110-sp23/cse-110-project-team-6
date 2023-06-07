@@ -32,16 +32,8 @@ public class HistoryManager implements Subject, Observer {
     private final ArrayList<Observer> observers;
     private LinkedHashMap<Integer, PromptResponsePair> history;
     private ArrayList<IPrompt> prompts;
-    private String username;
-    private String password;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
+    private final String username;
+    private final String password;
 
     /**
      * Constructor for HistoryManager class
@@ -57,6 +49,14 @@ public class HistoryManager implements Subject, Observer {
         history = jsonIO.readHistory();
         this.assistantSubject = assistantSubject;
         this.assistantSubject.registerObserver(this);
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     /**
@@ -148,7 +148,7 @@ public class HistoryManager implements Subject, Observer {
      */
     @Override
     public void update(IPrompt newPrompt, IResponse newResponse) {
-        if (newPrompt.isStorable()) 
+        if (newPrompt.isStorable())
             add(newPrompt, newResponse);
     }
 
@@ -309,7 +309,7 @@ public class HistoryManager implements Subject, Observer {
 
                 if (command.equals("Question")) {
                     Question q = new Question(commandPromptResponse.getString("Prompt"));
-                    if(q.toString().toLowerCase().startsWith("create email")){
+                    if (q.toString().toLowerCase().startsWith("create email")) {
                         q.setMESSAGE("Create Email");
                     }
                     promptObj = q;
@@ -381,8 +381,6 @@ public class HistoryManager implements Subject, Observer {
                         new InputStreamReader(conn.getInputStream()));
                 String serverResponse = in.readLine();
                 in.close();
-
-                System.out.println(serverResponse);
 
             } catch (Exception e) {
                 e.printStackTrace();
