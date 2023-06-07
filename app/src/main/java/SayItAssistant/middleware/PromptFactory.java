@@ -56,7 +56,7 @@ public class PromptFactory {
             
         }
 
-        else if (cleanInput.startsWith(SEND_EMAIL_PROMPT, 0)) {
+        else if (cleanInput.startsWith(SEND_EMAIL_PROMPT, 0) && !cleanInput.equals(SEND_EMAIL_PROMPT)) {
             Question q = new Question("Sending email...");
             q.setMESSAGE(raw.replace(" at ", "@"));
             return q;
