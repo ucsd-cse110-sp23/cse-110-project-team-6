@@ -1,5 +1,6 @@
 package SayItAssistant.middlewareTests;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.*;
@@ -63,7 +64,7 @@ public class PromptFactoryTests {
     public void testCreateEmailPrompt() {
         IPrompt p = pf.createPrompt(CREATE_EMAIL_PROMPT);
 
-        assertTrue (p == null);
+        assertNull(p);
     }
 
     /*
@@ -81,7 +82,6 @@ public class PromptFactoryTests {
     @Test
     public void testInvalidPrompt() {
         IPrompt p = pf.createPrompt(INVALID_PROMPT);
-
-        assertTrue (p == null);
+        assertNull(p);
     }
 }

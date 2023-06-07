@@ -23,13 +23,22 @@ import java.util.List;
 import SayItAssistant.frontend.*;
 
 import javax.swing.*;
+
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.util.ArrayList;
 
 /**
@@ -150,6 +159,7 @@ public class AppManager implements Observer {
 
             if (verifiedLogin) {
                 saveLogin();
+                updateName(username, password);
                 loggedIn = true;
                 appFrame.closeLoginWindow();
                 appFrame.setUpPanels();
@@ -175,6 +185,7 @@ public class AppManager implements Observer {
 
                 if (verifiedSignup) {
                     saveLogin();
+                    updateName(username, password);
                     loggedIn = true;
                     appFrame.closeLoginWindow();
                     appFrame.setUpPanels();
@@ -186,6 +197,29 @@ public class AppManager implements Observer {
 
     }
 
+    public static void updateName(String username, String pwd){
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
+            .build();
+
+        client.sendAsync(request, BodyHandlers.ofString())
+            .thenApply(HttpResponse::body)
+            .thenAccept(responseBody -> {
+                // Parse the JSON response
+                JSONObject jsonResponse = new JSONObject(responseBody);
+                String name = jsonResponse.getString("display_name");
+                try {
+                    FileWriter fw = new FileWriter("name.txt");
+                    fw.write(name);
+                    fw.close();
+                } catch (IOException e) {
+                    System.out.println("writing name error");
+                }
+            })
+            .join();
+            
+    }
     /**
      * Checks if the username and password are valid
      *
@@ -290,7 +324,7 @@ public class AppManager implements Observer {
      * and then puts the buttons in the history panel.
      */
     public void populateHistoryPanel() {
-        System.out.println("Removing all");
+        //System.out.println("Removing all");
         historyPanel.removeAll();
         historyPanel.revalidate();
         appFrame.revalidate();
@@ -298,7 +332,7 @@ public class AppManager implements Observer {
 
         // Creates button to get the previous prompt and response for each question
         for (int i = 0; i < prompts.size(); i++) {
-            System.out.println ("Creating button " + i);
+            //System.out.println ("Creating button " + i);
             // Sets prompt associated with button
             IPrompt prompt = prompts.get(i);
 
@@ -325,8 +359,6 @@ public class AppManager implements Observer {
 
         historyPanel.revalidate();
         appFrame.revalidate();
-        System.out.println("History populated");
-
     }
 
     /*
@@ -343,7 +375,7 @@ public class AppManager implements Observer {
         displayPanel.addStartButton(startButton);
 
         appFrame.revalidate();
-        System.out.println("Start panel populated");
+        //System.out.println("Start panel populated");
     }
 
     /*
@@ -362,7 +394,7 @@ public class AppManager implements Observer {
     }
 
     public static void setRecentPromptNumber(int newPromptNumber) {
-        System.out.println("New prompt #: " + newPromptNumber);
+        //System.out.println("New prompt #: " + newPromptNumber);
         recentPromptNumber = newPromptNumber;
     }
 

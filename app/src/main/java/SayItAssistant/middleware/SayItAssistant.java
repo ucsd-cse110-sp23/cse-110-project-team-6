@@ -21,6 +21,7 @@ public class SayItAssistant implements Subject {
     private ResponseCoordinator responseCoordinator;
     private IPrompt   prompt;
     private IResponse response;
+    private HistoryManager history;
 
     /**
      * Constructor for SayItAssistant class
@@ -36,11 +37,8 @@ public class SayItAssistant implements Subject {
         this.promptFactory = new PromptFactory();
     }
 
-    /**
-     * Sets the history manager
-     * @param history
-     */
     public void setHistoryManager(HistoryManager history) {
+        this.history = history;
         this.responseCoordinator = new ResponseCoordinator(history, whisperRequest);
 
     }

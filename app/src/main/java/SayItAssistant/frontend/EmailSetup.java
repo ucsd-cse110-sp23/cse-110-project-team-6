@@ -20,6 +20,8 @@ import javax.swing.UIManager;
 
 import org.json.JSONObject;
 
+import SayItAssistant.middleware.AppManager;
+
 /**
  * Class which estalishes the setup for the Email Panels
  */
@@ -127,6 +129,7 @@ public class EmailSetup{
                 .thenApply(HttpResponse::body)
                 .thenAccept(System.out::println)
                 .join();
+            AppManager.updateName(username, pwd);
         }
     }
 

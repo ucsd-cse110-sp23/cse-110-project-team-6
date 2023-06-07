@@ -11,6 +11,10 @@ public class Question implements IPrompt{
     private boolean UPDATES_DISPLAY = true;
     private String MESSAGE = "Question";
 
+    public void setMESSAGE(String mESSAGE) {
+        MESSAGE = mESSAGE;
+    }
+
     public IPrompt createPrompt(String prompt){
         return new Question(prompt);
     }

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -23,15 +24,15 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class HistoryManagerTests {
 
-    private static final String EXPECT_HISTORY_PATH = 
-        System.getProperty("user.dir") + "/history.json";
+    private static final String EXPECT_HISTORY_PATH =
+            System.getProperty("user.dir") + "/history.json";
 
     private static final String EXPECT_DATA_PATH =
-        System.getProperty("user.dir") + "/data.json";
+            System.getProperty("user.dir") + "/data.json";
 
     private static final String TEST_USER = "test";
     private static final String TEST_PASSWORD = "password";
-    private static final String EMPTY_JSON    = "{}";
+    private static final String EMPTY_JSON = "{}";
 
     private static final Question QUESTION1 = new Question("Question. What is your name?");
     private static final Question QUESTION2 = new Question("Question. What is your quest?");
@@ -40,10 +41,10 @@ public class HistoryManagerTests {
     private static final Question QUESTION5 = new Question("Question. What is the meaning of life?");
     private static final Question QUESTION6 = new Question("Question. What is 9 + 10?");
     private static final Question DUPLICATE_QUESTION = new Question("Question. What is your name?");
-    private static final Question MULTILINE_QUESTION = 
-        new Question("Question. What is your name?\nWhat is your quest?");
+    private static final Question MULTILINE_QUESTION =
+            new Question("Question. What is your name?\nWhat is your quest?");
     private static final Question EMPTY_QUESTION = new Question("Question.");
-    
+
     private static final Answer ANSWER1 = new Answer("My name is SayIt.");
     private static final Answer ANSWER2 = new Answer("My quest is to find the Holy Grail.");
     private static final Answer ANSWER3 = new Answer("My favorite color is blue.");
@@ -51,8 +52,8 @@ public class HistoryManagerTests {
     private static final Answer ANSWER5 = new Answer("The meaning of life is 42.");
     private static final Answer ANSWER6 = new Answer("9 + 10 = 21.");
     private static final Answer DUPLICATE_ANSWER = new Answer("My name is SayIt.");
-    private static final Answer MULTILINE_ANSWER = 
-        new Answer("My name is SayIt.\nMy quest is to find the Holy Grail.");
+    private static final Answer MULTILINE_ANSWER =
+            new Answer("My name is SayIt.\nMy quest is to find the Holy Grail.");
     private static final Answer EMPTY_ANSWER = new Answer("");
 
     private static SayItAssistant assistant;
@@ -76,13 +77,13 @@ public class HistoryManagerTests {
         try {
             Server.startServer();
         } catch (IOException e) {
-            assertTrue(false);
+            fail();
         }
         */
 
-        assistant      = new SayItAssistant(new MockWhisperRequest());
+        assistant = new SayItAssistant(new MockWhisperRequest());
         historyManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
-
+        historyManager.clearAll();
         allPrompts = new ArrayList<Question>();
         allPrompts.add(QUESTION1);
         allPrompts.add(QUESTION2);
@@ -90,7 +91,7 @@ public class HistoryManagerTests {
         allPrompts.add(QUESTION4);
         allPrompts.add(QUESTION5);
         allPrompts.add(QUESTION6);
-        
+
         allAnswers = new ArrayList<Answer>();
         allAnswers.add(ANSWER1);
         allAnswers.add(ANSWER2);
@@ -123,7 +124,7 @@ public class HistoryManagerTests {
 
         System.out.println("File length: " + jsonFile.length());
 
-        assertTrue(jsonFile.length() == EMPTY_JSON.length());
+        assertEquals(jsonFile.length(), EMPTY_JSON.length());
         // Verify that the history manager is empty
         assertEquals(0, historyManager.getPrompts().size());
     }
@@ -166,7 +167,7 @@ public class HistoryManagerTests {
     }
 
     /**
-     * Tests that the history manager is able to add in duplicate questions and answers 
+     * Tests that the history manager is able to add in duplicate questions and answers
      */
     @Test
     public void testDuplicateQA() {
@@ -176,10 +177,10 @@ public class HistoryManagerTests {
         assertEquals(ANSWER1.toString(), DUPLICATE_ANSWER.toString());
         historyManager.add(DUPLICATE_QUESTION, DUPLICATE_ANSWER);
         assertEquals(allPrompts.size() + 1, historyManager.getHistorySize());
-        assertEquals(DUPLICATE_QUESTION.toString(), 
-                     historyManager.getPrompts().get(allPrompts.size()).toString());
+        assertEquals(DUPLICATE_QUESTION.toString(),
+                historyManager.getPrompts().get(allPrompts.size()).toString());
         assertEquals(DUPLICATE_ANSWER.toString(),
-                        historyManager.getResponse(allPrompts.size()).toString());
+                historyManager.getResponse(allPrompts.size()).toString());
     }
 
     /**
@@ -189,10 +190,10 @@ public class HistoryManagerTests {
     public void testMultilineQA() {
         historyManager.add(MULTILINE_QUESTION, MULTILINE_ANSWER);
         assertEquals(1, historyManager.getHistorySize());
-        assertEquals(MULTILINE_QUESTION.toString(), 
-                     historyManager.getPrompts().get(0).toString());
-        assertEquals(MULTILINE_ANSWER.toString(), 
-                     historyManager.getResponse(0).toString());
+        assertEquals(MULTILINE_QUESTION.toString(),
+                historyManager.getPrompts().get(0).toString());
+        assertEquals(MULTILINE_ANSWER.toString(),
+                historyManager.getResponse(0).toString());
     }
 
     /**
@@ -202,10 +203,10 @@ public class HistoryManagerTests {
     public void testEmptyQA() {
         historyManager.add(EMPTY_QUESTION, EMPTY_ANSWER);
         assertEquals(1, historyManager.getHistorySize());
-        assertEquals(EMPTY_QUESTION.toString(), 
-                     historyManager.getPrompts().get(0).toString());
-        assertEquals(EMPTY_ANSWER.toString(), 
-                     historyManager.getResponse(0).toString());
+        assertEquals(EMPTY_QUESTION.toString(),
+                historyManager.getPrompts().get(0).toString());
+        assertEquals(EMPTY_ANSWER.toString(),
+                historyManager.getResponse(0).toString());
     }
 
     /**
@@ -224,7 +225,7 @@ public class HistoryManagerTests {
         HistoryManager newHistoryManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
         assertNotEquals(newHistoryManager, historyManager);
         assertEquals(allQASize, newHistoryManager.getPrompts().size());
-        
+
         for (int i = 0; i < allQASize; i++) {
             String expectedQuestion = allPrompts.get(i).toString();
             String actualQuestion = newHistoryManager.getPrompts().get(i).toString();
@@ -270,8 +271,11 @@ public class HistoryManagerTests {
         String changedFile = "";
 
         // Reads in contents of the JSON file
-        try { fullFile = Files.readString(Path.of(EXPECT_HISTORY_PATH)); } 
-        catch (Exception e) { assertTrue(false); }
+        try {
+            fullFile = Files.readString(Path.of(EXPECT_HISTORY_PATH));
+        } catch (Exception e) {
+            fail();
+        }
 
         int origSize = allPrompts.size();
         historyManager.delete(origSize - 1);
@@ -290,14 +294,19 @@ public class HistoryManagerTests {
         }
 
         // Makes sure that that the last question and answer is no longer in the history
-        try { 
-            historyManager.getResponse(origSize); 
-            assertTrue(false); 
-        } catch (Exception e) { assertTrue(true); }
+        try {
+            historyManager.getResponse(origSize);
+            fail();
+        } catch (Exception e) {
+            assertTrue(true);
+        }
 
         // Reads in contents of the JSON file
-        try { changedFile = Files.readString(Path.of(EXPECT_HISTORY_PATH)); } 
-        catch (Exception e) { assertTrue(false); }
+        try {
+            changedFile = Files.readString(Path.of(EXPECT_HISTORY_PATH));
+        } catch (Exception e) {
+            fail();
+        }
 
         assertNotEquals(changedFile, fullFile);
 
@@ -322,10 +331,12 @@ public class HistoryManagerTests {
         }
 
         // Makes sure that that the last question and answer is no longer in the history
-        try { 
-            newHistoryManager.getResponse(origSize); 
-            assertTrue(false); 
-        } catch (Exception e) { assertTrue(true); }
+        try {
+            newHistoryManager.getResponse(origSize);
+            fail();
+        } catch (Exception e) {
+            assertTrue(true);
+        }
     }
 
     /**
@@ -339,8 +350,11 @@ public class HistoryManagerTests {
         String changedFile = "";
 
         // Reads in contents of the JSON file
-        try { fullFile = Files.readString(Path.of(EXPECT_HISTORY_PATH)); } 
-        catch (Exception e) { assertTrue(false); }
+        try {
+            fullFile = Files.readString(Path.of(EXPECT_HISTORY_PATH));
+        } catch (Exception e) {
+            fail();
+        }
 
         int origSize = allPrompts.size();
         historyManager.delete(removedIndex);
@@ -361,14 +375,19 @@ public class HistoryManagerTests {
         }
 
         // Makes sure that that the last question and answer is no longer in the history
-        try { 
-            historyManager.getResponse(origSize); 
-            assertTrue(false); 
-        } catch (Exception e) { assertTrue(true); }
+        try {
+            historyManager.getResponse(origSize);
+            fail();
+        } catch (Exception e) {
+            assertTrue(true);
+        }
 
         // Reads in contents of the JSON file
-        try { changedFile = Files.readString(Path.of(EXPECT_HISTORY_PATH)); } 
-        catch (Exception e) { assertTrue(false); }
+        try {
+            changedFile = Files.readString(Path.of(EXPECT_HISTORY_PATH));
+        } catch (Exception e) {
+            fail();
+        }
 
         assertNotEquals(changedFile, fullFile);
 
@@ -393,10 +412,12 @@ public class HistoryManagerTests {
         }
 
         // Makes sure that that the last question and answer is no longer in the history
-        try { 
-            newHistoryManager.getResponse(origSize); 
-            assertTrue(false); 
-        } catch (Exception e) { assertTrue(true); }
+        try {
+            newHistoryManager.getResponse(origSize);
+            fail();
+        } catch (Exception e) {
+            assertTrue(true);
+        }
     }
 
     /**
@@ -409,22 +430,30 @@ public class HistoryManagerTests {
         String changedFile = "";
 
         // Reads in contents of the JSON file
-        try { fullFile = Files.readString(Path.of(EXPECT_HISTORY_PATH)); } 
-        catch (Exception e) { assertTrue(false); }
+        try {
+            fullFile = Files.readString(Path.of(EXPECT_HISTORY_PATH));
+        } catch (Exception e) {
+            fail();
+        }
 
         historyManager.clearAll();
         assertEquals(0, historyManager.getHistorySize());
         assertEquals(0, historyManager.getPrompts().size());
 
         // Makes sure that that the last question and answer is no longer in the history
-        try { 
-            historyManager.getResponse(0); 
-            assertTrue(false); 
-        } catch (Exception e) { assertTrue(true); }
+        try {
+            historyManager.getResponse(0);
+            fail();
+        } catch (Exception e) {
+            assertTrue(true);
+        }
 
         // Reads in contents of the JSON file
-        try { changedFile = Files.readString(Path.of(EXPECT_HISTORY_PATH)); } 
-        catch (Exception e) { assertTrue(false); }
+        try {
+            changedFile = Files.readString(Path.of(EXPECT_HISTORY_PATH));
+        } catch (Exception e) {
+            fail();
+        }
 
         assertNotEquals(changedFile, fullFile);
 
@@ -438,9 +467,11 @@ public class HistoryManagerTests {
         assertEquals(0, newHistoryManager.getPrompts().size());
 
         // Makes sure that that the last question and answer is no longer in the history
-        try { 
-            newHistoryManager.getResponse(0); 
-            assertTrue(false); 
-        } catch (Exception e) { assertTrue(true); }
+        try {
+            newHistoryManager.getResponse(0);
+            fail();
+        } catch (Exception e) {
+            assertTrue(true);
+        }
     }
 }
