@@ -12,17 +12,34 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
-public class EmailSetup {
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
 
+import org.json.JSONObject;
+
+import SayItAssistant.middleware.AppManager;
+
+/**
+ * Class which estalishes the setup for the Email Panels
+ */
+public class EmailSetup{
+
+    private final String EMAIL_ICON = "images/emailicon.png";
 
     public EmailSetup(String username, String pwd) {
         int columns = 10;
-        JTextField last = new JTextField(columns);
-        JTextField first = new JTextField(columns);
-        JTextField display = new JTextField(columns);
-        JTextField email = new JTextField(columns);
-        JTextField smtp = new JTextField(columns);
-        JTextField tls = new JTextField(columns);
+        JTextField last     = new JTextField(columns);
+        JTextField first    = new JTextField(columns);
+        JTextField display  = new JTextField(columns);
+        JTextField email    = new JTextField(columns);
+        JTextField smtp     = new JTextField(columns);
+        JTextField tls      = new JTextField(columns);
         JTextField password = new JPasswordField(columns);
         UIManager.put("OptionPane.okButtonText", "Save");
 
@@ -31,6 +48,7 @@ public class EmailSetup {
                 .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
                 .build();
 
+        // Send the HTTP request and get the response body as a string
         client.sendAsync(request, BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
                 .thenAccept(responseBody -> {
@@ -64,12 +82,17 @@ public class EmailSetup {
         panel.add(new JLabel("TLS Port"));
         panel.add(tls);
         panel.add(new JLabel("Email Password"));
-        panel.add(password);
-        ImageIcon imageIcon = new ImageIcon("emailicon.png");
+        panel.add(password);    
+        
+        // Load in the image icon for emails
+        ClassLoader classLoader = getClass().getClassLoader();
+        ImageIcon imageIcon = new ImageIcon(classLoader.getResource(EMAIL_ICON));
         Image image = imageIcon.getImage();
         Image newimg = image.getScaledInstance(120, 120, java.awt.Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(newimg);
-        if (JOptionPane.showConfirmDialog(null, panel, "Setup Email", JOptionPane.OK_CANCEL_OPTION, 1, imageIcon) == JOptionPane.OK_OPTION) {
+
+        // Add logic for Confirmations
+        if(JOptionPane.showConfirmDialog(null,panel, "Setup Email", JOptionPane.OK_CANCEL_OPTION,1, imageIcon) == JOptionPane.OK_OPTION){
             // Create the JSON object
             JSONObject jsonObject = new JSONObject();
             // Get the text from each JTextField and add it to the JSON object

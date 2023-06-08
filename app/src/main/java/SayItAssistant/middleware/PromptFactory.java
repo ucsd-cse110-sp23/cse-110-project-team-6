@@ -6,14 +6,14 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class PromptFactory {
-
-    private final String QUESTION_PROMPT = "question";
-    private final String DELETE_PROMPT = "delete prompt";
-    private final String CLEAR_ALL_PROMPTS = "clear all";
-    private final String SETUP_EMAIL_PROMPT = "set up email";
+    
+    private final String QUESTION_PROMPT        = "question";
+    private final String DELETE_PROMPT          = "delete prompt";
+    private final String CLEAR_ALL_PROMPTS      = "clear all";
+    private final String SETUP_EMAIL_PROMPT     = "set up email";
     private final String SETUP_EMAIL_PROMPT_ALT = "setup email";
-    private final String CREATE_EMAIL_PROMPT = "create email";
-    private final String SEND_EMAIL_PROMPT = "send email";
+    private final String CREATE_EMAIL_PROMPT    = "create email";
+    private final String SEND_EMAIL_PROMPT      = "send email";
     private final String PUNCTUATION = "[^\\p{L}\\p{Z}]";   //RegEx to cover all punctuation in a String
 
     public IPrompt createPrompt(String input) {

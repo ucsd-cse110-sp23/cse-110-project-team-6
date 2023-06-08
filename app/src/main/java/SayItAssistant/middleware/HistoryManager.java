@@ -23,13 +23,15 @@ public class HistoryManager implements Subject, Observer {
 
     private static final String HISTORY_DIR = System.getProperty("user.dir");
     private static final String HISTORY_PATH = HISTORY_DIR + "/history.json";
-    private final String HOST = "https://hlnm.pythonanywhere.com/";
+    //private final String HOST = "https://hlnm.pythonanywhere.com/";
+    private final String HOST = "http://127.0.0.1:5000/";
     private final String ENDPOINT = "question";
     private final String USER_PARAM = "?user=";
     private final String PASS_PARAM = "&pass=";
-    private final JSON_IO jsonIO;
     private final SayItAssistant assistantSubject;
-    private final ArrayList<Observer> observers;
+
+    private static JSON_IO jsonIO;
+    private ArrayList<Observer> observers;
     private LinkedHashMap<Integer, PromptResponsePair> history;
     private ArrayList<IPrompt> prompts;
     private final String username;
@@ -206,7 +208,8 @@ public class HistoryManager implements Subject, Observer {
          * Constructor for JSON_IO class which initializes the relevant fields for the class and
          * History Manager
          *
-         * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
+         * @param username username of the user
+         * @param password password of the user
          */
         private JSON_IO(String username, String password) {
             try {
@@ -224,13 +227,12 @@ public class HistoryManager implements Subject, Observer {
         /**
          * Open JSON file and read in the history of prompts and responses as JSONObject
          * Creates the directory and file for history if they do not exist
-         *
-         * @param HISTORY_PATH path to the JSON file containing the history of prompts and responses
          */
         private JSONObject openJSON() throws IOException, InterruptedException {
 
             // Getting history from user account from server
             URL url = new URL(HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password);
+            System.out.println(url.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             BufferedReader in = new BufferedReader(

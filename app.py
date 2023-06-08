@@ -6,16 +6,32 @@ from copy import deepcopy
 import smtplib
 from email.message import EmailMessage
 
+# This is the file that is invoked to start up a development server.
+# It gets a copy of the app from your package and runs it.
+
+# Defined variable names to reduce verbosity 
 PASSWORD = 'pass'
+USER     = 'user'
 
-USER = 'user'
-
+# Create the application instance
 app = Flask(__name__)
 
-empty_email = {'last_name': '', 'first_name': '', 'display_name': '', 'email_address': '', 'smtp_host': '',
-               'tls_port': '', 'email_password': ''}
+# Create a dictionary storing relevant fields
+empty_email = {'last_name':'','first_name':'',
+               'display_name':'','email_address':'',
+               'smtp_host':'','tls_port':'',
+               'email_password':''}
 
-data = {'test': {'password': 'password', 'history': {}, 'userinfo': deepcopy(empty_email)}}
+# Data relevant to the user; Initializes a default test user
+data = {
+    'test': {
+        'password': 'password', 
+        'history': {}, 
+        'userinfo':deepcopy(empty_email)
+    }
+}
+
+# Creates a data file if it doesn't exist
 if not os.path.exists('data.json'):
     f = open('data.json', 'w')
     f.write(json.dumps(data, indent=4))
@@ -25,9 +41,12 @@ else:
     data = json.loads(f.read())
     f.close()
 
-
-@app.route('/emails', methods=['GET', 'PUT'])
+# Create a URL route in our application for "/"
+@app.route('/emails', methods = ['GET', 'PUT'])
 def emails():
+    '''
+    Function to handle the emails endpoints
+    '''
     if request.method == 'PUT':
         if request.args.get(USER) in data:
             if request.args.get(PASSWORD) == data[request.args.get(USER)]['password']:
@@ -46,6 +65,11 @@ def emails():
 
 @app.route('/question', methods=['GET', 'PUT', 'POST', 'DELETE'])
 def questions():
+    '''
+    Handles the endpoints to retrieve and store questions
+    '''
+    global data
+    # Requests dealing with retrieval of questions
     if request.method == 'GET':
         if 'new' in request.args:
             if request.args.get(USER) not in data:
@@ -62,6 +86,8 @@ def questions():
                 return 'Incorrect'
         else:
             return 'None'
+    
+    # Requests for dealing with writing/deletion of questions
     elif request.method == 'PUT' or request.method == 'DELETE':
         if request.args.get(USER) in data:
             if request.args.get(PASSWORD) == data[request.args.get(USER)]['password']:
@@ -70,6 +96,8 @@ def questions():
                 return 'Placed'
             else:
                 return 'Incorrect'
+            
+    # Requests for dealing with creation of users
     elif request.method == 'POST':
         requested_u = request.args.get(USER)
         if requested_u not in data:
@@ -83,6 +111,9 @@ def questions():
 
 @app.route('/send', methods=['POST'])
 def send():
+    '''
+    Function to handle relevant endpoints for sending emails
+    '''
     if request.args.get(USER) in data:
         if request.args.get(PASSWORD) == data[request.args.get(USER)]['password']:
             uinfo = data[request.args.get(USER)]['userinfo']
@@ -108,6 +139,17 @@ def send():
                 res = "Error sending email. Check your email setup.\n" + str(e)
             return res
 
+@app.route('/test', methods=['GET'])
+def test():
+    '''
+    Function to handle relevant endpoints for testing
+    '''
+    global data
+    f = open('data.json', 'r')
+    data = json.loads(f.read())
+    f.close()
+
+    return 'Reset the server by rereading the data.json file'
 
 def write():
     t = open('data.json', 'w')
