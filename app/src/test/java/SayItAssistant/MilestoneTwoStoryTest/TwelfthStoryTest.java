@@ -10,6 +10,7 @@ import SayItAssistant.middleware.SayItAssistant;
 import SayItAssistant.middleware.AppManager;
 import SayItAssistant.middleware.HistoryManager;
 import SayItAssistant.middleware.MockWhisperRequest;
+import SayItAssistant.middleware.PromptResponsePair;
 
 /**
  * This class is responsible for testing the twelfth story of the SayItAssistant
@@ -75,7 +76,8 @@ public class TwelfthStoryTest {
         sayItAssistant = new SayItAssistant(mockWhisperRequest);
         historyManager = new HistoryManager(sayItAssistant, TEST_USER, TEST_PASSWORD);
         sayItAssistant.setHistoryManager(historyManager);
-        sayItAssistant.respond();
+        PromptResponsePair got = sayItAssistant.respond();
+        AppManager.setRecentPromptNumber(got.getPrompt().getPromptNumber());
     }
 
     /*
