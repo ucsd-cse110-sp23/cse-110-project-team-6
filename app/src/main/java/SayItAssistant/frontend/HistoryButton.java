@@ -26,7 +26,8 @@ public class HistoryButton extends AppButtons implements Subject {
      * @param displayText:  the text to be displayed
      */
     public HistoryButton(int id, IPrompt displayText, IResponse newResponse) {
-        super(displayText.toString() + " ".repeat(100));
+        
+        super("<html>" + displayText.getMessage() + "<br>" + displayText.toString() + "</html>" + " ".repeat(100));
         prompt = displayText;
         response = newResponse;
         this.buttonWidth = 200;
