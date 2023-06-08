@@ -2,6 +2,8 @@ package SayItAssistant.middleware;
 
 import org.json.JSONObject;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -85,6 +87,31 @@ public class EmailSetupLogic {
                 .thenApply(HttpResponse::body)
                 .thenAccept(System.out::println)
                 .join();
-        AppManager.updateName(username, password);
+    }
+
+    /**
+     * Updates the properties of the user's data to allow email
+     */
+    public void updateName(String username, String password) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(String.format(HOST + EMAIL_ENDPOINT + USER_PARAM + username + PASS_PARAM + password)))
+            .build();
+
+        client.sendAsync(request, BodyHandlers.ofString())
+            .thenApply(HttpResponse::body)
+            .thenAccept(responseBody -> {
+                // Parse the JSON response
+                JSONObject jsonResponse = new JSONObject(responseBody);
+                String name = jsonResponse.getString("display_name");
+                try {
+                    FileWriter fw = new FileWriter("name.txt");
+                    fw.write(name);
+                    fw.close();
+                } catch (IOException e) {
+                    System.out.println("writing name error");
+                }
+            })
+            .join();   
     }
 }

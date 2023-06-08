@@ -115,7 +115,8 @@ public class AppManager implements Observer {
             if (verifiedLogin) {
                 //saveLogin();
                 this.loginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
-                updateName(username, password);
+                EmailSetupLogic emailSetupLogic = new EmailSetupLogic(username, password);
+                emailSetupLogic.updateName(username, password);
                 currUsername = username;
                 currPassword = password;
                 run();
@@ -139,7 +140,8 @@ public class AppManager implements Observer {
 
                 if (verifiedSignup) {
                     this.loginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
-                    updateName(username, password);
+                    EmailSetupLogic emailSetupLogic = new EmailSetupLogic(username, password);
+                    emailSetupLogic.updateName(username, password);
                     currUsername = username;
                     currPassword = password;
                     run();
@@ -147,35 +149,6 @@ public class AppManager implements Observer {
             }
         });
 
-    }
-
-
-    /**
-     * Sets up an email data storage for the user
-     * @param username
-     * @param pwd
-     */
-    public static void updateName(String username, String pwd) {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
-            .build();
-
-        client.sendAsync(request, BodyHandlers.ofString())
-            .thenApply(HttpResponse::body)
-            .thenAccept(responseBody -> {
-                // Parse the JSON response
-                JSONObject jsonResponse = new JSONObject(responseBody);
-                String name = jsonResponse.getString("display_name");
-                try {
-                    FileWriter fw = new FileWriter("name.txt");
-                    fw.write(name);
-                    fw.close();
-                } catch (IOException e) {
-                    System.out.println("writing name error");
-                }
-            })
-            .join();       
     }
     
     /*

@@ -9,19 +9,12 @@ import java.io.PrintStream;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import SayItAssistant.middleware.MockLoginLogic;
-
-import org.junit.jupiter.api.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import SayItAssistant.middleware.*;
 
 import java.io.File;
-import java.util.ArrayList;
 
 
  /*
