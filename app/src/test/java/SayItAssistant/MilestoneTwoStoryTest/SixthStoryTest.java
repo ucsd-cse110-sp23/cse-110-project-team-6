@@ -9,19 +9,17 @@ import java.io.PrintStream;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
+
 import java.nio.file.Paths;
 
 import SayItAssistant.middleware.MockLoginLogic;
 
-import org.junit.jupiter.api.*;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 import SayItAssistant.middleware.*;
 
 import java.io.File;
-import java.util.ArrayList;
+
 
 
  /*
@@ -47,16 +45,13 @@ public class SixthStoryTest{
     
     // Constants for testing
     private static final String HELEN_USER = "hishelen@ucsd.edu";
-    private static final String HELEN_WRONG = "helen@ucsd.edu";
     private static final String HELEN_PASSWORD = "supersecure";
-    private static final String HELEN_WRONG_PASSWORD = "supersecured";
     private static MockLoginLogic login;
 
     // Constant for the path to the data.json file from the root of the code base
     private static final String CURR_DIR = System.getProperty("user.dir");
     private static final String ROOT_DIR = CURR_DIR.substring(0, CURR_DIR.length() - 4);
     private static final String DATA_PATH = ROOT_DIR + "/data.json";
-    private static final String AUTO_LOGIN_PATH = ROOT_DIR + "/login.txt";
     private static String dataContent = "";
 
     //constants for history manager
@@ -87,11 +82,9 @@ public class SixthStoryTest{
 
         //adding the given that a quesiton was asked for 
         openSayItAssistant();
-        String command = "Question. Who was Louis Braille?";
-        String question = "Who was Louis Braille?";
+        String command = "Question. What caused the downfall of the Roman Empire?";
         askQuestion(command);
 
-        historyManager.clearAll();
         login = MockLoginLogic.getInstance();
         login.signUp(HELEN_USER, HELEN_PASSWORD);
         System.setOut(new PrintStream(outContent));
@@ -118,7 +111,7 @@ public class SixthStoryTest{
     public void restoreStreams() {
         System.setOut(originalOut);
         System.setErr(originalErr);
-        // MockLoginLogic.deconstruct();
+
     }
 
     /**
@@ -239,9 +232,23 @@ public class SixthStoryTest{
      */
     @Test
     public void testScenario4(){
+        // variable to confirm that the question exists in the history.
+        String question = "What caused the downfall of the Roman Empire?";
+
         //It is given that the account already exists and there is a question in the prompt
         assertTrue(login.isLoggedIn());
+        assertEquals(1, historyManager.getHistorySize());
+        
+        //Helon logs in again with the same user and password, and the previous question still exists.
+        loginNew();
+        assertTrue(login.checkValid(HELEN_USER, HELEN_PASSWORD));
+        assertTrue(login.isLoggedIn());
 
+        //checking that the previous question exists in the history.
+        assertEquals(1, historyManager.getHistorySize());
+        String receivedQuestion = historyManager.getPrompts().get(0).toString();
+
+        assertEquals(question, receivedQuestion);
 
 
     }
