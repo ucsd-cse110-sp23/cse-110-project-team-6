@@ -2,8 +2,6 @@ package SayItAssistant.middleware;
 
 import java.util.ArrayList;
 
-import SayItAssistant.frontend.EmailSetup;
-
 /**
  * This class is responsible for delegating user inputs to the appropriate API
  * request class and returning the response from the API request to the
@@ -21,7 +19,6 @@ public class SayItAssistant implements Subject {
     private ResponseCoordinator responseCoordinator;
     private IPrompt   prompt;
     private IResponse response;
-    private HistoryManager history;
 
     /**
      * Constructor for SayItAssistant class
@@ -38,7 +35,6 @@ public class SayItAssistant implements Subject {
     }
 
     public void setHistoryManager(HistoryManager history) {
-        this.history = history;
         this.responseCoordinator = new ResponseCoordinator(history, whisperRequest);
 
     }
