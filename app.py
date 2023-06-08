@@ -34,6 +34,7 @@ data = {
 if not os.path.exists('data.json'):
     f = open('data.json', 'w')
     f.write(json.dumps(data, indent=4))
+    f.close()
 else:
     f = open('data.json', 'r')
     data = json.loads(f.read())
@@ -65,7 +66,7 @@ def questions():
     '''
     Handles the endpoints to retrieve and store questions
     '''
-    
+    global data
     # Requests dealing with retrieval of questions
     if request.method == 'GET':
         if 'new' in request.args:
@@ -104,6 +105,7 @@ def questions():
         else:
             return 'Taken'
 
+
 @app.route('/send', methods=['POST'])
 def send():
     '''
@@ -132,6 +134,17 @@ def send():
                 server.quit()
             return res
 
+@app.route('/test', methods=['GET'])
+def test():
+    '''
+    Function to handle relevant endpoints for testing
+    '''
+    global data
+    f = open('data.json', 'r')
+    data = json.loads(f.read())
+    f.close()
+
+    return 'Reset the server by rereading the data.json file'
 
 
 def write():

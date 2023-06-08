@@ -14,19 +14,17 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 /**
- * Class which contains all the functionality of determining what login behaviors should be executed
- * 
- * Maintains a Singleton instance of the class as there should not be more than one instance
+ * Mock class for the LoginLogic class. Used for testing purposes. Entirely the same besides
+ * JOptionPanes
  */
-public class LoginLogic {
+public class MockLoginLogic {
     
     // Serverside constants
     private final static String HOST = "http://127.0.0.1:5000/";
     //private final String HOST = "https://hlnm.pythonanywhere.com/";
     private final static String ENDPOINT = "question";
+    private final static String TEST_ENDPOINT = "test";
     private final static String USER_PARAM = "?user=";
     private final static String PASS_PARAM = "&pass=";
 
@@ -46,11 +44,11 @@ public class LoginLogic {
     private final static String LOGIN_FILE = "login.txt";
 
     // Singleton instance
-    private static LoginLogic instance = null;
+    private static MockLoginLogic instance = null;
 
     private boolean loggedIn = false;
 
-    private LoginLogic() {
+    private MockLoginLogic() {
         this.loggedIn = false;
     }
 
@@ -58,9 +56,9 @@ public class LoginLogic {
      * Returns the singleton instance of the class
      * @return Singleton instance of the class
      */
-    public static LoginLogic getInstance() {
+    public static MockLoginLogic getInstance() {
         if (instance == null) {
-            instance = new LoginLogic();
+            instance = new MockLoginLogic();
         }
         return instance;
     }
@@ -125,7 +123,6 @@ public class LoginLogic {
         // Validate that the username and password are not empty strings
         if (username.equals("") || (password.equals(""))) {
             System.err.println(EMPTY_CREDENTIALS);
-            JOptionPane.showMessageDialog(null, EMPTY_CREDENTIALS);
             return false;
         }
 
@@ -144,7 +141,6 @@ public class LoginLogic {
 
             if (serverResponse.equals("Incorrect") || serverResponse.equals("None")) {
                 System.err.println(BAD_CREDENTIALS);
-                JOptionPane.showMessageDialog(null, BAD_CREDENTIALS);
                 return false;
             } else {
                 loggedIn = true;
@@ -152,15 +148,12 @@ public class LoginLogic {
             }
         } catch (MalformedURLException e) {
             System.err.println(BAD_URL);
-            JOptionPane.showMessageDialog(null, BAD_URL + urlString);
             return false;
         } catch (ConnectException e) {
             System.err.println(CONNECTION_ERROR);
-            JOptionPane.showMessageDialog(null, CONNECTION_ERROR);
             return false;
         } catch (Exception e) {
             System.err.println(DEFAULT_ERROR);
-            JOptionPane.showMessageDialog(null, DEFAULT_ERROR);
             return false;
         }
     }
@@ -179,7 +172,6 @@ public class LoginLogic {
         // Validate that the username and password are not empty strings
         if (username.equals("") || (password.equals(""))) {
             System.err.println(EMPTY_CREDENTIALS);
-            JOptionPane.showMessageDialog(null, EMPTY_CREDENTIALS);
             return false;
         }
 
@@ -199,26 +191,21 @@ public class LoginLogic {
 
             if (serverResponse.equals("Taken")) {
                 System.err.println(TAKEN_USERNAME);
-                JOptionPane.showMessageDialog(null, TAKEN_USERNAME);
                 return false;
             } else {
                 System.out.println(SUCCESSFUL_SIGNUP);
-                JOptionPane.showMessageDialog(null, SUCCESSFUL_SIGNUP);
                 loggedIn = true;
                 return true;
             }
         } catch (MalformedURLException e) {
             System.err.println(BAD_URL);
-            JOptionPane.showMessageDialog(null, BAD_URL + urlString);
             return false;
         } catch (ConnectException e) {
             System.err.println(CONNECTION_ERROR);
-            JOptionPane.showMessageDialog(null, CONNECTION_ERROR);
             e.printStackTrace();
             return false;
         } catch (Exception e) {
             System.err.println(DEFAULT_ERROR);
-            JOptionPane.showMessageDialog(null, DEFAULT_ERROR);
             return false;
         }
     }
@@ -235,7 +222,6 @@ public class LoginLogic {
         // Validate that username is not empty
         if (username.equals("")) {
             System.err.println(EMPTY_CREDENTIALS);
-            JOptionPane.showMessageDialog(null, EMPTY_CREDENTIALS);
             return false;
         }
 
@@ -254,22 +240,18 @@ public class LoginLogic {
             // String is None if the username is not taken
             if (!serverResponse.equals("None")) {
                 System.err.println(TAKEN_USERNAME);
-                JOptionPane.showMessageDialog(null, TAKEN_USERNAME);
             }
             return serverResponse.equals("None");
 
         } catch (MalformedURLException e) {
             System.err.println(BAD_URL);
-            JOptionPane.showMessageDialog(null, BAD_URL + urlString);
             return false;
         } catch (ConnectException e) {
             System.err.println(CONNECTION_ERROR);
-            JOptionPane.showMessageDialog(null, CONNECTION_ERROR);
             e.printStackTrace();
             return false;
         } catch (Exception e) {
             System.err.println(DEFAULT_ERROR);
-            JOptionPane.showMessageDialog(null, DEFAULT_ERROR);
             return false;
         }
     }
@@ -281,5 +263,26 @@ public class LoginLogic {
      */
     public boolean isLoggedIn() {
         return loggedIn;
+    }
+
+    /**
+     * Resets the login status (used for testing)
+     */
+    public void resetServer() {
+        String urlString = HOST + TEST_ENDPOINT;
+
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.getInputStream();
+
+        } catch (MalformedURLException e) {
+            System.err.println(BAD_URL);
+        } catch (ConnectException e) {
+            System.err.println(CONNECTION_ERROR);
+        } catch (Exception e) {
+            System.err.println(DEFAULT_ERROR);
+        }
     }
 }
