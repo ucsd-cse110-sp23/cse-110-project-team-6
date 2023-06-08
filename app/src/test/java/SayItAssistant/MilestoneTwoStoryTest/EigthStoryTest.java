@@ -67,14 +67,14 @@ public class EigthStoryTest {
         System.setErr(new PrintStream(errContent)); 
     }
 
-    /**
+   /**
      * Helper method which simulates starting up a new instance of logging in
      */    
     public void loginNew() {
         MockLoginLogic.deconstruct();
         login = MockLoginLogic.getInstance();
     }
-
+ 
     /**
      * Tear down method to reset console output and deconstruct the login instance
      */
