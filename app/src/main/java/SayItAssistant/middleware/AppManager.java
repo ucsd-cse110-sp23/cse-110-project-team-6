@@ -3,6 +3,7 @@ package SayItAssistant.middleware;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
+import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 
 // Java IO imports
@@ -101,6 +102,7 @@ public class AppManager implements Observer {
         }
 
         AbstractButton loginWindowButton = loginWindow.getLoginButton();
+        AbstractButton signUpButton      = loginWindow.getSignupButton();
 
         // Sets up listeners for activity on the login window
         loginWindowButton.addActionListener(e -> {
@@ -119,8 +121,6 @@ public class AppManager implements Observer {
                 run();
             }
         });
-
-        AbstractButton signUpButton = loginWindow.getSignupButton();
 
         // Sets up listeners for signup button
         signUpButton.addActionListener(e -> {
@@ -148,6 +148,7 @@ public class AppManager implements Observer {
         });
 
     }
+
 
     /**
      * Sets up an email data storage for the user
