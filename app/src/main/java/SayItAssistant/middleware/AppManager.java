@@ -1,23 +1,13 @@
 package SayItAssistant.middleware;
 
-import java.io.FileWriter;
 import java.util.ArrayList;
 
-import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 
 // Java IO imports
-import java.io.IOException;
 import java.util.List;
 
 import SayItAssistant.frontend.*;
-
-import org.json.JSONObject;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 
 /**
  * Class which manages the logic of the UI of the app.
@@ -115,7 +105,8 @@ public class AppManager implements Observer {
             if (verifiedLogin) {
                 //saveLogin();
                 this.loginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
-                updateName(username, password);
+                EmailSetupLogic emailSetupLogic = new EmailSetupLogic(username, password);
+                emailSetupLogic.updateName(username, password);
                 currUsername = username;
                 currPassword = password;
                 run();
@@ -130,8 +121,7 @@ public class AppManager implements Observer {
 
             if (this.loginLogic.checkAvailableUsername(username)) {
                 String verification = JOptionPane.showInputDialog("Please re-enter your password");
-                if (!password.equals(verification)) {
-                    JOptionPane.showMessageDialog(null, "Passwords do not match");
+                if (!this.loginLogic.checkPassword(verification, password)) {
                     return;
                 }
 
@@ -139,7 +129,8 @@ public class AppManager implements Observer {
 
                 if (verifiedSignup) {
                     this.loginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
-                    updateName(username, password);
+                    EmailSetupLogic emailSetupLogic = new EmailSetupLogic(username, password);
+                    emailSetupLogic.updateName(username, password);
                     currUsername = username;
                     currPassword = password;
                     run();
@@ -147,35 +138,6 @@ public class AppManager implements Observer {
             }
         });
 
-    }
-
-
-    /**
-     * Sets up an email data storage for the user
-     * @param username
-     * @param pwd
-     */
-    public static void updateName(String username, String pwd) {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
-            .build();
-
-        client.sendAsync(request, BodyHandlers.ofString())
-            .thenApply(HttpResponse::body)
-            .thenAccept(responseBody -> {
-                // Parse the JSON response
-                JSONObject jsonResponse = new JSONObject(responseBody);
-                String name = jsonResponse.getString("display_name");
-                try {
-                    FileWriter fw = new FileWriter("name.txt");
-                    fw.write(name);
-                    fw.close();
-                } catch (IOException e) {
-                    System.out.println("writing name error");
-                }
-            })
-            .join();       
     }
     
     /*

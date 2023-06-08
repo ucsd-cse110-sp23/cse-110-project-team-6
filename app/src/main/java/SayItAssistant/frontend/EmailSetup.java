@@ -1,18 +1,11 @@
 package SayItAssistant.frontend;
 
-import SayItAssistant.middleware.AppManager;
+import SayItAssistant.middleware.EmailSetupLogic;
+
 import org.json.JSONObject;
 
-import javax.swing.*;
 import java.awt.*;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.BodyPublishers;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,10 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
-
-import org.json.JSONObject;
-
-import SayItAssistant.middleware.AppManager;
 
 /**
  * Class which estalishes the setup for the Email Panels
@@ -43,30 +32,21 @@ public class EmailSetup{
         JTextField password = new JPasswordField(columns);
         UIManager.put("OptionPane.okButtonText", "Save");
 
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
-                .build();
+        // Get the email information from the server
+        EmailSetupLogic setupLogic = new EmailSetupLogic(username, pwd);
 
-        // Send the HTTP request and get the response body as a string
-        client.sendAsync(request, BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .thenAccept(responseBody -> {
-                    // Parse the JSON response
-                    JSONObject jsonResponse = new JSONObject(responseBody);
+        // Get the JSON object from the server
+        JSONObject jsonResponse = setupLogic.getEmailInfo();
 
-                    // Access the "userinfo" object within the JSON response
-                    //JSONObject userInfo = jsonResponse.getJSONObject("userinfo");
-                    last.setText(jsonResponse.getString("last_name"));
-                    first.setText(jsonResponse.getString("first_name"));
-                    display.setText(jsonResponse.getString("display_name"));
-                    email.setText(jsonResponse.getString("email_address"));
-                    smtp.setText(jsonResponse.getString("smtp_host"));
-                    tls.setText(jsonResponse.getString("tls_port"));
-                    password.setText(jsonResponse.getString("email_password"));
-                })
-                .join();
-
+        // Access the "userinfo" object within the JSON response
+        //JSONObject userInfo = jsonResponse.getJSONObject("userinfo");
+        last.setText(jsonResponse.getString("last_name"));
+        first.setText(jsonResponse.getString("first_name"));
+        display.setText(jsonResponse.getString("display_name"));
+        email.setText(jsonResponse.getString("email_address"));
+        smtp.setText(jsonResponse.getString("smtp_host"));
+        tls.setText(jsonResponse.getString("tls_port"));
+        password.setText(jsonResponse.getString("email_password"));
 
         JPanel panel = new JPanel(new GridLayout(7, 1, 10, 10));
         panel.add(new JLabel("First Name"));
@@ -92,45 +72,16 @@ public class EmailSetup{
         imageIcon = new ImageIcon(newimg);
 
         // Add logic for Confirmations
-        if(JOptionPane.showConfirmDialog(null,panel, "Setup Email", JOptionPane.OK_CANCEL_OPTION,1, imageIcon) == JOptionPane.OK_OPTION){
-            // Create the JSON object
-            JSONObject jsonObject = new JSONObject();
-            // Get the text from each JTextField and add it to the JSON object
-            String lastName = last.getText();
-            jsonObject.put("last_name", lastName);
-
-            String firstName = first.getText();
-            jsonObject.put("first_name", firstName);
-
-            String displayName = display.getText();
-            jsonObject.put("display_name", displayName);
-
-            String emailAddress = email.getText();
-            jsonObject.put("email_address", emailAddress);
-
-            String smtpHost = smtp.getText();
-            jsonObject.put("smtp_host", smtpHost);
-
+        if(JOptionPane.showConfirmDialog(null,panel, "Setup Email", JOptionPane.OK_CANCEL_OPTION,1, imageIcon) == JOptionPane.OK_OPTION) {
+            String lasName = last.getText();
+            String firName = first.getText();
+            String disName = display.getText();
+            String emaAdd = email.getText();
+            String smtHost = smtp.getText();
             String tlsPort = tls.getText();
-            jsonObject.put("tls_port", tlsPort);
+            String emaPass = password.getText();
 
-            String emailPassword = password.getText();
-            jsonObject.put("email_password", emailPassword);
-
-            // Convert the JSON object to a string
-            String jsonString = jsonObject.toString();
-
-            //HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request1 = HttpRequest.newBuilder()
-                    .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
-                    .header("Content-Type", "application/json")
-                    .PUT(BodyPublishers.ofString(jsonString))
-                    .build();
-            client.sendAsync(request1, BodyHandlers.ofString())
-                    .thenApply(HttpResponse::body)
-                    .thenAccept(System.out::println)
-                    .join();
-            AppManager.updateName(username, pwd);
+            setupLogic.updateEmailInfo(lasName, firName, disName, emaAdd, smtHost, tlsPort, emaPass);
         }
     }
 
