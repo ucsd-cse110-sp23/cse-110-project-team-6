@@ -98,8 +98,8 @@ public class TwelfthStoryTest {
         assertEquals(1, historyManager.getPrompts().size());
 
         // the question gets deleted from history
-        //requestPrompt(DELETE_STRING);
-        historyManager.delete(0);
+        requestPrompt("Clear All");
+        //historyManager.delete(0);
         assertEquals(0, historyManager.getPrompts().size());
     }
 }
