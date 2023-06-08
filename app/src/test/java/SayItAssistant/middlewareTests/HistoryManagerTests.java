@@ -3,7 +3,6 @@ package SayItAssistant.middlewareTests;
 import org.junit.jupiter.api.*;
 
 
-import SayItAssistant.Server;
 import SayItAssistant.middleware.Answer;
 import SayItAssistant.middleware.HistoryManager;
 import SayItAssistant.middleware.MockWhisperRequest;
@@ -11,7 +10,6 @@ import SayItAssistant.middleware.Question;
 import SayItAssistant.middleware.SayItAssistant;
 
 import java.io.File;
-import java.io.IOException;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -73,14 +71,6 @@ public class HistoryManagerTests {
 
     @BeforeEach
     public void setUp() {
-        /* 
-        try {
-            Server.startServer();
-        } catch (IOException e) {
-            fail();
-        }
-        */
-
         assistant = new SayItAssistant(new MockWhisperRequest());
         historyManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
         historyManager.clearAll();
@@ -107,7 +97,6 @@ public class HistoryManagerTests {
         file.delete();
         file = new File(EXPECT_DATA_PATH);
         file.delete();
-        //Server.stopServer();
     }
 
     /**
