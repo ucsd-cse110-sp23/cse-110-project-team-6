@@ -4,6 +4,7 @@ from flask import Flask, request
 import os
 from copy import deepcopy
 import smtplib
+from email.message import EmailMessage
 
 PASSWORD = 'pass'
 
@@ -90,12 +91,17 @@ def send():
             sender_email = uinfo["email_address"]
             receiver_email = request.args.get("destination")
             password = uinfo["email_password"]
+            msg = EmailMessage()
+            msg.set_content(request.data.decode('utf-8'))
+            msg['Subject'] = 'SayItAssistant Mail'
+            msg['From'] = sender_email
+            msg['To'] = receiver_email
             try:
-                server = smtplib.SMTP(smtp_server, int(port), timeout=3)
+                server = smtplib.SMTP(smtp_server, int(port), timeout=10)
                 server.ehlo()
                 server.starttls()
                 server.login(sender_email, password)
-                server.sendmail(sender_email, receiver_email, request.data)
+                server.send_message(msg, sender_email, receiver_email)
                 server.quit()
                 res = f"Email successfully sent to {receiver_email}!"
             except Exception as e:
