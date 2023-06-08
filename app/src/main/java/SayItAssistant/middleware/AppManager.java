@@ -3,7 +3,6 @@ package SayItAssistant.middleware;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
-import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 
 // Java IO imports
@@ -130,8 +129,7 @@ public class AppManager implements Observer {
 
             if (this.loginLogic.checkAvailableUsername(username)) {
                 String verification = JOptionPane.showInputDialog("Please re-enter your password");
-                if (!password.equals(verification)) {
-                    JOptionPane.showMessageDialog(null, "Passwords do not match");
+                if (!this.loginLogic.checkPassword(verification, password)) {
                     return;
                 }
 

@@ -162,22 +162,33 @@ public class SixthStoryTest{
      * When: History Helen re-enters “supersecure” into the password verification field. 
      * And: History Helen presses “Verify”
      * Then: SayIt Assistant confirms her account has been created with a “Success” message
-     * And: An account is created for History Helen using the email address and password she provided.
+     * And: An account is created for History Helen using the email address and password she 
+     * provided.
      */
     @Test
     public void testScenario1(){
 
-        // Reset the server to its original state before Helen's account was created
+        // Reset the server to its original state for testing
         restoreData();
 
-        //Verify that the user does not exist:
-        assertTrue(login.isLoggedIn());
+        // Mock instance of new login screen
+        loginNew();
+
+        // Verify that Helen is not logged in
+        assertFalse(login.isLoggedIn());
+
+        // Assumptions of Next Step: Helen has filled the fields with her information
+
+        // Verify that Helen's username does not exist in the database
+        assertTrue(login.checkAvailableUsername(HELEN_USER));
+
+        // Have Helen re-enter her password
+        assertTrue(login.checkPassword(HELEN_PASSWORD, HELEN_PASSWORD));
 
         // Helen has just successfully created an account
         login.signUp(HELEN_USER, HELEN_PASSWORD);
+
         assertTrue(login.isLoggedIn());
-
-
     }
 
 

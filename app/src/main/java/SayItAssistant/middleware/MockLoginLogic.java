@@ -31,6 +31,7 @@ public class MockLoginLogic {
     // Error messages
     private final static String NO_LOGIN_FILE     = "No login file found";
     private final static String EMPTY_CREDENTIALS = "Username and password cannot be empty";
+    private final static String PASSWORD_MISMATCH = "Passwords do not match";
     private final static String BAD_CREDENTIALS   = "Incorrect username or password";
     private final static String TAKEN_USERNAME    = "Username is not available";
     private final static String BAD_URL           = "Invalid URL: ";
@@ -254,6 +255,20 @@ public class MockLoginLogic {
             System.err.println(DEFAULT_ERROR);
             return false;
         }
+    }
+
+    /**
+     * Checks that you re-entered the password correctly for signup creation
+     * @param reEnteredPassword The re-entered password
+     * @param password The original password
+     * @return True if the passwords match, false otherwise
+     */
+    public boolean checkPassword(String reEnteredPassword, String password) {
+        if (!reEnteredPassword.equals(password)) {
+            System.err.println(PASSWORD_MISMATCH);
+            return false;
+        }
+        return true;
     }
 
     /**
