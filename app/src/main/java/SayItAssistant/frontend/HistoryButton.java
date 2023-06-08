@@ -26,8 +26,8 @@ public class HistoryButton extends AppButtons implements Subject {
      * @param displayText:  the text to be displayed
      */
     public HistoryButton(int id, IPrompt displayText, IResponse newResponse) {
-        
-        super("<html>" + displayText.getMessage() + "<br>" + displayText.toString() + "</html>" + " ".repeat(100));
+        super("");
+        this.setText(getDisplayString(displayText));
         prompt = displayText;
         response = newResponse;
         this.buttonWidth = 200;
@@ -39,6 +39,19 @@ public class HistoryButton extends AppButtons implements Subject {
         setHorizontalAlignment(SwingConstants.LEFT);
         setAlignmentX(Component.LEFT_ALIGNMENT);
         setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+    }
+
+    /*
+     * Formats the string in the history button so that the command and part of prompt are 
+     * displayed, but there is not a lot of text.
+     */
+    private String getDisplayString(IPrompt displayText) {
+        String displayString = "<html>" + displayText.getMessage() + "<br>" + displayText.toString() + "</html>";
+        if (displayString.length() > 30) {
+            displayString = displayString.substring(0,30);
+            displayString += "...";
+        }
+        return displayString;
     }
 
     @Override
