@@ -76,6 +76,7 @@ public class StartButton extends AppButtons implements Subject {
                     response = promptResponse.getResponse();
                     if (prompt.isStorable())
                         AppManager.setRecentPromptNumber(prompt.getPromptNumber());
+                    //System.out.println("Updated display");
                     notifyObservers();
 
                 }

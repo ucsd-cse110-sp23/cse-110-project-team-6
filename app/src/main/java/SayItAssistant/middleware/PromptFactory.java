@@ -20,7 +20,7 @@ public class PromptFactory {
 
         IPrompt prompt = null;
         String cleanInput = input.replaceAll(PUNCTUATION, "").toLowerCase();
-        System.out.printf("Input: %s\n", input);
+        //System.out.printf("Input: %s\n", input);
         if (cleanInput.startsWith(QUESTION_PROMPT) && !(cleanInput.equals(QUESTION_PROMPT))) {
             prompt = makeQuestion(input);
         } else if (cleanInput.equals(DELETE_PROMPT)) {

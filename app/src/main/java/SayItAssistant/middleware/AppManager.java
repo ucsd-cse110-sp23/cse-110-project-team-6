@@ -405,9 +405,9 @@ public class AppManager implements Observer {
      */
     @Override
     public void update(IPrompt prompt, IResponse response) {
-        if ((prompt != null) && (prompt.isStorable())) {
-            recentPromptNumber = prompt.getPromptNumber();
-        }
         populateHistoryPanel();
+        if ((prompt != null) && (prompt.isStorable())) {
+            setRecentPromptNumber(prompt.getPromptNumber());
+        }
     }
 }
