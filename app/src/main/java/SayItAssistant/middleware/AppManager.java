@@ -41,7 +41,7 @@ public class AppManager implements Observer {
     private LoginLogic     loginLogic;
     private static String  currUsername;
     private static String  currPassword;
-    private static int     recentPromptNumber;
+    private static int     recentPromptNumber;  // keeps track of the id of the last prompt that was either (1) stored in history or (2) clicked on in the history sidebar
     /*
      * Sets up the empty AppFrame and inner panels
      */
