@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 
 import SayItAssistant.middleware.SayItAssistant;
+import SayItAssistant.middleware.AppManager;
 import SayItAssistant.middleware.HistoryManager;
 import SayItAssistant.middleware.MockWhisperRequest;
 
@@ -96,6 +97,9 @@ public class TwelfthStoryTest {
 
         // the question is in history
         assertEquals(1, historyManager.getPrompts().size());
+
+        // Figure out if AppManager's recent prompt number is incremented
+        assertEquals(0, AppManager.getRecentPromptNumber());
 
         // the question gets deleted from history
         requestPrompt(DELETE_STRING);
