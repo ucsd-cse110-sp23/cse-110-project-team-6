@@ -16,6 +16,7 @@ public class ResponseCoordinator {
 
     // Constants for HTTP requests
     private final static String HOST = "http://127.0.0.1:5000/";
+    //private final String HOST = "https://hlnm.pythonanywhere.com/";
     private final static String ENDPOINT = "send";
     private final static String USER_PARAM = "?user=";
     private final static String PASS_PARAM = "&pass=";
