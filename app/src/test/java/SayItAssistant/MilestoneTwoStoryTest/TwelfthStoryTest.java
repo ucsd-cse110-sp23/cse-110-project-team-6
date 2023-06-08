@@ -82,7 +82,8 @@ public class TwelfthStoryTest {
 
     /*
      * Scenario 1: There is a singular prompt within the Prompt History
-     * Given: History Helen had previously asked “Question. What caused the downfall of the Roman Empire?”
+     * Given: History Helen had previously asked “Question. What caused the downfall of the Roman 
+     * Empire?”
      * When: Helen selects the question from the Prompt History.
      * And: Helen correctly uses the Start button.
      * And: Helen says “Delete Prompt”.
@@ -105,7 +106,6 @@ public class TwelfthStoryTest {
 
         // the question gets deleted from history
         requestPrompt(DELETE_STRING);
-        //historyManager.delete(0);
         assertEquals(0, historyManager.getPrompts().size());
     }
 }
