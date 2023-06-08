@@ -32,9 +32,6 @@ public class TwelfthStoryTest {
     private static final String EXPECT_DATA_PATH =
             System.getProperty("user.dir") + "/data.json";
 
-    private static final int MAX_WINDOW_QUESTION_SIZE = 10;
-
-
     private static final String TEST_USER = "test";
     private static final String TEST_PASSWORD = "password";
     private static HistoryManager historyManager;
@@ -43,9 +40,7 @@ public class TwelfthStoryTest {
 
     // Constant strings for testing
     private static final String TEST_QUESTION   = "Question. What caused the Roman Empire to fall?";
-    private static final String PARSED_QUESTION = "What caused the Roman Empire to fall?";
-    private static final String SHORT_RECORD    = "";
-    private static final String RESPONSE        = "This is the response to the prompt";
+    private static final String DELETE_STRING   = "Delete Prompt";
 
     /**
      * Opens up SayIt Assistant before each test
@@ -81,7 +76,7 @@ public class TwelfthStoryTest {
     /**
      * Function which mimics asking a question to SayIt Assistant
      */
-    private void askQuestion(String question) {
+    private void requestPrompt(String question) {
         mockWhisperRequest.testString = question;
         sayItAssistant = new SayItAssistant(mockWhisperRequest);
         historyManager = new HistoryManager(sayItAssistant, TEST_USER, TEST_PASSWORD);
@@ -104,17 +99,13 @@ public class TwelfthStoryTest {
     public void testScenario1() {
 
         // asks a question and puts it in the history
-        askQuestion(TEST_QUESTION);
-
-        // creates a prompt to delete the question from the history
-        IPrompt prompt = new DeletePrompt();
-        ResponseCoordinator rc = new ResponseCoordinator(historyManager, mockWhisperRequest);
+        requestPrompt(TEST_QUESTION);
 
         // the question is in history
         assertEquals(1, historyManager.getPrompts().size());
 
         // the question gets deleted from history
-        rc.createResponse(prompt);
+        requestPrompt(DELETE_STRING);
         assertEquals(0, historyManager.getPrompts().size());
     }
 }
