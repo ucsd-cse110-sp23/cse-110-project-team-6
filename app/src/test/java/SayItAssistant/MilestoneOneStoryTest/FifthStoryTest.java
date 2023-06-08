@@ -2,7 +2,6 @@ package SayItAssistant.MilestoneOneStoryTest;
 
 import org.junit.jupiter.api.*;
 
-import SayItAssistant.Server;
 import SayItAssistant.middleware.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
 import java.io.File;
-import java.io.IOException;
 
 public class FifthStoryTest {
 
@@ -36,12 +34,6 @@ public class FifthStoryTest {
      */
     @Test
     public void testClearAllEmpty() {
-        try {
-            Server.startServer();
-        } catch (IOException e) {
-            fail();
-        }
-
         HistoryManager newHistoryManager =
                 new HistoryManager(new SayItAssistant(new MockWhisperRequest()), TEST_USER, TEST_PASSWORD);
         newHistoryManager.clearAll();
@@ -53,6 +45,5 @@ public class FifthStoryTest {
         newHistoryManager.clearAll();
         assertEquals(newHistoryManager.getPrompts(), new ArrayList<>());
         assertEquals(newHistoryManager.getHistorySize(), 0);
-        Server.stopServer();
     }
 }

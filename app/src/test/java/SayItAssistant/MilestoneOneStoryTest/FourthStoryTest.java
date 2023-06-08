@@ -2,7 +2,6 @@ package SayItAssistant.MilestoneOneStoryTest;
 
 import org.junit.jupiter.api.*;
 
-import SayItAssistant.Server;
 import SayItAssistant.middleware.Answer;
 import SayItAssistant.middleware.HistoryManager;
 import SayItAssistant.middleware.MockWhisperRequest;
@@ -57,11 +56,6 @@ public class FourthStoryTest {
 
     @BeforeEach
     public void setUp() {
-        try {
-            Server.startServer();
-        } catch (Exception e) {
-            System.out.println("Server already started");
-        }
         assistant = new SayItAssistant(new MockWhisperRequest());
         historyManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
         historyManager.clearAll();
@@ -84,7 +78,6 @@ public class FourthStoryTest {
         file.delete();
         file = new File(EXPECT_DATA_PATH);
         file.delete();
-        Server.stopServer();
     }
 
     /**

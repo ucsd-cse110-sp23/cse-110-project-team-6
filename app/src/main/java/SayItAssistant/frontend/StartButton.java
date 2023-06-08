@@ -16,21 +16,21 @@ import SayItAssistant.middleware.VoiceRecorder;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;;
+import java.awt.event.MouseEvent;
 
 /*
  * The new question button allows the user to record and submit questions.
  */
 public class StartButton extends AppButtons implements Subject {
 
+    private final static String StartButtonLabel = "Start";
+    private final static String RecordingLabel = "Recording...";
     // formatting for the new question button
     private final int StartButtonWidth = 1200;
     private final int StartButtonHeight = 50;
-    private final static String StartButtonLabel = "Start";
-    private final static String RecordingLabel = "Recording...";
-    private VoiceRecorder recorder;
+    private final VoiceRecorder recorder;
+    private final ArrayList<Observer> observers;
     private TargetDataLine targetDataLine;
-    private ArrayList<Observer> observers;
     private IPrompt prompt;
     private IResponse response;
 
@@ -70,12 +70,13 @@ public class StartButton extends AppButtons implements Subject {
                 // Get the prompt and response from the assistant
                 PromptResponsePair promptResponse = assistant.respond();
 
-                prompt   = promptResponse.getPrompt();
+                prompt = promptResponse.getPrompt();
 
                 if (prompt.updatesDisplay()) {
                     response = promptResponse.getResponse();
-                    if (prompt.isStorable()) 
+                    if (prompt.isStorable())
                         AppManager.setRecentPromptNumber(prompt.getPromptNumber());
+                    //System.out.println("Updated display");
                     notifyObservers();
 
                 }
@@ -84,7 +85,7 @@ public class StartButton extends AppButtons implements Subject {
                 revalidate();
             }
         });
-            
+
     }
 
     @Override
@@ -99,7 +100,6 @@ public class StartButton extends AppButtons implements Subject {
 
     @Override
     public void notifyObservers() {
-        System.out.println("Start button is notifying observers");
         for (Observer o : observers) {
             o.update(prompt, response);
         }

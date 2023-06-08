@@ -1,7 +1,10 @@
 package SayItAssistant.frontend;
 
-import java.awt.GridLayout;
-import java.awt.Image;
+import SayItAssistant.middleware.AppManager;
+import org.json.JSONObject;
+
+import javax.swing.*;
+import java.awt.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -22,45 +25,50 @@ import org.json.JSONObject;
 
 import SayItAssistant.middleware.AppManager;
 
+/**
+ * Class which estalishes the setup for the Email Panels
+ */
 public class EmailSetup{
 
+    private final String EMAIL_ICON = "images/emailicon.png";
 
-    public EmailSetup(String username, String pwd){
+    public EmailSetup(String username, String pwd) {
         int columns = 10;
-        JTextField last = new JTextField(columns);
-        JTextField first = new JTextField(columns);
-        JTextField display = new JTextField(columns);
-        JTextField email = new JTextField(columns);
-        JTextField smtp = new JTextField(columns);
-        JTextField tls = new JTextField(columns);
+        JTextField last     = new JTextField(columns);
+        JTextField first    = new JTextField(columns);
+        JTextField display  = new JTextField(columns);
+        JTextField email    = new JTextField(columns);
+        JTextField smtp     = new JTextField(columns);
+        JTextField tls      = new JTextField(columns);
         JTextField password = new JPasswordField(columns);
         UIManager.put("OptionPane.okButtonText", "Save");
-        
+
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
-            .build();
+                .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
+                .build();
 
+        // Send the HTTP request and get the response body as a string
         client.sendAsync(request, BodyHandlers.ofString())
-            .thenApply(HttpResponse::body)
-            .thenAccept(responseBody -> {
-                // Parse the JSON response
-                JSONObject jsonResponse = new JSONObject(responseBody);
+                .thenApply(HttpResponse::body)
+                .thenAccept(responseBody -> {
+                    // Parse the JSON response
+                    JSONObject jsonResponse = new JSONObject(responseBody);
 
-                // Access the "userinfo" object within the JSON response
-                //JSONObject userInfo = jsonResponse.getJSONObject("userinfo");
-                last.setText(jsonResponse.getString("last_name"));
-                first.setText(jsonResponse.getString("first_name"));
-                display.setText(jsonResponse.getString("display_name"));
-                email.setText(jsonResponse.getString("email_address"));
-                smtp.setText(jsonResponse.getString("smtp_host"));
-                tls.setText(jsonResponse.getString("tls_port"));
-                password.setText(jsonResponse.getString("email_password"));
-            })
-            .join();
-            
-        
-        JPanel panel = new JPanel(new GridLayout(7,1,10,10));
+                    // Access the "userinfo" object within the JSON response
+                    //JSONObject userInfo = jsonResponse.getJSONObject("userinfo");
+                    last.setText(jsonResponse.getString("last_name"));
+                    first.setText(jsonResponse.getString("first_name"));
+                    display.setText(jsonResponse.getString("display_name"));
+                    email.setText(jsonResponse.getString("email_address"));
+                    smtp.setText(jsonResponse.getString("smtp_host"));
+                    tls.setText(jsonResponse.getString("tls_port"));
+                    password.setText(jsonResponse.getString("email_password"));
+                })
+                .join();
+
+
+        JPanel panel = new JPanel(new GridLayout(7, 1, 10, 10));
         panel.add(new JLabel("First Name"));
         panel.add(first);
         panel.add(new JLabel("Last Name"));
@@ -74,11 +82,16 @@ public class EmailSetup{
         panel.add(new JLabel("TLS Port"));
         panel.add(tls);
         panel.add(new JLabel("Email Password"));
-        panel.add(password);       
-        ImageIcon imageIcon = new ImageIcon("emailicon.png");
+        panel.add(password);    
+        
+        // Load in the image icon for emails
+        ClassLoader classLoader = getClass().getClassLoader();
+        ImageIcon imageIcon = new ImageIcon(classLoader.getResource(EMAIL_ICON));
         Image image = imageIcon.getImage();
         Image newimg = image.getScaledInstance(120, 120, java.awt.Image.SCALE_SMOOTH);
         imageIcon = new ImageIcon(newimg);
+
+        // Add logic for Confirmations
         if(JOptionPane.showConfirmDialog(null,panel, "Setup Email", JOptionPane.OK_CANCEL_OPTION,1, imageIcon) == JOptionPane.OK_OPTION){
             // Create the JSON object
             JSONObject jsonObject = new JSONObject();
@@ -107,18 +120,16 @@ public class EmailSetup{
             // Convert the JSON object to a string
             String jsonString = jsonObject.toString();
 
-            // Print the JSON string
-            System.out.println(jsonString);
             //HttpClient client = HttpClient.newHttpClient();
             HttpRequest request1 = HttpRequest.newBuilder()
-                .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s",username,pwd)))
-                .header("Content-Type", "application/json")
-                .PUT(BodyPublishers.ofString(jsonString))
-                .build();
+                    .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
+                    .header("Content-Type", "application/json")
+                    .PUT(BodyPublishers.ofString(jsonString))
+                    .build();
             client.sendAsync(request1, BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .thenAccept(System.out::println)
-                .join();
+                    .thenApply(HttpResponse::body)
+                    .thenAccept(System.out::println)
+                    .join();
             AppManager.updateName(username, pwd);
         }
     }

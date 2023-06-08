@@ -4,7 +4,6 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import SayItAssistant.Server;
 import SayItAssistant.middleware.*;
 
 import java.io.File;
@@ -37,11 +36,6 @@ public class FirstStoryTest {
      */
     @BeforeEach
     public void setUp() {
-        try {
-            Server.startServer();
-        } catch (Exception e) {
-            fail();
-        }
         openSayItAssistant();
         historyManager.clearAll();
     }
@@ -57,7 +51,6 @@ public class FirstStoryTest {
         file.delete();
         file = new File(EXPECT_DATA_PATH);
         file.delete();
-        Server.stopServer();
     }
 
     /**

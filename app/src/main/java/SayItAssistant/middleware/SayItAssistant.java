@@ -15,10 +15,10 @@ public class SayItAssistant implements Subject {
     private final String NO_COMMAND_RESPONSE = 
     "Apologies, no valid command was found within your request. I can assist you if you start your requests with Question, Delete Prompt, Clear All, Setup Email, Create Email, or Send Email to <email>.";
 
-    private IAPIRequest chatRequest, whisperRequest;
+    private IAPIRequest whisperRequest;
     private ArrayList<Observer> observers;
     private PromptFactory promptFactory;
-    private ResponseFactory responseFactory;
+    private ResponseCoordinator responseCoordinator;
     private IPrompt   prompt;
     private IResponse response;
     private HistoryManager history;
@@ -39,7 +39,7 @@ public class SayItAssistant implements Subject {
 
     public void setHistoryManager(HistoryManager history) {
         this.history = history;
-        this.responseFactory = new ResponseFactory(history, whisperRequest);
+        this.responseCoordinator = new ResponseCoordinator(history, whisperRequest);
 
     }
 
@@ -63,7 +63,7 @@ public class SayItAssistant implements Subject {
         
         String response = chatRequest.callAPI();
         return new Answer(response);*/
-        return responseFactory.createResponse(prompt);
+        return responseCoordinator.createResponse(prompt);
     }
 
     /**

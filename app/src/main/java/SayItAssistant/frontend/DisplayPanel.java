@@ -4,8 +4,6 @@ import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import com.google.common.io.FileWriteMode;
-
 import SayItAssistant.middleware.IPrompt;
 import SayItAssistant.middleware.IResponse;
 import SayItAssistant.middleware.Observer;
