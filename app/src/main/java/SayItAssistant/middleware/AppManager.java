@@ -132,46 +132,6 @@ public class AppManager implements Observer {
 
     }
 
-    /**
-     * Sets up an email data storage for the user
-     * @param username
-     * @param pwd
-     */
-    private boolean checkValid(String username, String password) {
-
-        try {
-            URL url = 
-            new URL(HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-            conn.setRequestMethod("GET");
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-            String serverResponse = in.readLine();
-            in.close();
-
-            if (serverResponse.equals("Incorrect")) {
-                JOptionPane.showMessageDialog(null, "Incorrect username or password");
-                return false;
-            } else {
-                currUsername = username;
-                currPassword = password;
-                return true;
-            }
-            
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Server is not running");
-            e.printStackTrace();
-            return false;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error logging in");
-            return false;
-        }
-    }
 
     /**
      * Sets up an email data storage for the user
