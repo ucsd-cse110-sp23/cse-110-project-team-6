@@ -64,10 +64,8 @@ public class AppManager implements Observer {
     private HistoryPanel   historyPanel;
     private DisplayPanel   displayPanel;
     private LoginWindow    loginWindow;
-    private CommandPanel   commandPanel;
     private HistoryManager historyManager;
     private SayItAssistant sayItAssistant;
-    private boolean        loggedIn;
     private static String  currUsername;
     private static String  currPassword;
     private static int     recentPromptNumber;
@@ -84,6 +82,10 @@ public class AppManager implements Observer {
      * Fills in all the history information and gets the logic started.
      */
     public void run() {
+        appFrame.closeLoginWindow();
+        appFrame.setUpPanels();
+        appFrame.revalidate();
+
         this.historyPanel = appFrame.getHistoryPanel();
         this.displayPanel = appFrame.getDisplayPanel();
         this.sayItAssistant = new SayItAssistant(new WhisperRequest()/*new MockWhisperRequest()*/);
@@ -139,12 +141,9 @@ public class AppManager implements Observer {
      * Runs the logic of logging in
      */
     public void loginScreen() {
-        List<String> loginInfo = retrieveLogin();
+        List<String> loginInfo = LoginLogic.retrieveLogin();
 
-        if (!loginInfo.isEmpty() && checkValid(loginInfo.get(0), loginInfo.get(1))) {
-            appFrame.closeLoginWindow();
-            appFrame.setUpPanels();
-            appFrame.revalidate();
+        if (!loginInfo.isEmpty() && LoginLogic.checkValid(loginInfo.get(0), loginInfo.get(1))) {
             run();
         }
 
@@ -156,15 +155,14 @@ public class AppManager implements Observer {
             String username = loginWindow.getData()[0];
             String password = loginWindow.getData()[1];
 
-            boolean verifiedLogin = checkValid(username, password);
+            boolean verifiedLogin = LoginLogic.checkValid(username, password);
 
             if (verifiedLogin) {
-                saveLogin();
+                //saveLogin();
+                LoginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
                 updateName(username, password);
-                loggedIn = true;
-                appFrame.closeLoginWindow();
-                appFrame.setUpPanels();
-                appFrame.revalidate();
+                currUsername = username;
+                currPassword = password;
                 run();
             }
         });
@@ -176,21 +174,21 @@ public class AppManager implements Observer {
 
             String username = loginWindow.getData()[0];
             String password = loginWindow.getData()[1];
-            if (signUp(username, password, true)) {
+
+            if (LoginLogic.checkAvailableUsername(username)) {
                 String verification = JOptionPane.showInputDialog("Please re-enter your password");
                 if (!password.equals(verification)) {
                     JOptionPane.showMessageDialog(null, "Passwords do not match");
                     return;
                 }
-                boolean verifiedSignup = signUp(username, password, false);
+
+                boolean verifiedSignup = LoginLogic.signUp(username, password);
 
                 if (verifiedSignup) {
-                    saveLogin();
+                    LoginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
                     updateName(username, password);
-                    loggedIn = true;
-                    appFrame.closeLoginWindow();
-                    appFrame.setUpPanels();
-                    appFrame.revalidate();
+                    currUsername = username;
+                    currPassword = password;
                     run();
                 }
             }
@@ -198,7 +196,12 @@ public class AppManager implements Observer {
 
     }
 
-    public static void updateName(String username, String pwd){
+    /**
+     * Sets up an email data storage for the user
+     * @param username
+     * @param pwd
+     */
+    public static void updateName(String username, String pwd) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
@@ -218,9 +221,9 @@ public class AppManager implements Observer {
                     System.out.println("writing name error");
                 }
             })
-            .join();
-            
+            .join();       
     }
+    
     /**
      * Checks if the username and password are valid
      *

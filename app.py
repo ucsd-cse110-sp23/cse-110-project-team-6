@@ -82,7 +82,7 @@ def questions():
             else:
                 return 'Incorrect'
         else:
-            return 'Incorrect'
+            return 'None'
     
     # Requests for dealing with writing/deletion of questions
     elif request.method == 'PUT' or request.method == 'DELETE':
