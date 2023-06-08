@@ -22,7 +22,6 @@ public class MockLoginLogic {
     
     // Serverside constants
     private final static String HOST = "http://127.0.0.1:5000/";
-    //private final String HOST = "https://hlnm.pythonanywhere.com/";
     private final static String ENDPOINT = "question";
     private final static String TEST_ENDPOINT = "test";
     private final static String USER_PARAM = "?user=";

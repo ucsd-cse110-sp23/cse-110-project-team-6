@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.json.JSONObject;
 
@@ -25,7 +24,6 @@ public class FifthteenthStoryTest {
     private static final String CURR_DIR = System.getProperty("user.dir");
     private static final String ROOT_DIR = CURR_DIR.substring(0, CURR_DIR.length() - 4);
     private static final String DATA_PATH = ROOT_DIR + "/data.json";
-    private static final String AUTO_LOGIN_PATH = ROOT_DIR + "/login.txt";
     private static String dataContent = "";
 
     // Constants for testing
@@ -145,6 +143,36 @@ public class FifthteenthStoryTest {
      */
     @Test
     public void testScenario2() {
-        
+        // Verify that requesting for email info will return a JSONObject with the correct keys
+        JSONObject emailInfo = emailSetup.getEmailInfo();
+        assertTrue(emailInfo.has(LAST_NAME_KEY));
+        assertTrue(emailInfo.has(FIRST_NAME_KEY));
+        assertTrue(emailInfo.has(DISPLAY_NAME_KEY));
+        assertTrue(emailInfo.has(EMAIL_KEY));
+        assertTrue(emailInfo.has(SMTP_KEY));
+        assertTrue(emailInfo.has(PORT_KEY));
+        assertTrue(emailInfo.has(PASSWORD_KEY));
+
+        // Verify that the content of the JSONObject is correct (i.e., blank currently)
+        assertEquals("", emailInfo.getString(LAST_NAME_KEY));
+        assertEquals("", emailInfo.getString(FIRST_NAME_KEY));
+        assertEquals("", emailInfo.getString(DISPLAY_NAME_KEY));
+        assertEquals("", emailInfo.getString(EMAIL_KEY));
+        assertEquals("", emailInfo.getString(SMTP_KEY));
+        assertEquals("", emailInfo.getString(PORT_KEY));
+        assertEquals("", emailInfo.getString(PASSWORD_KEY));
+
+        // Helen doesn't enter her information  
+        emailSetup.updateEmailInfo("", "", "", "", "", "", "");
+
+        // Verify that the content of the JSONObject is correct (i.e., blank currently)
+        emailInfo = emailSetup.getEmailInfo();
+        assertEquals("", emailInfo.getString(LAST_NAME_KEY));
+        assertEquals("", emailInfo.getString(FIRST_NAME_KEY));
+        assertEquals("", emailInfo.getString(DISPLAY_NAME_KEY));
+        assertEquals("", emailInfo.getString(EMAIL_KEY));
+        assertEquals("", emailInfo.getString(SMTP_KEY));
+        assertEquals("", emailInfo.getString(PORT_KEY));
+        assertEquals("", emailInfo.getString(PASSWORD_KEY));
     }
 }

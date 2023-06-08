@@ -379,10 +379,7 @@ public class HistoryManager implements Subject, Observer {
                 out.flush();
                 out.close();
 
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(conn.getInputStream()));
-                String serverResponse = in.readLine();
-                in.close();
+                conn.getInputStream();
 
             } catch (Exception e) {
                 e.printStackTrace();

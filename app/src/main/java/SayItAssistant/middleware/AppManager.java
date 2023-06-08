@@ -1,23 +1,13 @@
 package SayItAssistant.middleware;
 
-import java.io.FileWriter;
 import java.util.ArrayList;
 
-import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 
 // Java IO imports
-import java.io.IOException;
 import java.util.List;
 
 import SayItAssistant.frontend.*;
-
-import org.json.JSONObject;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 
 /**
  * Class which manages the logic of the UI of the app.
