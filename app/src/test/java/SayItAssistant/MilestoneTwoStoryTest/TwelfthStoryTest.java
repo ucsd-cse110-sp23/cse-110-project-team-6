@@ -2,20 +2,13 @@ package SayItAssistant.MilestoneTwoStoryTest;
 
 import org.junit.jupiter.api.*;
 
-import com.google.common.math.Quantiles;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import SayItAssistant.middleware.SayItAssistant;
-import SayItAssistant.middleware.DeletePrompt;
 import SayItAssistant.middleware.HistoryManager;
-import SayItAssistant.middleware.IPrompt;
 import SayItAssistant.middleware.MockWhisperRequest;
-import SayItAssistant.middleware.Question;
-import SayItAssistant.middleware.ResponseCoordinator;
 
 /**
  * This class is responsible for testing the twelfth story of the SayItAssistant
