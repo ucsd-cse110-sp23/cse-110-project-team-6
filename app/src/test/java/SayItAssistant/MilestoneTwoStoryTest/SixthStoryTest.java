@@ -77,6 +77,7 @@ public class SixthStoryTest{
 
         //adding the given that a quesiton was asked for 
         openSayItAssistant();
+        historyManager.clearAll();
         String command = "Question. What caused the downfall of the Roman Empire?";
         askQuestion(command);
 
@@ -228,9 +229,10 @@ public class SixthStoryTest{
         // variable to confirm that the question exists in the history.
         String question = "What caused the downfall of the Roman Empire?";
 
+
         //It is given that the account already exists and there is a question in the prompt
         assertTrue(login.isLoggedIn());
-        //assertEquals(1, historyManager.getHistorySize());
+        assertEquals(1, historyManager.getHistorySize());
         
         //Helon logs in again with the same user and password, and the previous question still exists.
         loginNew();
@@ -239,6 +241,7 @@ public class SixthStoryTest{
 
         //checking that the previous question exists in the history.
         String receivedQuestion = historyManager.getPrompts().get(0).toString();
+        assertEquals(1, historyManager.getHistorySize());
 
         assertEquals(question, receivedQuestion);
 
