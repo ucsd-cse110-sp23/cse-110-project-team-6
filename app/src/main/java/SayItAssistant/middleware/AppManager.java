@@ -1,27 +1,29 @@
 package SayItAssistant.middleware;
+
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 
-import java.io.BufferedReader;
 // Java IO imports
 import java.io.IOException;
-import java.io.InputStreamReader;
-
-
-// Java net imports
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.List;
 
 import SayItAssistant.frontend.*;
 
+import org.json.JSONObject;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+
 /**
- * Class which manages the logic of the UI of the app. 
- * 
+ * Class which manages the logic of the UI of the app.
+ * <p>
  * Coordinates the various frames and panels of the app.
- * 
+ *
  * @field appFrame: the main frame of the app
  * @field historyPanel: the panel which displays the history of questions
  * @field displayPanel: the panel which displays the question and answer
@@ -29,46 +31,41 @@ import SayItAssistant.frontend.*;
  * @field sayItAssistant: the assistant which handles the logic of the app
  */
 public class AppManager implements Observer {
-    
-    private final String  HOST = "http://localhost:1337/";
-    private final String  ENDPOINT = "question";
-    private final String USER_PARAM = "?user=";
-    private final String PASS_PARAM = "&pass=";
 
-    private TargetDataLine targetDataLine; 
-    private VoiceRecorder  recorder; 
     private AppFrame       appFrame;
     private HistoryPanel   historyPanel;
     private DisplayPanel   displayPanel;
     private LoginWindow    loginWindow;
     private HistoryManager historyManager;
     private SayItAssistant sayItAssistant;
-    private boolean        loggedIn;
-    private String         currUsername;
-    private String         currPassword;
-
-
+    private LoginLogic     loginLogic;
+    private static String  currUsername;
+    private static String  currPassword;
+    private static int     recentPromptNumber;
     /*
      * Sets up the empty AppFrame and inner panels
      */
     public AppManager() {
-        this.recorder     = new VoiceRecorder(targetDataLine);
-        this.loggedIn     = false;
-        this.appFrame     = new AppFrame();
-        this.loginWindow  = appFrame.getLoginWindow();
-        loginScreen(loggedIn);
+        this.appFrame = new AppFrame();
+        this.loginLogic = LoginLogic.getInstance();
+        this.loginWindow = appFrame.getLoginWindow();
+        loginScreen();
     }
 
      /*
      * Fills in all the history information and gets the logic started.
      */
     public void run() {
+        appFrame.closeLoginWindow();
         appFrame.setUpPanels();
         appFrame.revalidate();
+
         this.historyPanel = appFrame.getHistoryPanel();
         this.displayPanel = appFrame.getDisplayPanel();
-        this.sayItAssistant = new SayItAssistant(new MockWhisperRequest());
+        this.sayItAssistant = new SayItAssistant(new WhisperRequest()/*new MockWhisperRequest()*/);
         this.historyManager = new HistoryManager(this.sayItAssistant, currUsername, currPassword);
+        this.sayItAssistant.setHistoryManager(historyManager);
+        historyManager.registerObserver(this);
         System.out.println("App is now running");
         populateHistoryPanel(); // fills the history panel with buttons for all of the prompts in the history
         populateStartPanel();   // fills the start panel with the start button and its logic
@@ -78,8 +75,14 @@ public class AppManager implements Observer {
      /**
      * Runs the logic of logging in
      */
-    public void loginScreen(boolean logStatus) {
-        if (logStatus) { run(); }
+    public void loginScreen() {
+        List<String> loginInfo = this.loginLogic.retrieveLogin();
+
+        if (!loginInfo.isEmpty() && this.loginLogic.checkValid(loginInfo.get(0), loginInfo.get(1))) {
+            currUsername = loginInfo.get(0);
+            currPassword = loginInfo.get(1);
+            run();
+        }
 
         AbstractButton loginWindowButton = loginWindow.getLoginButton();
         AbstractButton signUpButton      = loginWindow.getSignupButton();
@@ -87,14 +90,18 @@ public class AppManager implements Observer {
         // Sets up listeners for activity on the login window
         loginWindowButton.addActionListener(e -> {
 
-                String username = loginWindow.getData()[0];
-                String password = loginWindow.getData()[1];
+            String username = loginWindow.getData()[0];
+            String password = loginWindow.getData()[1];
 
-                loggedIn = checkValid(username, password);
+            boolean verifiedLogin = this.loginLogic.checkValid(username, password);
 
-                if (loggedIn) {
-                    appFrame.closeLoginWindow();
-                    run();
+            if (verifiedLogin) {
+                //saveLogin();
+                this.loginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
+                updateName(username, password);
+                currUsername = username;
+                currPassword = password;
+                run();
             }
         });
 
@@ -104,25 +111,31 @@ public class AppManager implements Observer {
             String username = loginWindow.getData()[0];
             String password = loginWindow.getData()[1];
 
-            loggedIn = signUp(username, password);
+            if (this.loginLogic.checkAvailableUsername(username)) {
+                String verification = JOptionPane.showInputDialog("Please re-enter your password");
+                if (!password.equals(verification)) {
+                    JOptionPane.showMessageDialog(null, "Passwords do not match");
+                    return;
+                }
 
-            if (loggedIn) {
-                appFrame.closeLoginWindow();
-                run();
+                boolean verifiedSignup = this.loginLogic.signUp(username, password);
+
+                if (verifiedSignup) {
+                    this.loginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
+                    updateName(username, password);
+                    currUsername = username;
+                    currPassword = password;
+                    run();
+                }
             }
         });
-        
-        return;
+
     }
 
-
     /**
-     * Checks if the username and password are valid
-     * @param username Username to check
-     * @param password Password associated to username
-     * @return True if valid, false otherwise
-     * @throws IOException
-     * @throws InterruptedException
+     * Sets up an email data storage for the user
+     * @param username
+     * @param pwd
      */
     private boolean checkValid(String username, String password) {
 
@@ -161,71 +174,49 @@ public class AppManager implements Observer {
     }
 
     /**
-     * Checks if username and password are valid for signup
-     * @param username Username to check
-     * @param password Password associated to username
-     * @return True if valid, false otherwise
-     * @throws IOException
-     * @throws InterruptedException
+     * Sets up an email data storage for the user
+     * @param username
+     * @param pwd
      */
-    private boolean signUp(String username, String password) {
+    public static void updateName(String username, String pwd) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(String.format("https://hlnm.pythonanywhere.com/emails?user=%s&pass=%s", username, pwd)))
+            .build();
 
-        // Validate that username and password are not empty strings
-        if (username.equals("") || password.equals("")) {
-            JOptionPane.showMessageDialog(null, "Username and password cannot be empty");
-            return false;
-        }
-
-        try {
-            URL url = 
-            new URL(HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-            conn.setRequestMethod("POST");
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-            String serverResponse = in.readLine();
-            in.close();
-
-            System.out.println(serverResponse);
-            if (serverResponse.equals("Taken")) {
-                JOptionPane.showMessageDialog(null, "Username already exists");
-                return false;
-            } else {
-                currUsername = username;
-                currPassword = password;
-                return true;
-            }
-            
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Server is not running");
-            e.printStackTrace();
-            return false;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error signing up");
-            return false;
-        }
+        client.sendAsync(request, BodyHandlers.ofString())
+            .thenApply(HttpResponse::body)
+            .thenAccept(responseBody -> {
+                // Parse the JSON response
+                JSONObject jsonResponse = new JSONObject(responseBody);
+                String name = jsonResponse.getString("display_name");
+                try {
+                    FileWriter fw = new FileWriter("name.txt");
+                    fw.write(name);
+                    fw.close();
+                } catch (IOException e) {
+                    System.out.println("writing name error");
+                }
+            })
+            .join();       
     }
-
+    
     /*
-     * Creates buttons for each prompt in the history 
+     * Creates buttons for each prompt in the history
      * and then puts the buttons in the history panel.
      */
     public void populateHistoryPanel() {
-
+        //System.out.println("Removing all");
         historyPanel.removeAll();
-
-        ArrayList<IPrompt> questions = historyManager.getPrompts();
+        historyPanel.revalidate();
+        appFrame.revalidate();
+        ArrayList<IPrompt> prompts = historyManager.getPrompts();
 
         // Creates button to get the previous prompt and response for each question
-        for (int i = 0; i < questions.size(); i++) {
-
+        for (int i = 0; i < prompts.size(); i++) {
+            //System.out.println ("Creating button " + i);
             // Sets prompt associated with button
-            IPrompt prompt = questions.get(i);
+            IPrompt prompt = prompts.get(i);
 
             // Set the question with its index from the history
             prompt.setPromptNumber(i);
@@ -236,19 +227,20 @@ public class AppManager implements Observer {
             HistoryButton historyButton = new HistoryButton(i, prompt, response);
             historyButton.setFont(historyPanel.myFont.getFont());
 
-            historyButton.registerObserver(displayPanel.getPromptAndResponsePanel());
-            
+            historyButton.registerObserver(displayPanel);
             // updates the question and answer panels when clicked
             historyButton.addActionListener(e -> {
                 historyButton.notifyObservers(); 
+                AppManager.setRecentPromptNumber(prompt.getPromptNumber());
             });
 
             historyPanel.addHistoryButton(historyButton); // add the button to the display
         }
 
-        appFrame.revalidate();
-        System.out.println("History populated");
+        setRecentPromptNumber(-1);
 
+        historyPanel.revalidate();
+        appFrame.revalidate();
     }
 
     /*
@@ -261,11 +253,11 @@ public class AppManager implements Observer {
         // If the order changes, the new prompt will not be displayed and the
         // user will instead have to click on it in the history panel to see it.
         startButton.registerObserver(this);
-        startButton.registerObserver(displayPanel.getPromptAndResponsePanel());
+        startButton.registerObserver(displayPanel);
         displayPanel.addStartButton(startButton);
 
         appFrame.revalidate();
-        System.out.println("Start panel populated");
+        //System.out.println("Start panel populated");
     }
 
     /*
@@ -273,6 +265,26 @@ public class AppManager implements Observer {
      */
     @Override
     public void update(IPrompt prompt, IResponse response) {
+        if ((prompt != null) && (prompt.isStorable())) {
+            recentPromptNumber = prompt.getPromptNumber();
+        }
         populateHistoryPanel();
+    }
+
+    public static int getRecentPromptNumber() {
+        return recentPromptNumber;
+    }
+
+    public static void setRecentPromptNumber(int newPromptNumber) {
+        //System.out.println("New prompt #: " + newPromptNumber);
+        recentPromptNumber = newPromptNumber;
+    }
+
+    public static String getUsername() {
+        return currUsername;
+    }
+
+    public static String getPassword() {
+        return currPassword;
     }
 }

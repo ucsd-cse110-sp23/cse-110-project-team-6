@@ -2,7 +2,6 @@ package SayItAssistant.MilestoneOneStoryTest;
 
 import org.junit.jupiter.api.*;
 
-import SayItAssistant.Server;
 import SayItAssistant.middleware.Answer;
 import SayItAssistant.middleware.HistoryManager;
 import SayItAssistant.middleware.MockWhisperRequest;
@@ -11,6 +10,7 @@ import SayItAssistant.middleware.SayItAssistant;
 
 import java.io.File;
 import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -19,13 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class FourthStoryTest {
     private static final int NOT_SELECTED = -1;
-    private static final String EXPECT_HISTORY_PATH = 
-        System.getProperty("user.dir") + "/history.json";
-  
-    private static final String EXPECT_DATA_PATH =
-        System.getProperty("user.dir") + "/data.json";
+    private static final String EXPECT_HISTORY_PATH =
+            System.getProperty("user.dir") + "/history.json";
 
-    private static final String TEST_USER     = "test";
+    private static final String EXPECT_DATA_PATH =
+            System.getProperty("user.dir") + "/data.json";
+
+    private static final String TEST_USER = "test";
     private static final String TEST_PASSWORD = "password";
 
 
@@ -33,7 +33,7 @@ public class FourthStoryTest {
     private static final Question QUESTION2 = new Question("What is your quest?");
     private static final Question QUESTION3 = new Question("What is your favorite color?");
     private static final Question QUESTION4 = new Question("What is bubble tea?");
-    
+
     private static final Answer ANSWER1 = new Answer("My name is SayIt.");
     private static final Answer ANSWER2 = new Answer("My quest is to find the Holy Grail.");
     private static final Answer ANSWER3 = new Answer("My favorite color is blue.");
@@ -56,14 +56,9 @@ public class FourthStoryTest {
 
     @BeforeEach
     public void setUp() {
-        try {
-            Server.startServer();
-        } catch (Exception e) {
-            System.out.println("Server already started");
-        }
-        assistant      = new SayItAssistant(new MockWhisperRequest());
+        assistant = new SayItAssistant(new MockWhisperRequest());
         historyManager = new HistoryManager(assistant, TEST_USER, TEST_PASSWORD);
-
+        historyManager.clearAll();
         allQuestions = new ArrayList<Question>();
         allQuestions.add(QUESTION1);
         allQuestions.add(QUESTION2);
@@ -83,7 +78,6 @@ public class FourthStoryTest {
         file.delete();
         file = new File(EXPECT_DATA_PATH);
         file.delete();
-        Server.stopServer();
     }
 
     /**
@@ -99,10 +93,10 @@ public class FourthStoryTest {
     public void BDD2() {
         historyManager.add(QUESTION1, ANSWER1);
         historyManager.delete(0);
-        assertEquals(0, historyManager.getHistorySize(), "Size should be zero"); 
+        assertEquals(0, historyManager.getHistorySize(), "Size should be zero");
     }
 
-     /**
+    /**
      * BDD Scenario Test for Scenario 3: No questions in the SayIt Assistant’s history panel
      * Given: There are no questions in SayIt Assistant’s history
      * When: History Helen click the delete question button
@@ -110,35 +104,35 @@ public class FourthStoryTest {
      */
     @Test
     public void BDD3() {
-        try { 
+        try {
             historyManager.delete(NOT_SELECTED);
             fail("Expected NullPointerException");
-            } catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             assertTrue(true);
-            } catch (Exception e) {
+        } catch (Exception e) {
             assertFalse(false);
-            }
+        }
     }
 
     /**
-     *  Scenario 4: No questions have been selected nor asked
-     *  Given: SayIt Assistant has 4 questions within its history.
-     *  And: None of the questions have been selected.
-     *  And: History Helen has not asked a question.
-     *  When: History Helen clicks the delete question button.
-     *  Then: Nothing will happen.
+     * Scenario 4: No questions have been selected nor asked
+     * Given: SayIt Assistant has 4 questions within its history.
+     * And: None of the questions have been selected.
+     * And: History Helen has not asked a question.
+     * When: History Helen clicks the delete question button.
+     * Then: Nothing will happen.
      */
     @Test
     public void BDD4() {
         addAllQuestions();
-        try { 
+        try {
             historyManager.delete(NOT_SELECTED);
             fail("Expected NullPointerException");
-            } catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             assertTrue(true);
-            } catch (Exception e) {
+        } catch (Exception e) {
             assertFalse(false);
-            }
+        }
     }
-    
+
 }
