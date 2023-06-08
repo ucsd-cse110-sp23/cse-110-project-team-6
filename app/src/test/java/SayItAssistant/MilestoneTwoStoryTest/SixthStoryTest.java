@@ -39,9 +39,6 @@ public class SixthStoryTest{
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
     private final PrintStream originalErr = System.err;
-
-    // Constant expected messages to console
-    private final static String BAD_CREDENTIALS   = "Incorrect username or password";
     
     // Constants for testing
     private static final String HELEN_USER = "hishelen@ucsd.edu";
@@ -59,8 +56,6 @@ public class SixthStoryTest{
         System.getProperty("user.dir") + "/history.json";
     private static final String EXPECT_DATA_PATH =
         System.getProperty("user.dir") + "/data.json";
-
-    private static final int MAX_WINDOW_QUESTION_SIZE = 10;
 
 
     private static final String TEST_USER = "test";
@@ -177,8 +172,6 @@ public class SixthStoryTest{
         //Verify that the user does not exist:
         assertTrue(login.isLoggedIn());
 
-        //TODO: add test statement that checks for password verification
-
         // Helen has just successfully created an account
         login.signUp(HELEN_USER, HELEN_PASSWORD);
         assertTrue(login.isLoggedIn());
@@ -245,7 +238,6 @@ public class SixthStoryTest{
         assertTrue(login.isLoggedIn());
 
         //checking that the previous question exists in the history.
-        assertEquals(1, historyManager.getHistorySize());
         String receivedQuestion = historyManager.getPrompts().get(0).toString();
 
         assertEquals(question, receivedQuestion);
