@@ -37,6 +37,7 @@ public class AppManager implements Observer {
     private LoginWindow    loginWindow;
     private HistoryManager historyManager;
     private SayItAssistant sayItAssistant;
+    private LoginLogic     loginLogic;
     private static String  currUsername;
     private static String  currPassword;
     private static int     recentPromptNumber;
@@ -45,6 +46,7 @@ public class AppManager implements Observer {
      */
     public AppManager() {
         this.appFrame = new AppFrame();
+        this.loginLogic = LoginLogic.getInstance();
         this.loginWindow = appFrame.getLoginWindow();
         loginScreen();
     }
@@ -73,9 +75,9 @@ public class AppManager implements Observer {
      * Runs the logic of logging in
      */
     public void loginScreen() {
-        List<String> loginInfo = LoginLogic.retrieveLogin();
+        List<String> loginInfo = this.loginLogic.retrieveLogin();
 
-        if (!loginInfo.isEmpty() && LoginLogic.checkValid(loginInfo.get(0), loginInfo.get(1))) {
+        if (!loginInfo.isEmpty() && this.loginLogic.checkValid(loginInfo.get(0), loginInfo.get(1))) {
             currUsername = loginInfo.get(0);
             currPassword = loginInfo.get(1);
             run();
@@ -89,11 +91,11 @@ public class AppManager implements Observer {
             String username = loginWindow.getData()[0];
             String password = loginWindow.getData()[1];
 
-            boolean verifiedLogin = LoginLogic.checkValid(username, password);
+            boolean verifiedLogin = this.loginLogic.checkValid(username, password);
 
             if (verifiedLogin) {
                 //saveLogin();
-                LoginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
+                this.loginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
                 updateName(username, password);
                 currUsername = username;
                 currPassword = password;
@@ -109,17 +111,17 @@ public class AppManager implements Observer {
             String username = loginWindow.getData()[0];
             String password = loginWindow.getData()[1];
 
-            if (LoginLogic.checkAvailableUsername(username)) {
+            if (this.loginLogic.checkAvailableUsername(username)) {
                 String verification = JOptionPane.showInputDialog("Please re-enter your password");
                 if (!password.equals(verification)) {
                     JOptionPane.showMessageDialog(null, "Passwords do not match");
                     return;
                 }
 
-                boolean verifiedSignup = LoginLogic.signUp(username, password);
+                boolean verifiedSignup = this.loginLogic.signUp(username, password);
 
                 if (verifiedSignup) {
-                    LoginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
+                    this.loginLogic.saveLogin(loginWindow.getRememberMe(), username, password);
                     updateName(username, password);
                     currUsername = username;
                     currPassword = password;

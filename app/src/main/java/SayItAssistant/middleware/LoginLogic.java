@@ -28,11 +28,33 @@ public class LoginLogic {
     private final static String ENDPOINT = "question";
     private final static String USER_PARAM = "?user=";
     private final static String PASS_PARAM = "&pass=";
+    // Singleton instance
+    private static LoginLogic instance = null;
+
+    private LoginLogic() {}
+
+    /**
+     * Returns the singleton instance of the class
+     * @return Singleton instance of the class
+     */
+    public static LoginLogic getInstance() {
+        if (instance == null) {
+            instance = new LoginLogic();
+        }
+        return instance;
+    }
+
+    /**
+     * Deconstructs the singleton instance of the class (simulates logout)
+     */
+    public static void deconstruct() {
+        instance = null;
+    }
 
     /**
      * Saves the login information to a file
      */
-    public static void saveLogin(boolean remembered, String username, String password) {
+    public void saveLogin(boolean remembered, String username, String password) {
         if (remembered) {
             // Base64 encoding
             String encodedUsername = Base64.getEncoder().encodeToString(username.getBytes());
@@ -53,7 +75,7 @@ public class LoginLogic {
     /**
      * Retrieves login information from the file
      */
-    public static List<String> retrieveLogin() {
+    public List<String> retrieveLogin() {
         List<String> loginInfo = new ArrayList<>();
         // Read from file login.txt
         try {
@@ -77,7 +99,7 @@ public class LoginLogic {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static boolean checkValid(String username, String password) {
+    public boolean checkValid(String username, String password) {
 
         // Connect to the Server and check if the username and password combination is valid
         String urlString = HOST + ENDPOINT + USER_PARAM + username + PASS_PARAM + password;
@@ -119,7 +141,7 @@ public class LoginLogic {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static boolean signUp(String username, String password) {
+    public boolean signUp(String username, String password) {
 
         // Validate that the username and password are not empty strings
         if (username.equals("") || (password.equals(""))) {
@@ -169,7 +191,7 @@ public class LoginLogic {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static boolean checkAvailableUsername(String username) {
+    public boolean checkAvailableUsername(String username) {
         // Validate that username is not empty
         if (username.equals("")) {
             JOptionPane.showMessageDialog(null, "Username cannot be empty");
