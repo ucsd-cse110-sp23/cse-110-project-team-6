@@ -32,7 +32,8 @@ public class ResponseCoordinator {
 
         // if a prompt is requested to be deleted, it is deleted based off of its prompt number
         else if (prompt instanceof DeletePrompt) {
-            int recentPromptNumber = AppManager.getRecentPromptNumber();
+            int recentPromptNumber = 0;
+            recentPromptNumber = AppManager.getRecentPromptNumber();
             if (recentPromptNumber != -1) {
                 System.out.println("Deleting prompt " + recentPromptNumber);
                 history.delete(recentPromptNumber);
