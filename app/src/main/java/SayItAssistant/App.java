@@ -15,12 +15,7 @@ public class App {
         } catch (Exception e) {
             e.printStackTrace();
         }
-	/*
-        try {
-            Server.startServer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+
         new AppManager();
     }
 

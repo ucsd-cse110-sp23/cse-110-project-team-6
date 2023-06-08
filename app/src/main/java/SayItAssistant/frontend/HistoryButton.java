@@ -26,6 +26,7 @@ public class HistoryButton extends AppButtons implements Subject {
      * @param displayText:  the text to be displayed
      */
     public HistoryButton(int id, IPrompt displayText, IResponse newResponse) {
+        // Check IPrompt Type. Add to the beginning of the string.
         super(displayText.toString() + " ".repeat(100));
         prompt = displayText;
         response = newResponse;

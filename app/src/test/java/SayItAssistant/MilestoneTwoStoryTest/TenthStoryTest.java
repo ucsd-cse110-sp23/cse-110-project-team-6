@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import SayItAssistant.middleware.SayItAssistant;
 import SayItAssistant.middleware.HistoryManager;
 import SayItAssistant.middleware.MockWhisperRequest;
+import SayItAssistant.middleware.PromptResponsePair;
 
 /**
  * This class is responsible for testing the tenth story of the SayItAssistant
@@ -38,7 +39,11 @@ public class TenthStoryTest {
     private static final String TEST_QUESTION   = "Question. What caused the Roman Empire to fall?";
     private static final String PARSED_QUESTION = "What caused the Roman Empire to fall?";
     private static final String SHORT_RECORD    = "";
+    private static final String NO_SPEECH_RECORD = "";
+    private static final String NO_COMMAND_WARN = "No command found";
     private static final String RESPONSE        = "This is the response to the prompt";
+    private static final String NO_COMMAND_RESPONSE = 
+    "Apologies, no valid command was found within your request. I can assist you if you start your requests with Question, Delete Prompt, Clear All, Setup Email, Create Email, or Send Email to <email>.";
 
     /**
      * Opens up SayIt Assistant before each test
@@ -74,12 +79,12 @@ public class TenthStoryTest {
     /**
      * Function which mimics asking a question to SayIt Assistant
      */
-    private void askQuestion(String question) {
+    private PromptResponsePair askQuestion(String question) {
         mockWhisperRequest.testString = question;
         sayItAssistant = new SayItAssistant(mockWhisperRequest);
         historyManager = new HistoryManager(sayItAssistant, TEST_USER, TEST_PASSWORD);
         sayItAssistant.setHistoryManager(historyManager);
-        sayItAssistant.respond();
+        return sayItAssistant.respond();
     }
 
     /**
@@ -99,7 +104,27 @@ public class TenthStoryTest {
      */
     @Test
     public void testScenario1() {
-    
+        // Mock instance of already logging into SayIt Assistant
+        openSayItAssistant();
+
+        // Mock instance of pressing and holding the Start button
+        //PressStartButton
+        
+        // Mock instance of asking a question
+        PromptResponsePair value = askQuestion(TEST_QUESTION);
+
+        // Mock instance of releasing the Start button
+        //ReleaseStartButton
+
+        // Check that the Start button text changes back to "Start"
+        //CheckTeehee
+
+        // Check that the command and prompt are displayed in the Prompt Area
+        String prompt = value.getPrompt().toString();
+        assertEquals(prompt, PARSED_QUESTION);
+        assertEquals(prompt, historyManager.getPrompts().get(0).toString());
+        assertEquals(historyManager.getResponse(0).toString(), RESPONSE);
+        //CommandPanel.setCommand()
     }
 
     /**
@@ -115,7 +140,23 @@ public class TenthStoryTest {
      */
     @Test
     public void testScenario2() {
+        // Mock instance of already logging into SayIt Assistant
+        openSayItAssistant();
 
+        // Mock instance of pressing and releasing the Start button
+        //PressStartButton
+        //ReleaseStartButton
+
+        // Check that the Start button text changes back to "Start"
+        //CheckTeehee
+
+        // Check that the error message appears in the prompt area
+        PromptResponsePair value = askQuestion(SHORT_RECORD);
+        assertEquals(value.getResponse().toString(), NO_COMMAND_RESPONSE);
+        assertEquals(value.getPrompt().toString(), NO_COMMAND_WARN);
+
+        // Verify that the interaction is not saved to the Prompt History
+        assertEquals(historyManager.getPrompts().size(), 0);
     }
 
     /**
@@ -135,7 +176,25 @@ public class TenthStoryTest {
      */
     @Test
     public void testScenario3() {
+        // Mock instance of already logging into SayIt Assistant
+        openSayItAssistant();
 
+        // Mock instance of pressing and holding the Start button
+        //PressStartButton
+
+        // Mock instance of releasing the Start button
+        //ReleaseStartButton
+
+        // Check that the Start button text changes back to "Start"
+        //CheckTeehee
+
+        // Check that the error message appears in the prompt area
+        PromptResponsePair value = askQuestion(NO_SPEECH_RECORD);
+        assertEquals(value.getResponse().toString(), NO_COMMAND_RESPONSE);
+        assertEquals(value.getPrompt().toString(), NO_COMMAND_WARN);
+
+        // Verify that the interaction is not saved to the Prompt History
+        assertEquals(historyManager.getPrompts().size(), 0);
     }
 
     /**
@@ -157,6 +216,26 @@ public class TenthStoryTest {
      */
     @Test
     public void testScenario4() {
+        // Mock instance of already logging into SayIt Assistant
+        openSayItAssistant();
 
+        // Mock instance of pressing and holding the Start button
+        //PressStartButton
+
+        // Mock instance of asking a question
+        PromptResponsePair value = askQuestion(PARSED_QUESTION);
+
+        // Mock instance of releasing the Start button
+        //ReleaseStartButton
+
+        // Check that the Start button text changes back to "Start"
+        //CheckTeehee
+
+        // Check that the error message appears in the prompt area
+        assertEquals(value.getResponse().toString(), NO_COMMAND_RESPONSE);
+        assertEquals(value.getPrompt().toString(), NO_COMMAND_WARN);
+
+        // Verify that the interaction is not saved to the Prompt History
+        assertEquals(historyManager.getPrompts().size(), 0);
     }
 }
